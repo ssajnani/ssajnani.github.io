@@ -5,13 +5,11 @@ body {
     padding:35px;
     background-origin: content-box;
 }
-.item{
-    width: 30px;
-}
+
 .item a h1.new-label span{
   position: relative;
   content: 'a.getName()';
 }
 .item:hover a h1.new-label:after{
-  content: 'Samar Sajnani';
+  content: ': Samar Sajnani';
 }
