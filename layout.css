@@ -6,13 +6,13 @@ body {
     background-origin: content-box;
 }
 
-.item a h1.new-label span{
+.item h1.new-label span{
   position: relative;
   content: 'getName()';
 }
-.item:hover a h1.new-label span{
+.item:hover h1.new-label span{
   display: none;
 }
-.item:hover a h1.new-label:after{
+.item:hover h1.new-label:after{
   content: 'Samar Sajnani';
 }
