@@ -14,5 +14,5 @@ body {
   display: none;
 }
 .item:hover a h1.new-label:after{
-  content: ': Samar Sajnani';
+  content: 'Samar Sajnani';
 }
