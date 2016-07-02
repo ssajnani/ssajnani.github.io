@@ -18,22 +18,6 @@ body{
 a{
     text-decoration:none;
 }
-.label {
-    padding: 1px 3px 2px;
-    font-size: 9.75px;
-    font-weight: bold;
-    color: #ffffff;
-    text-transform: uppercase;
-    white-space: nowrap;
-    background-color: #bfbfbf;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    text-decoration: none;
-}
-.label.success {
-    background-color: #46a546;
-}
 
 .item a h1.new-label span{
   position: relative;
