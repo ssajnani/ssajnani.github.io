@@ -8,10 +8,10 @@ body {
 .item{
     width: 30px;
 }
-.item a h1.new-label span{
+.item a h1.new-label:before{
   position: relative;
-  content: 'NEW'
+  content: 'a.getName()'
 }
 .item:hover a h1.new-label:after{
-  content: 'ADD';
+  content: 'Samar Sajnani';
 }
