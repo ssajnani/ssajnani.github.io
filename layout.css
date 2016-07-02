@@ -8,7 +8,7 @@ body {
 
 .item a h1.new-label span{
   position: relative;
-  content: 'a.getName()';
+  content: 'getName()';
 }
 .item:hover a h1.new-label span{
   display: none;
