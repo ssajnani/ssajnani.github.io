@@ -1,7 +1,5 @@
 body {
     background-image: url(IMG_0982.JPG);
     background-size: 100%;
-}
-div {
-    border: 10px solid black;
+    background-border:  10px solid black;
 }
