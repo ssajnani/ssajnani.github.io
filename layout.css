@@ -1,5 +1,7 @@
 body {
     background-image: url(IMG_0982.JPG);
     background-size: 100%;
-    background-border:  10px solid black;
+    background-repeat: no-repeat;
+    padding:35px;
+    background-origin: content-box;
 }
