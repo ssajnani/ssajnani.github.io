@@ -12,6 +12,6 @@ body {
   position: relative;
   content: 'a.getName()'
 }
-.item:hover a h1.new-label span{
+.item:hover a h1.new-label:after{
   content: 'Samar Sajnani';
 }
