@@ -8,7 +8,7 @@ body {
 .item{
     width: 30px;
 }
-.item a h1.new-label:before{
+.item a h1.new-label span{
   position: relative;
   content: 'a.getName()'
 }
