@@ -1,11 +1,74 @@
 body {
-    background-image: url(IMG_0982.JPG);
+    background: #000;
     background-size: 100%;
     background-repeat: no-repeat;
-    padding:35px;
-    background-origin: content-box;
+    background-attachment: fixed;
 }
-
+.item {
+    width: 210px;
+    height: 80px;
+    border: 3px solid #000;
+    margin: auto;
+    text-align: center;
+}
+.side {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    margin: 10px;
+    position: relative;
+    top: 200px;
+    text-align: center;
+}
+.mid {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    margin: 10px;
+    position: relative;
+    top: 35px;
+    left: 470px;
+    text-align: center;
+}
+.right {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    margin: 10px;
+    position: relative;
+    bottom: 130px;
+  	left: 930px;
+    text-align: center;
+}
+.side2 {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    margin: 10px;
+    position: relative;
+    bottom: 100px;
+    text-align: center;
+}
+.mid2 {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    margin: 10px;
+    position: relative;
+    bottom: 265px;
+    left: 470px;
+    text-align: center;
+}
+.right2 {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    margin: 10px;
+    position: relative;
+    bottom: 430px;
+  	left: 930px;
+    text-align: center;
+}
 .item h1.new-label span{
   position: relative;
   content: 'getName()';
@@ -15,4 +78,33 @@ body {
 }
 .item:hover h1.new-label:after{
   content: 'Samar Sajnani';
+}
+/* Set all parents to full height */
+html, body, 
+.container,
+.cbp-fbscroller,
+.cbp-fbscroller section { 
+	height: 100%; 
+}
+
+
+/* background-attachment does the trick */
+.cbp-fbscroller section {
+	position: relative;
+	background-position: top center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+#fb1 {
+	background-image: url(IMG_0982.JPG);
+}
+
+#fb2 {
+	background-image: url(IMG_0947.JPG);
+}
+
+#fb3 {
+	background-image: url(IMG_0862.JPG);
 }
