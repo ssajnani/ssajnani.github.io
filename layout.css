@@ -1,0 +1,222 @@
+body {
+    background: #000;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.item {
+    width: 210px;
+    height: 80px;
+    border: 3px solid #000;
+    margin: auto;
+    text-align: center;
+}
+.name {
+    width: 600px;
+    height: 80px;
+    padding: 3px;
+    position: relative;
+    top:20%;
+    margin: auto;
+    text-align: center;
+    font-size: 50px;
+    font-family: Georgia, serif;
+    color: #777;
+    -webkit-text-stroke-width: 2px;
+   	-webkit-text-stroke-color: black;
+}
+.education{
+	width: 500px;
+    height: 80px;
+    padding: 3px;
+    position: relative;
+    top:26%;
+    margin: auto;
+    text-align: center;
+    font-size: 15px;
+    color: black;
+}
+.side {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    top: 200px;
+    text-align: center;
+    font-size: 30px;
+    color: #777;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+  	background-color: rgba(255,255,255,0.5);
+}
+.mid {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    top: 35px;
+    left: 470px;
+    color: #777;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+  	background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+.right {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    bottom: 130px;
+  	left: 930px;
+    font-size: 30px;
+  	color: #777;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+  	background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+a:link{
+    text-decoration: none;
+}
+.side2 {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    margin: 10px;
+    position: relative;
+    bottom: 100px;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    bottom: 100px;
+    color: #777;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+  	background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+.mid2 {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    bottom: 265px;
+    left: 470px;
+    color: #777;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+  	background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+.right2 {
+	width: 300px;
+    height: 150px;
+    border: 3px solid #000;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    bottom: 430px;
+  	left: 930px;
+  	color: #777;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+  	background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+.pheader{
+    position: relative;
+    color: #000;
+    -webkit-text-stroae-width: 2px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+    text-align: center;
+}
+.projects {
+    width: 600px;
+    height: 600px;
+    border: 3px solid #000;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    top: 50px;
+    left: 10px;
+    color: #000;
+    font-size: 30px;
+    background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+
+
+.contact {
+    width: 600px;
+    height: 600px;
+    border: 3px solid #000;
+    border: 3px solid #FFF;
+    margin: 10px;
+    position: relative;
+    bottom: 566px;
+    left:625px;
+    color: #777;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+    background-color: rgba(255,255,255,0.5);
+    text-align: center;
+}
+.cheader{
+    position: relative;
+    color: #000;
+    -webkit-text-stroae-width: 2px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+    text-align: center;
+}
+
+.item h1.new-label span{
+  position: relative;
+}
+
+
+/* Set all parents to full height */
+html, body, 
+.container,
+.cbp-fbscroller,
+.cbp-fbscroller section { 
+	height: 100%; 
+}
+
+
+/* background-attachment does the trick */
+.cbp-fbscroller section {
+	position: relative;
+	background-position: top center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+#fb1 {
+	background-image: url("IMG_3961.jpg");
+}
+
+#fb2 {
+	background-image: url("IMG_2218.jpg");
+}
+
+#fb3 {
+	background-image: url("IMG_0947.jpg");
+}
