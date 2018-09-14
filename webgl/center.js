@@ -21,7 +21,7 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
     var sphereGeo = new THREE.SphereGeometry (radius, widthSegment, heightSegment),
         sphereMat = new THREE.MeshPhongMaterial({emissive: emissive, opacity: opacity, transparent: true});
     var loader = new THREE.TextureLoader();
-    sphereMat.map = loader.load("https://github.com/ssajnani/testsamar/raw/master/sun2.jpg");
+    sphereMat.map = loader.load("sun2.jpg");
     var sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
     sphereMesh.position.set(meshZ, meshY, meshX);
     sphereMesh.rotation.y=rotation;
