@@ -17,9 +17,9 @@ var light = new THREE.PointLight(0xFFFFFF, 1, 0);
 light.position.set(-100, 0, 0);
 scene.add(light);
 
-function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, emissive=0x000000, opacity=1){
+function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1){
     var sphereGeo = new THREE.SphereGeometry (radius, widthSegment, heightSegment),
-        sphereMat = new THREE.MeshPhongMaterial({emissive: emissive, opacity: opacity, transparent: true});
+        sphereMat = new THREE.MeshPhongMaterial({ambient: ambient, opacity: opacity, transparent: true});
     var loader = new THREE.TextureLoader();
     sphereMat.map = loader.load("https://ssajnani.github.io/webgl/sun2.jpg");
     var sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
