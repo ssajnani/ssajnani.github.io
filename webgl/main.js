@@ -13,6 +13,8 @@ var angle = 45,
 
 var sphereMats = [];
 
+var clock = new THREE.Clock();
+
 function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
   //geometry = new THREE.CubeGeometry(200,200,200);
     var sphereMat;
@@ -20,26 +22,57 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
     var transparent = false;
     if (opacity < 1) {
         transparent = true;
-        sphereMat = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: opacity, transparent: transparent});
+        sphereMat = new THREE.MeshPhongMaterial({color: 0xffffff, opacity: opacity, transparent: transparent});
+        var mesh = new THREE.Mesh(sphereGeo, sphereMat);
+        mesh.position.z = meshZ;
+        mesh.position.y = meshY;
+        mesh.position.x = meshX;
+        mesh.rotation.y=rotation;
+        scene.add(mesh);
+        return mesh;
     } else {
         var loader = new THREE.TextureLoader();
-        sphereMat = new THREE.ShaderMaterial({
-          uniforms: {
-            tExplosion: {
-              type: "t",
-              value: loader.load('https://ssajnani.github.io/webgl/explosion.png')
+          loader.load(
+            // resource URL
+            'explosion.png',
+            // Function when resource is loaded
+            function ( texture ) {
+              // do something with the texture
+              sphereMat = new THREE.ShaderMaterial({
+                uniforms: {
+                  tExplosion: {
+                    type: "t",
+                    value: texture
+                  },
+                  time: { // float initialized to 0
+                    type: "f",
+                    value: 0.0
+                  }
+                },
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent,
+                opacity: opacity,
+                transparent: transparent
+              });
+              sphereMats.push(sphereMat);
+              var mesh = new THREE.Mesh(sphereGeo, sphereMat);
+              mesh.position.z = meshZ;
+              mesh.position.y = meshY;
+              mesh.position.x = meshX;
+              mesh.rotation.y=rotation;
+              scene.add(mesh);
+              return mesh;
             },
-            time: { // float initialized to 0
-              type: "f",
-              value: 0.0
+            // Function called when download progresses
+            function ( xhr ) {
+              console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+            },
+            // Function called when download errors
+            function ( xhr ) {
+              console.log( 'An error happened' );
             }
-          },
-          vertexShader: document.getElementById('vertexShader').textContent,
-          fragmentShader: document.getElementById('fragmentShader').textContent,
-          opacity: opacity,
-          transparent: transparent
-        });
-        sphereMats.push(sphereMat);
+          );
+
     }
 
 
@@ -48,13 +81,7 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
     //
     //sphereMat.map = loader.load("https://ssajnani.github.io/webgl/sun2.jpg");
     // create a multimaterial
-    var mesh = new THREE.Mesh(sphereGeo, sphereMat);
-    mesh.position.z = meshZ;
-    mesh.position.y = meshY;
-    mesh.position.x = meshX;
-    mesh.rotation.y=rotation;
-    scene.add(mesh);
-    return mesh;
+
 }
 
 function calculateStarRadius(max, min){
@@ -95,11 +122,11 @@ webGLRenderer.toneMapping = THREE.LinearToneMapping;
 var firstSPos = [[20, 25], [10, 10], [0,20], [-10,30], [-20,15]];
 var secondSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
 
-createS(sceneConstellations, firstSPos, [0.1, 0.05], -100, 0xffffff);
-createS(sceneStars, firstSPos, [6, 6], -100, 0x000000, 0.01);
+createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
+createS(sceneStars, firstSPos, [6, 6], -100, 0x000000, 0.2);
 //createLineTrace(scene, firstSPos, 0.1);
-createS(sceneConstellations, secondSPos, [0.1, 0.05], -100, 0xffffff);
-createS(sceneStars, secondSPos, [6, 6], -100, 0x000000, 0.01);
+createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
+createS(sceneStars, secondSPos, [6, 6], -100, 0x000000, 0.2);
 
 //This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
@@ -146,11 +173,12 @@ sceneBG.add(bgPlane);
 // add the output of the renderer to the html element
 document.getElementById('container').append(webGLRenderer.domElement);
 
-preRender();
+var composer = new THREE.EffectComposer(webGLRenderer);
 render();
 
 
-function preRender(){
+function preRender(composer){
+    composer.reset();
     var renderPass = new THREE.RenderPass(sceneConstellations, camera);
     renderPass.clear = false;
     var renderPass2 = new THREE.RenderPass(sceneStars, camera);
@@ -170,7 +198,6 @@ function preRender(){
 
     var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
 
-    composer = new THREE.EffectComposer(webGLRenderer);
     composer.renderTarget1.stencilBuffer = true;
     composer.renderTarget2.stencilBuffer = true;
 
@@ -183,21 +210,23 @@ function preRender(){
     composer.addPass(clearMask);
     composer.addPass(bloomPass);
     composer.addPass(copyShader);
+    return composer;
 }
 
 function render() {
-
-
-
+    preRender(composer);
     for (var num=0; num < sphereMats.length; num ++){
-      sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+      sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() + num - start );
     }
 
     // render using requestAnimationFrame
 //            webGLRenderer.render(scene, camera);\
-    composer.render();
+    composer.render(0.001);
     requestAnimationFrame(render);
+
+
 }
+
 
 document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
@@ -255,8 +284,6 @@ function onDocumentMouseMove( event ) {
                             var scale = radius * 100; // adjust the multiplier to whatever
                             constChildren[j].scale.set(scale, scale, scale);
                             //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
-                            preRender();
-                            render();
                             break loop1
                         } else if (UUID === constChildren[j].uuid) {
                             return
@@ -272,8 +299,6 @@ function onDocumentMouseMove( event ) {
             console.log(constChildren[bac]);
             constChildren[bac].scale.set(1, 1, 1);
             //constChildren[bac].material.color.set(0xffffff);
-            preRender();
-            render();
         }
     }
     if (UUID === ""){
