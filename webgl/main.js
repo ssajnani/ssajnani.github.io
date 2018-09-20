@@ -95,6 +95,7 @@ camera.position.z = 0;
 // create a render and set the size
 var webGLRenderer = new THREE.WebGLRenderer({antialiasing : true, alpha: true});
 webGLRenderer.setClearColor(0x000, 0.0);
+webGLRenderer.setPixelRatio(window.devicePixelRatio/1.2);
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
@@ -147,7 +148,7 @@ sceneStars.add(light);
 var materialColor = new THREE.MeshBasicMaterial({ depthTest: false, color: 0xFFFFFF});
 var bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), materialColor);
 bgPlane.position.z = -2000;
-bgPlane.scale.set(window.innerWidth * 2, window.innerHeight * 2, 1);
+bgPlane.scale.set(window.innerWidth, window.innerHeight, 1);
 sceneBG.add(bgPlane);
 
 // add the output of the renderer to the html element
