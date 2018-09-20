@@ -157,33 +157,32 @@ var composer = new THREE.EffectComposer(webGLRenderer);
 
 startAnimating(1);
 
+var renderPass = new THREE.RenderPass(sceneConstellations, camera);
+renderPass.clear = false;
+var renderPass2 = new THREE.RenderPass(sceneStars, camera);
+renderPass2.clear = false;
+
+
+
+var starMask = new THREE.MaskPass(sceneConstellations, camera);
+var clearMask = new THREE.ClearMaskPass();
+
+var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
+var copyShader = new THREE.ShaderPass(THREE.CopyShader);
+copyShader.renderToScreen = true;
+
+
+var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
+
+composer.renderTarget1.stencilBuffer = true;
+composer.renderTarget2.stencilBuffer = true;
+
+composer.setSize(window.innerWidth, window.innerHeight);
+composer.addPass(renderPass);
+composer.addPass(renderPass2);
 
 function preRender(composer){
-    composer.reset();
-    var renderPass = new THREE.RenderPass(sceneConstellations, camera);
-    renderPass.clear = false;
-    var renderPass2 = new THREE.RenderPass(sceneStars, camera);
-    renderPass2.clear = false;
-
-
-
-    var starMask = new THREE.MaskPass(sceneConstellations, camera);
-    var clearMask = new THREE.ClearMaskPass();
-
-    var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
-    effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
-    var copyShader = new THREE.ShaderPass(THREE.CopyShader);
-    copyShader.renderToScreen = true;
-
-
-    var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
-
-    composer.renderTarget1.stencilBuffer = true;
-    composer.renderTarget2.stencilBuffer = true;
-
-    composer.setSize(window.innerWidth, window.innerHeight);
-    composer.addPass(renderPass);
-    composer.addPass(renderPass2);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
     composer.addPass(effectFXAA);
@@ -222,7 +221,7 @@ function animate() {
 
     // Put your drawing code here
         var newTime = Date.now();
-        if (newTime - lastTime > 300) { // 32 frames a secon
+        if (newTime - lastTime > 30) { // 32 frames a secon
             preRender(composer);
             lastTime =  newTime;
         }
@@ -233,6 +232,7 @@ function animate() {
 
         // render using requestAnimationFrame
         //            webGLRenderer.render(scene, camera);\
+        composer.reset();
         composer.render();
     }
 
