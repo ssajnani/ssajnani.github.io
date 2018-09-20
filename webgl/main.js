@@ -134,7 +134,7 @@ sceneStars.add( starField );
 
 camera.lookAt(new THREE.Vector3(-100, 0, 0));
 
-var orbitControls = new THREE.OrbitControls(camera, webGLRenderer.domElement);
+//var orbitControls = new THREE.OrbitControls(camera, webGLRenderer.domElement);
 
 
 var light = new THREE.PointLight(0xFFFFFF, 0.5, 0);
