@@ -1,5 +1,5 @@
-var WIDTH = window.innerWidth - 30,
-    HEIGHT = window.innerHeight - 30;
+var WIDTH = window.innerWidth,
+    HEIGHT = window.innerHeight;
 var bloomStrength = 2;
 var bloomRadius = 0;
 var bloomThreshold = 0.1;
@@ -10,6 +10,8 @@ var angle = 45,
     aspect = WIDTH / HEIGHT,
     near = 0.1,
     far = 3000;
+
+
 
 var sphereMats = [];
 
@@ -99,9 +101,10 @@ webGLRenderer.setPixelRatio(window.devicePixelRatio/1.2);
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
-
 var firstSPos = [[20, 25], [10, 10], [0,20], [-10,30], [-20,15]];
 var secondSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
+
+
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, firstSPos, [6, 6], -100, 0x000000, 0.2);
@@ -155,6 +158,7 @@ sceneBG.add(bgPlane);
 document.getElementById('container').append(webGLRenderer.domElement);
 
 var composer = new THREE.EffectComposer(webGLRenderer);
+dynamicallyResize();
 
 startAnimating(1);
 
@@ -274,6 +278,43 @@ document.addEventListener( 'mousemove', onDocumentMouseMove);
 
 var UUID = "";
 
+function dynamicallyResize(){
+    var constChildren = sceneConstellations.children;
+    var const2 = sceneStars.children;
+    if (window.innerWidth <= window.innerHeight || (window.innerWidth < 700 || window.innerHeight < 500)){
+        camera.position.x = -20;
+        camera.position.y = 0;
+        camera.position.z = 0;
+        camera.lookAt(new THREE.Vector3(-20, 0, -100));
+        for (var j=0; j < constChildren.length; j ++){
+            if (constChildren[j].position.x > 0){
+            constChildren[j].visible = false;
+                for (var i = 0; i < const2.length; i ++){
+                    if (const2[i].position.x === constChildren[j].position.x){
+                        const2[i].visible = false;
+                    }
+                }
+            }
+        }
+    } else {
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 0;
+        camera.lookAt(new THREE.Vector3(0, 0, -100));
+        var constChildren = sceneConstellations.children;
+        for (var j=0; j < constChildren.length; j ++){
+            if (constChildren[j].position.x > 0){
+            constChildren[j].visible = true;
+                for (var i = 0; i < const2.length; i ++){
+                    if (const2[i].position.x === constChildren[j].position.x){
+                        const2[i].visible = true;
+                    }
+                }
+            }
+        }
+    }
+}
+
 function onDocumentMouseMove( event ) {
 
     event.preventDefault();
@@ -319,6 +360,7 @@ function onWindowResize(){
 
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    dynamicallyResize();
 
     webGLRenderer.setSize(window.innerWidth, window.innerHeight);
     composer.setSize(window.innerWidth, window.innerHeight);
