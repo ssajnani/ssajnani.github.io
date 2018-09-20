@@ -31,47 +31,27 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
         scene.add(mesh);
         return mesh;
     } else {
-        var loader = new THREE.TextureLoader();
-          loader.load(
-            // resource URL
-            'explosion.png',
-            // Function when resource is loaded
-            function ( texture ) {
-              // do something with the texture
-              sphereMat = new THREE.ShaderMaterial({
-                uniforms: {
-                  tExplosion: {
-                    type: "t",
-                    value: texture
-                  },
-                  time: { // float initialized to 0
-                    type: "f",
-                    value: 0.0
-                  }
-                },
-                vertexShader: document.getElementById('vertexShader').textContent,
-                fragmentShader: document.getElementById('fragmentShader').textContent,
-                opacity: opacity,
-                transparent: transparent
-              });
-              sphereMats.push(sphereMat);
-              var mesh = new THREE.Mesh(sphereGeo, sphereMat);
-              mesh.position.z = meshZ;
-              mesh.position.y = meshY;
-              mesh.position.x = meshX;
-              mesh.rotation.y=rotation;
-              scene.add(mesh);
-              return mesh;
-            },
-            // Function called when download progresses
-            function ( xhr ) {
-              console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-            },
-            // Function called when download errors
-            function ( xhr ) {
-              console.log( 'An error happened' );
-            }
-          );
+
+        sphereMat = new THREE.ShaderMaterial({
+        uniforms: {
+          time: { // float initialized to 0
+            type: "f",
+            value: 0.0
+          }
+        },
+        vertexShader: document.getElementById('vertexShader').textContent,
+        fragmentShader: document.getElementById('fragmentShader').textContent,
+        opacity: opacity,
+        transparent: transparent
+        });
+        sphereMats.push(sphereMat);
+        var mesh = new THREE.Mesh(sphereGeo, sphereMat);
+        mesh.position.z = meshZ;
+        mesh.position.y = meshY;
+        mesh.position.x = meshX;
+        mesh.rotation.y=rotation;
+        scene.add(mesh);
+        return mesh;
 
     }
 
@@ -174,7 +154,8 @@ sceneBG.add(bgPlane);
 document.getElementById('container').append(webGLRenderer.domElement);
 
 var composer = new THREE.EffectComposer(webGLRenderer);
-render();
+
+startAnimating(1);
 
 
 function preRender(composer){
@@ -191,7 +172,6 @@ function preRender(composer){
 
     var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
     effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
-
     var copyShader = new THREE.ShaderPass(THREE.CopyShader);
     copyShader.renderToScreen = true;
 
@@ -213,16 +193,50 @@ function preRender(composer){
     return composer;
 }
 
-function render() {
-    preRender(composer);
-    for (var num=0; num < sphereMats.length; num ++){
-      sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() + num - start );
+var stop = false;
+var frameCount = 0;
+var fps, fpsInterval, startTime, now, then, elapsed;
+
+
+// initialize the timer variables and start the animation
+
+function startAnimating(fps) {
+  fpsInterval = 1000 / fps;
+  then = Date.now();
+  startTime = then;
+  animate();
+}
+var lastTime = Date.now();
+function animate() {
+    requestAnimationFrame(animate);
+    now = Date.now();
+    elapsed = now - then;
+
+    // if enough time has elapsed, draw the next frame
+
+    if (elapsed > fpsInterval) {
+
+    // Get ready for next frame by setting then=now, but also adjust for your
+    // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+        then = now - (elapsed % fpsInterval);
+
+    // Put your drawing code here
+        var newTime = Date.now();
+        if (newTime - lastTime > 300) { // 32 frames a secon
+            preRender(composer);
+            lastTime =  newTime;
+        }
+
+        for (var num=0; num < sphereMats.length; num ++){
+        sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+        }
+
+        // render using requestAnimationFrame
+        //            webGLRenderer.render(scene, camera);\
+        composer.render();
     }
 
-    // render using requestAnimationFrame
-//            webGLRenderer.render(scene, camera);\
-    composer.render(0.001);
-    requestAnimationFrame(render);
+
 
 
 }
@@ -254,6 +268,7 @@ function onDocumentMouseDown( event ) {
 
 }
 
+var lastMove = Date.now();
 document.addEventListener( 'mousemove', onDocumentMouseMove);
 
 var UUID = "";
@@ -261,6 +276,11 @@ var UUID = "";
 function onDocumentMouseMove( event ) {
 
     event.preventDefault();
+    if (Date.now() - lastMove < 80) { // 32 frames a secon
+        return;
+    } else {
+        lastMove = Date.now();
+    }
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
@@ -272,37 +292,23 @@ function onDocumentMouseMove( event ) {
     var constChildren = sceneConstellations.children;
 
     var intersects = raycaster.intersectObjects( children );
-    var newUUID = "";
-    loop1:
-        for (var i = 0; i < intersects.length; i ++){
-            if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
-                loop2:
-                    for (var j=0; j < constChildren.length; j ++){
-                        if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
-                            newUUID = constChildren[j].uuid;
-                            var radius = constChildren[j].geometry.parameters.radius;
-                            var scale = radius * 100; // adjust the multiplier to whatever
-                            constChildren[j].scale.set(scale, scale, scale);
-                            //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
-                            break loop1
-                        } else if (UUID === constChildren[j].uuid) {
-                            return
-                        }
-                    }
+
+    for (var i = 0; i < intersects.length; i ++){
+        if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
+            for (var j=0; j < constChildren.length; j ++){
+                if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
+                    UUID = constChildren[j].uuid;
+                    var radius = constChildren[j].geometry.parameters.radius;
+                    var scale = radius * 100; // adjust the multiplier to whatever
+                    constChildren[j].scale.set(scale, scale, scale);
+                    //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
+                } else {
+                    UUID = "";
+                    constChildren[j].scale.set(1, 1, 1);
+                    //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
+                }
             }
         }
-    console.log("newUUID:" + newUUID);
-    for (var bac=0; bac < constChildren.length; bac ++){
-        if (UUID === constChildren[bac].uuid){
-            console.log("old UUID:" + UUID);
-            UUID = newUUID;
-            console.log(constChildren[bac]);
-            constChildren[bac].scale.set(1, 1, 1);
-            //constChildren[bac].material.color.set(0xffffff);
-        }
-    }
-    if (UUID === ""){
-        UUID = newUUID
     }
 }
 
