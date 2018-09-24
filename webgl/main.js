@@ -97,7 +97,8 @@ camera.position.z = 0;
 // create a render and set the size
 var webGLRenderer = new THREE.WebGLRenderer({antialiasing : true, alpha: true});
 webGLRenderer.setClearColor(0x000, 0.0);
-webGLRenderer.setPixelRatio(window.devicePixelRatio/1.2);
+webGLRenderer.setPixelRatio(window.devicePixelRatio/1.2)
+webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
@@ -158,9 +159,9 @@ sceneBG.add(bgPlane);
 document.getElementById('container').append(webGLRenderer.domElement);
 
 var composer = new THREE.EffectComposer(webGLRenderer);
+composer.autoClear = true;
 dynamicallyResize();
 
-startAnimating(1);
 
 var renderPass = new THREE.RenderPass(sceneConstellations, camera);
 renderPass.clear = false;
@@ -186,6 +187,9 @@ composer.renderTarget2.stencilBuffer = true;
 composer.setSize(window.innerWidth, window.innerHeight);
 composer.addPass(renderPass);
 composer.addPass(renderPass2);
+preRender(composer);
+requestAnimationFrame(animate);
+
 
 function preRender(composer){
     composer.addPass(starMask);
@@ -202,44 +206,20 @@ var frameCount = 0;
 var fps, fpsInterval, startTime, now, then, elapsed;
 
 
-// initialize the timer variables and start the animation
 
-function startAnimating(fps) {
-  fpsInterval = 1000 / fps;
-  then = Date.now();
-  startTime = then;
-  animate();
-}
-var lastTime = Date.now();
 function animate() {
-    requestAnimationFrame(animate);
-    now = Date.now();
-    elapsed = now - then;
-
-    // if enough time has elapsed, draw the next frame
-
-    if (elapsed > fpsInterval) {
-
-    // Get ready for next frame by setting then=now, but also adjust for your
-    // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
-        then = now - (elapsed % fpsInterval);
-
     // Put your drawing code here
-        var newTime = Date.now();
-        if (newTime - lastTime > 30) { // 32 frames a secon
-            preRender(composer);
-            lastTime =  newTime;
-        }
-
         for (var num=0; num < sphereMats.length; num ++){
-        sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+          sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
         }
 
         // render using requestAnimationFrame
         //            webGLRenderer.render(scene, camera);\
+
         composer.reset();
         composer.render();
-    }
+        requestAnimationFrame(animate);
+
 
 
 
