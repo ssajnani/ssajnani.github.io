@@ -17,6 +17,10 @@ var sphereMats = [];
 
 var clock = new THREE.Clock();
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
 function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
   //geometry = new THREE.CubeGeometry(200,200,200);
     var sphereMat;
@@ -39,6 +43,10 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
           time: { // float initialized to 0
             type: "f",
             value: 0.0
+          },
+          colourType: {
+            type: "i",
+            value: getRandomInt(4)
           }
         },
         vertexShader: document.getElementById('vertexShader').textContent,
@@ -66,6 +74,36 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
 
 }
 
+function generateText(scene, rotation, meshZ=-100, meshY, meshX){
+  var loader = new THREE.FontLoader();
+  loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
+    var options = {
+      size: 90,
+      height: 90,
+      weight: 'normal',
+      font: font,
+      style: 'normal',
+      bevelThickness: 2,
+      bevelSize: 4,
+      bevelSegments: 3,
+      bevelEnabled: true,
+      curveSegments: 12,
+      steps: 1
+    };
+
+    // the createMesh is the same function we saw earlier
+    var text1 = new THREE.Mesh(new THREE.TextGeometry("Learning", options), new THREE.MeshBasicMaterial({
+      color: 0xb0bca7,
+      overdraw: true
+    }));
+    text1.position.z = meshZ;
+    text1.position.y = meshY;
+    text1.position.x = meshX;
+    text1.rotation = rotation;
+    scene.add(text1);
+  });
+
+}
 function calculateStarRadius(max, min){
     return Math.random() * (max-min) + min;
 }
@@ -76,6 +114,14 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
     generateSphere(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[2][0], positions[2][1], color, opacity);
     generateSphere(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[3][0], positions[3][1], color, opacity);
     generateSphere(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[4][0], positions[4][1], color, opacity);
+}
+
+function createText(scene, positions, zDistance, color = 0xFFFFFF, opacity=1){
+  generateText(scene, 5, zDistance, positions[0][0] - 30, positions[0][1], color, opacity);
+  generateText(scene, 5, zDistance, positions[1][0] + 30, positions[1][1], color, opacity);
+  generateText(scene, 5, zDistance, positions[2][0] - 30, positions[2][1], color, opacity);
+  generateText(scene, 5, zDistance, positions[3][0] + 30, positions[3][1], color, opacity);
+  generateText(scene, 5, zDistance, positions[4][0] - 30, positions[4][1], color, opacity);
 }
 
 
@@ -97,7 +143,7 @@ camera.position.z = 0;
 // create a render and set the size
 var webGLRenderer = new THREE.WebGLRenderer({antialiasing : true, alpha: true});
 webGLRenderer.setClearColor(0x000, 0.0);
-webGLRenderer.setPixelRatio(window.devicePixelRatio/1.2)
+webGLRenderer.setPixelRatio(window.devicePixelRatio)
 webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
@@ -109,9 +155,11 @@ var secondSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, firstSPos, [6, 6], -100, 0x000000, 0.2);
+createText(sceneStars, firstSPos, -100);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, secondSPos, [6, 6], -100, 0x000000, 0.2);
+createText(sceneStars, firstSPos, -100);
 
 //This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
@@ -157,41 +205,42 @@ sceneBG.add(bgPlane);
 
 // add the output of the renderer to the html element
 document.getElementById('container').append(webGLRenderer.domElement);
-
-var composer = new THREE.EffectComposer(webGLRenderer);
-composer.autoClear = true;
 dynamicallyResize();
 
-
-var renderPass = new THREE.RenderPass(sceneConstellations, camera);
-renderPass.clear = false;
-var renderPass2 = new THREE.RenderPass(sceneStars, camera);
-renderPass2.clear = false;
-
-
-
-var starMask = new THREE.MaskPass(sceneConstellations, camera);
-var clearMask = new THREE.ClearMaskPass();
-
-var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
-effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
-var copyShader = new THREE.ShaderPass(THREE.CopyShader);
-copyShader.renderToScreen = true;
-
-
-var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
-
-composer.renderTarget1.stencilBuffer = true;
-composer.renderTarget2.stencilBuffer = true;
-
-composer.setSize(window.innerWidth, window.innerHeight);
-composer.addPass(renderPass);
-composer.addPass(renderPass2);
-preRender(composer);
+var composer = preRender();
 requestAnimationFrame(animate);
 
 
-function preRender(composer){
+function preRender(){
+    var composer = new THREE.EffectComposer(webGLRenderer);
+    composer.autoClear = true;
+
+
+
+    var renderPass = new THREE.RenderPass(sceneConstellations, camera);
+    renderPass.clear = false;
+    var renderPass2 = new THREE.RenderPass(sceneStars, camera);
+    renderPass2.clear = false;
+
+
+
+    var starMask = new THREE.MaskPass(sceneConstellations, camera);
+    var clearMask = new THREE.ClearMaskPass();
+
+    var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+    effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
+    var copyShader = new THREE.ShaderPass(THREE.CopyShader);
+    copyShader.renderToScreen = true;
+
+
+    var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
+
+    composer.renderTarget1.stencilBuffer = true;
+    composer.renderTarget2.stencilBuffer = true;
+
+    composer.setSize(window.innerWidth, window.innerHeight);
+    composer.addPass(renderPass);
+    composer.addPass(renderPass2);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
     composer.addPass(effectFXAA);
@@ -321,8 +370,9 @@ function onDocumentMouseMove( event ) {
                 if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
                     UUID = constChildren[j].uuid;
                     var radius = constChildren[j].geometry.parameters.radius;
-                    var scale = radius * 100; // adjust the multiplier to whatever
+                    var scale = radius * 100;
                     constChildren[j].scale.set(scale, scale, scale);
+
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 } else {
                     UUID = "";
