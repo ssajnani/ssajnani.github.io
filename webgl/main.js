@@ -74,36 +74,30 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
 
 }
 
-function generateText(scene, rotation, meshZ=-100, meshY, meshX){
-  var loader = new THREE.FontLoader();
-  loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
-    var options = {
-      size: 90,
-      height: 90,
-      weight: 'normal',
-      font: font,
-      style: 'normal',
-      bevelThickness: 2,
-      bevelSize: 4,
-      bevelSegments: 3,
-      bevelEnabled: true,
-      curveSegments: 12,
-      steps: 1
-    };
-
-    // the createMesh is the same function we saw earlier
-    var text1 = new THREE.Mesh(new THREE.TextGeometry("Learning", options), new THREE.MeshBasicMaterial({
-      color: 0xb0bca7,
-      overdraw: true
-    }));
-    text1.position.z = meshZ;
-    text1.position.y = meshY;
-    text1.position.x = meshX;
-    text1.rotation = rotation;
-    scene.add(text1);
-  });
-
-}
+// function generateText(scene, rotation, meshZ=-100, meshY, meshX){
+//   var options = {
+//     size: 90,
+//     height: 90,
+//     weight: 'normal',
+//     font: 'helvetiker',
+//     style: 'normal',
+//     bevelThickness: 2,
+//     bevelSize: 4,
+//     bevelSegments: 3,
+//     bevelEnabled: true,
+//     curveSegments: 12,
+//     steps: 1
+//   };
+//
+// // the createMesh is the same function we saw earlier
+//   var text1 = new THREE.Mesh(new THREE.TextGeometry("Learning", options), new THREE.MeshBasicMaterial({color:0xb0bca7, overdraw: true}));
+//   text1.position.z = meshZ;
+//   text1.position.y = meshY;
+//   text1.position.x = meshX;
+//   text1.rotation = rotation;
+//   scene.add(text1);
+//
+// }
 function calculateStarRadius(max, min){
     return Math.random() * (max-min) + min;
 }
@@ -155,11 +149,11 @@ var secondSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, firstSPos, [6, 6], -100, 0x000000, 0.2);
-createText(sceneStars, firstSPos, -100);
+//createText(sceneStars, firstSPos, -100);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, secondSPos, [6, 6], -100, 0x000000, 0.2);
-createText(sceneStars, firstSPos, -100);
+//createText(sceneStars, firstSPos, -100);
 
 //This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
