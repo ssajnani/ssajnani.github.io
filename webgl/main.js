@@ -79,7 +79,7 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX){
     loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
 
       var options = {
-        size: 90,
+        size: 10,
         height: 90,
         weight: 'normal',
         font: font,
@@ -170,7 +170,8 @@ for ( var i = 0; i < 10000; i ++ ) {
     var star = new THREE.Vector3();
     star.x = THREE.Math.randFloatSpread( 2000 );
     star.y = THREE.Math.randFloatSpread( 2000 );
-    star.z = THREE.Math.randFloatSpread( 2000 );
+    star.z = THREE.Math.randFloat(-300, -1000 );
+    // starsGeometry.filter(.vertices[0].x);
 
     starsGeometry.vertices.push( star );
 
