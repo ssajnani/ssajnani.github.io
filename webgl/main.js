@@ -160,7 +160,7 @@ createText(sceneStars, firstSPos, -100);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, secondSPos, [6, 6], -100, 0x000000, 0.2);
-createText(sceneStars, firstSPos, -100);
+createText(sceneStars, secondSPos, -100);
 
 //This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
