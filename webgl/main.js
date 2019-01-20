@@ -1,6 +1,6 @@
 var WIDTH = window.innerWidth,
     HEIGHT = window.innerHeight;
-var bloomStrength = 2;
+var bloomStrength = 1.5;
 var bloomRadius = 0;
 var bloomThreshold = 0.1;
 var start = Date.now();
@@ -74,33 +74,28 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
 
 }
 
-function generateText(scene, rotation, meshZ=-100, meshY, meshX){
+function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title){
+    console.log(title);
     var loader = new THREE.FontLoader();
-    loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+    loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/helvetiker_regular.typeface.json', function ( font ) {
 
       var options = {
-        size: 10,
-        height: 90,
+        size: 2,
         weight: 'normal',
         font: font,
         style: 'normal',
-        bevelThickness: 2,
-        bevelSize: 4,
-        bevelSegments: 3,
-        bevelEnabled: true,
-        curveSegments: 12,
-        steps: 1
+        height: 0,
       };
 
       // the createMesh is the same function we saw earlier
-      var text1 = new THREE.Mesh(new THREE.TextGeometry("Learning", options), new THREE.MeshBasicMaterial({
-        color: 0xb0bca7,
-        overdraw: true
+      var text1 = new THREE.Mesh(new THREE.TextGeometry(title, options), new THREE.MeshBasicMaterial({
+        color: color,
       }));
       text1.position.z = meshZ;
       text1.position.y = meshY;
       text1.position.x = meshX;
       text1.rotation = rotation;
+      text1.visible = false;
       scene.add(text1);
     });
 
@@ -117,12 +112,13 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
     generateSphere(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[4][0], positions[4][1], color, opacity);
 }
 
-function createText(scene, positions, zDistance, color = 0xFFFFFF, opacity=1){
-  generateText(scene, 5, zDistance, positions[0][0] - 30, positions[0][1], color, opacity);
-  generateText(scene, 5, zDistance, positions[1][0] + 30, positions[1][1], color, opacity);
-  generateText(scene, 5, zDistance, positions[2][0] - 30, positions[2][1], color, opacity);
-  generateText(scene, 5, zDistance, positions[3][0] + 30, positions[3][1], color, opacity);
-  generateText(scene, 5, zDistance, positions[4][0] - 30, positions[4][1], color, opacity);
+function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opacity=1){
+    console.log(titles[0]);
+  generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0]);
+  generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+7, color, opacity, titles[1]);
+  generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-18, color, opacity, titles[2]);
+  generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3]);
+  generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4]);
 }
 
 
@@ -134,6 +130,7 @@ function createText(scene, positions, zDistance, color = 0xFFFFFF, opacity=1){
 var sceneConstellations = new THREE.Scene();
 var sceneStars = new THREE.Scene();
 var sceneBG = new THREE.Scene();
+var sceneText = new THREE.Scene();
 
 // create a camera, which defines where we're looking at.
 var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
@@ -150,27 +147,28 @@ webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
 var firstSPos = [[20, 25], [10, 10], [0,20], [-10,30], [-20,15]];
+var workTitles = ['Applications', 'Education', 'Resume', 'Youtube', 'Research'];
 var secondSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
-
+var hobbyTitles = ['Blog', 'Photography', 'Dance', 'Music', 'Twitter'];
 
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, firstSPos, [6, 6], -100, 0x000000, 0.2);
-createText(sceneStars, firstSPos, -100);
+createText(sceneText, firstSPos, -100, workTitles);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
 createS(sceneStars, secondSPos, [6, 6], -100, 0x000000, 0.2);
-createText(sceneStars, secondSPos, -100);
+createText(sceneText, secondSPos, -100, hobbyTitles);
 
 //This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
 
-for ( var i = 0; i < 10000; i ++ ) {
+for ( var i = 0; i < 30000; i ++ ) {
 
     var star = new THREE.Vector3();
     star.x = THREE.Math.randFloatSpread( 2000 );
     star.y = THREE.Math.randFloatSpread( 2000 );
-    star.z = THREE.Math.randFloat(-300, -1000 );
+    star.z = THREE.Math.randFloat(-300, -400 );
     // starsGeometry.filter(.vertices[0].x);
 
     starsGeometry.vertices.push( star );
@@ -223,11 +221,15 @@ function preRender(){
     renderPass.clear = false;
     var renderPass2 = new THREE.RenderPass(sceneStars, camera);
     renderPass2.clear = false;
+    var renderPass3 = new THREE.RenderPass(sceneText, camera);
+    renderPass3.clear = false;
 
 
 
     var starMask = new THREE.MaskPass(sceneConstellations, camera);
     var clearMask = new THREE.ClearMaskPass();
+  var textMask = new THREE.MaskPass(sceneText, camera);
+  var clearMask = new THREE.ClearMaskPass();
 
     var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
     effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
@@ -243,12 +245,17 @@ function preRender(){
     composer.setSize(window.innerWidth, window.innerHeight);
     composer.addPass(renderPass);
     composer.addPass(renderPass2);
+    composer.addPass(renderPass3);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
-    composer.addPass(effectFXAA);
     composer.addPass(clearMask);
+    composer.addPass(effectFXAA);
     composer.addPass(bloomPass);
     composer.addPass(copyShader);
+
+
+
+
     return composer;
 }
 
@@ -363,6 +370,7 @@ function onDocumentMouseMove( event ) {
     // calculate objects intersecting the picking ray
     var children = sceneStars.children;
     var constChildren = sceneConstellations.children;
+    var textChildren = sceneText.children;
 
     var intersects = raycaster.intersectObjects( children );
 
@@ -370,7 +378,13 @@ function onDocumentMouseMove( event ) {
         if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
             for (var j=0; j < constChildren.length; j ++){
                 if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
+
                     UUID = constChildren[j].uuid;
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                    if (textFilter !== undefined && textFilter.length != 0) {
+
+                      textFilter[0].visible = true;
+                    }
                     var radius = constChildren[j].geometry.parameters.radius;
                     var scale = radius * 100;
                     constChildren[j].scale.set(scale, scale, scale);
@@ -378,6 +392,10 @@ function onDocumentMouseMove( event ) {
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 } else {
                     UUID = "";
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                    if (textFilter !== undefined && textFilter.length != 0) {
+                      textFilter[0].visible = false;
+                    }
                     constChildren[j].scale.set(1, 1, 1);
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 }
@@ -396,5 +414,13 @@ function onWindowResize(){
 
     webGLRenderer.setSize(window.innerWidth, window.innerHeight);
     composer.setSize(window.innerWidth, window.innerHeight);
+    var constChildren = sceneConstellations.children;
+    var textChildren = sceneText.children;
+    for (var j=0; j < constChildren.length; j ++){
+        constChildren[j].scale.set(1,1,1);
+    }
+    for (var j=0; j < textChildren.length; j ++){
+        textChildren[j].visible = false;
+    }
 
 }
