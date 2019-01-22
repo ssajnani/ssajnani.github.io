@@ -11,6 +11,7 @@ var angle = 45,
     near = 0.1,
     far = 3000;
 
+document.getElementById('holder').style.visibility = 'hidden';
 
 
 var sphereMats = [];
@@ -85,6 +86,7 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
         font: font,
         style: 'normal',
         height: 0,
+        curveSegments: 30
       };
 
       // the createMesh is the same function we saw earlier
@@ -116,7 +118,7 @@ function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opaci
     console.log(titles[0]);
   generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0]);
   generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+7, color, opacity, titles[1]);
-  generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-18, color, opacity, titles[2]);
+  generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2]);
   generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3]);
   generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4]);
 }
@@ -130,6 +132,7 @@ function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opaci
 var sceneConstellations = new THREE.Scene();
 var sceneStars = new THREE.Scene();
 var sceneBG = new THREE.Scene();
+var sceneSolarOutline = new THREE.Scene();
 var sceneText = new THREE.Scene();
 
 // create a camera, which defines where we're looking at.
@@ -141,24 +144,26 @@ camera.position.z = 0;
 // create a render and set the size
 var webGLRenderer = new THREE.WebGLRenderer({antialiasing : true, alpha: true});
 webGLRenderer.setClearColor(0x000, 0.0);
-webGLRenderer.setPixelRatio(window.devicePixelRatio)
+webGLRenderer.setPixelRatio(window.devicePixelRatio);
 webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
-var firstSPos = [[20, 25], [10, 10], [0,20], [-10,30], [-20,15]];
-var workTitles = ['Applications', 'Education', 'Resume', 'Youtube', 'Research'];
+var firstSPos = [[20, 22], [10, 10], [0,20], [-10,30], [-20,15]];
+var textFPos = [[20, 25], [10, 10], [0,20], [-10,30], [-20,15]];
+var workTitles = ['Projects', 'Education', 'Resume', 'Youtube', 'Research'];
 var secondSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
+var textSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
 var hobbyTitles = ['Blog', 'Photography', 'Dance', 'Music', 'Twitter'];
 
 
-createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
-createS(sceneStars, firstSPos, [6, 6], -100, 0x000000, 0.2);
-createText(sceneText, firstSPos, -100, workTitles);
+createS(sceneConstellations, firstSPos, [0.04, 0.02], -100, 0xffffff);
+createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.2);
+createText(sceneText, textFPos, -100, hobbyTitles);
 //createLineTrace(scene, firstSPos, 0.1);
-createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
-createS(sceneStars, secondSPos, [6, 6], -100, 0x000000, 0.2);
-createText(sceneText, secondSPos, -100, hobbyTitles);
+createS(sceneConstellations, secondSPos, [0.04, 0.02], -100, 0xffffff);
+createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
+createText(sceneText, textSPos, -100, workTitles);
 
 //This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
@@ -168,7 +173,7 @@ for ( var i = 0; i < 30000; i ++ ) {
     var star = new THREE.Vector3();
     star.x = THREE.Math.randFloatSpread( 2000 );
     star.y = THREE.Math.randFloatSpread( 2000 );
-    star.z = THREE.Math.randFloat(-300, -400 );
+    star.z = THREE.Math.randFloat(-350, -450 );
     // starsGeometry.filter(.vertices[0].x);
 
     starsGeometry.vertices.push( star );
@@ -183,7 +188,7 @@ sceneStars.add( starField );
 
 camera.lookAt(new THREE.Vector3(-100, 0, 0));
 
-//var orbitControls = new THREE.OrbitControls(camera, webGLRenderer.domElement);
+var controls = new THREE.OrbitControls(camera);
 
 
 var light = new THREE.PointLight(0xFFFFFF, 0.5, 0);
@@ -195,7 +200,7 @@ light2.position.z = -100;
 light2.position.x = 0;
 light2.position.y = 0;
 sceneConstellations.add(light2);
-sceneStars.add(light);
+sceneSolarOutline.add(light);
 
 var materialColor = new THREE.MeshBasicMaterial({ depthTest: false, color: 0xFFFFFF});
 var bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), materialColor);
@@ -211,6 +216,7 @@ var composer = preRender();
 requestAnimationFrame(animate);
 
 
+
 function preRender(){
     var composer = new THREE.EffectComposer(webGLRenderer);
     composer.autoClear = true;
@@ -221,15 +227,17 @@ function preRender(){
     renderPass.clear = false;
     var renderPass2 = new THREE.RenderPass(sceneStars, camera);
     renderPass2.clear = false;
-    var renderPass3 = new THREE.RenderPass(sceneText, camera);
+    var renderPass3 = new THREE.RenderPass(sceneSolarOutline, camera);
     renderPass3.clear = false;
+    var renderPass4 = new THREE.RenderPass(sceneText, camera);
+    renderPass4.clear = false;
 
 
 
     var starMask = new THREE.MaskPass(sceneConstellations, camera);
     var clearMask = new THREE.ClearMaskPass();
-  var textMask = new THREE.MaskPass(sceneText, camera);
-  var clearMask = new THREE.ClearMaskPass();
+    var textMask = new THREE.MaskPass(sceneText, camera);
+    var clearMask = new THREE.ClearMaskPass();
 
     var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
     effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
@@ -246,6 +254,7 @@ function preRender(){
     composer.addPass(renderPass);
     composer.addPass(renderPass2);
     composer.addPass(renderPass3);
+    composer.addPass(renderPass4);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
     composer.addPass(clearMask);
@@ -265,7 +274,7 @@ var fps, fpsInterval, startTime, now, then, elapsed;
 
 
 
-function animate() {
+function animate(time) {
     // Put your drawing code here
         for (var num=0; num < sphereMats.length; num ++){
           sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
@@ -277,6 +286,7 @@ function animate() {
         composer.reset();
         composer.render();
         requestAnimationFrame(animate);
+        TWEEN.update(time);
 
 
 
@@ -300,7 +310,7 @@ function onDocumentMouseDown( event ) {
     raycaster.setFromCamera( mouse, camera );
 
     // calculate objects intersecting the picking ray
-    var intersects = raycaster.intersectObjects( sceneStars.children );
+    var intersects = raycaster.intersectObjects( sceneSolarOutline.children );
 
 
     if ( intersects.length > 0 ) {
@@ -313,6 +323,7 @@ function onDocumentMouseDown( event ) {
 
 var lastMove = Date.now();
 document.addEventListener( 'mousemove', onDocumentMouseMove);
+document.addEventListener( 'click', onDocumentMouseClick);
 
 var UUID = "";
 
@@ -368,7 +379,7 @@ function onDocumentMouseMove( event ) {
     raycaster.setFromCamera( mouse, camera );
 
     // calculate objects intersecting the picking ray
-    var children = sceneStars.children;
+    var children = sceneSolarOutline.children;
     var constChildren = sceneConstellations.children;
     var textChildren = sceneText.children;
 
@@ -386,7 +397,7 @@ function onDocumentMouseMove( event ) {
                       textFilter[0].visible = true;
                     }
                     var radius = constChildren[j].geometry.parameters.radius;
-                    var scale = radius * 100;
+                    var scale = radius * 1500;
                     constChildren[j].scale.set(scale, scale, scale);
 
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
@@ -402,6 +413,95 @@ function onDocumentMouseMove( event ) {
             }
         }
     }
+}
+const sleep = (milliseconds, j) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds, j))
+};
+// keep this outside of the event-handler
+var lookAtPosition = new THREE.Vector3(0, 0, -100);
+var lookAtTween = new TWEEN.Tween(lookAtPosition);
+
+// as lookAt is not a property we can assign to we need to
+// call it every time the tween was updated:
+lookAtTween.onUpdate(function() {
+  camera.lookAt(lookAtPosition);
+});
+
+
+function onDocumentMouseClick( event ) {
+
+  event.preventDefault();
+  if (Date.now() - lastMove < 80) { // 32 frames a second
+    return;
+  } else {
+    lastMove = Date.now();
+  }
+  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+  // update the picking ray with the camera and mouse position
+  raycaster.setFromCamera( mouse, camera );
+
+  // calculate objects intersecting the picking ray
+  var children = sceneSolarOutline.children;
+  var constChildren = sceneConstellations.children;
+  var textChildren = sceneText.children;
+
+  var intersects = raycaster.intersectObjects( children );
+
+  for (var i = 0; i < intersects.length; i ++){
+    if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
+      for (var j=0; j < constChildren.length; j ++){
+        if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
+
+          UUID = constChildren[j].uuid;
+          lookAtTween
+            .stop() // just in case it's still animating
+            .to(constChildren[j].position, 1000) // set destination and duration
+            .start(); // start the tween
+          var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+          if (textFilter !== undefined && textFilter.length != 0) {
+            textFilter[0].visible = false;
+          }
+          constChildren[j].scale.set(1, 1, 1);
+          sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
+          sleep(1500,j).then((j)=> {
+            // document.getElementsByClassName('fixedContainer')[0].style.visibility = 'visible';
+            // document.getElementsByClassName('fixedContainer')[1].style.visibility = 'visible';
+            // document.getElementById('speedAdjFactor').setAttribute('value', '0.7');
+            // document.getElementById('density').setAttribute('value', '100');
+            // document.getElementById('starSize').setAttribute('value', '0.7');
+            document.getElementById('holder').style.visibility = 'visible';
+            mouseActive = true;
+            sleep(2000, j).then((j) => {
+              mouseActive = false;
+              sleep(1000, j).then((j) => {
+
+                $('#holder').fadeTo("slow", 0);
+                console.log(constChildren[j]);
+                camera.position.x = constChildren[j].position.x;
+                camera.position.y = constChildren[j].position.y;
+                camera.position.z = constChildren[j].position.z + 10;
+                camera.lookAt(constChildren[j].position);
+                var currentPosition = new THREE.Vector3(camera.position);
+                var currentTween = new TWEEN.Tween(currentPosition);
+                currentTween.onUpdate(function() {
+                  camera.position.z = currentPosition.z;
+                });
+                var newPosition = new THREE.Vector3(camera.position);
+                newPosition.z = newPosition.z -98 ;
+                currentTween
+                  .stop() // just in case it's still animating
+                  .to(newPosition, 1000) // set destination and duration
+                  .start(); // start the tween
+              });
+
+            });
+          });
+        }
+      }
+    }
+  }
 }
 
 window.addEventListener( 'resize', onWindowResize, false );

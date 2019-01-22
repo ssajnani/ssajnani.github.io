@@ -6,8 +6,42 @@
       overflow: hidden;
     }
   </style>
+  <script type="text/javascript" src="warpspeed.min.js"></script>
+  <script type="text/javascript" src="Tween.js"></script>
+
+  <style type="text/css">
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, font, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      font-size: 100%;
+      vertical-align: baseline;
+      background: transparent;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+      background-color: #111;
+    }
+
+  </style>
 </head>
 <body>
+    <div id='holder' style='background-color:#000; width:100%; height:100%; position:absolute'>
+
+      <div id='effect' style='position:absolute; width:100%; height:100%'></div>
+
+    </div>
     <div id="container"></div>
 </body>
 <script src="three.js"></script>
@@ -232,7 +266,7 @@
       // get a 3d noise using the position, low frequency
       float b = pnoise( 0.05 * position + vec3(2.0*time), vec3( 100.0 ) );
       // compose both noises
-      float displacement = - 0.09 * noise + -0.003 * b ;
+      float displacement = - 0.009 * noise + -0.003 * b ;
 
       // move the position along the normal and transform it
       vec3 newPosition = position + normal * displacement;
@@ -274,4 +308,6 @@
     }
 </script>
 <script src="main.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="warpdrive.js"></script>
 </html>
