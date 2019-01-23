@@ -75,6 +75,27 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
 
 }
 
+function generateOrbit(scene, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
+  //geometry = new THREE.CubeGeometry(200,200,200);
+  var sphereMat;
+  var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
+  sphereGeo.vertices.shift();
+  sphereGeo.rotateZ(-Math.PI / 2);
+  sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF } );
+  var mesh = new THREE.Line( sphereGeo, sphereMat );
+  mesh.position.z = meshZ;
+  mesh.position.y = meshY;
+  mesh.position.x = meshX;
+  scene.add(mesh);
+  return mesh;
+  //               planetMaterial.shininess = 150;
+
+  //
+  //sphereMat.map = loader.load("https://ssajnani.github.io/webgl/sun2.jpg");
+  // create a multimaterial
+
+}
+
 function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title){
     console.log(title);
     var loader = new THREE.FontLoader();
@@ -102,6 +123,8 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
     });
 
 }
+
+
 function calculateStarRadius(max, min){
     return Math.random() * (max-min) + min;
 }
@@ -123,8 +146,21 @@ function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opaci
   generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4]);
 }
 
+function createOrbits(scene, positions, radius, zDistance, color=0x000000, opacity=1) {
+    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[0][0], positions[0][1], color, opacity);
+    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[1][0], positions[1][1], color, opacity);
+    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[2][0], positions[2][1], color, opacity);
+    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[3][0], positions[3][1], color, opacity);
+    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[4][0], positions[4][1], color, opacity);
+}
 
-
+// var geometry = new THREE.CircleGeometry(1, 128);
+// geometry.vertices.shift();
+// geometry.rotateZ(-Math.PI / 2);
+// var material = new THREE.LineBasicMaterial( { color: 0xCC0000 } );
+// var mesh = new THREE.Line( geometry, material );
+// var orbit = new THREE.Group();
+// orbit.add(mesh);
 
 
 
@@ -134,6 +170,7 @@ var sceneStars = new THREE.Scene();
 var sceneBG = new THREE.Scene();
 var sceneSolarOutline = new THREE.Scene();
 var sceneText = new THREE.Scene();
+var sceneOrbits = new THREE.Scene();
 
 // create a camera, which defines where we're looking at.
 var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
@@ -157,22 +194,28 @@ var textSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
 var hobbyTitles = ['Blog', 'Photography', 'Dance', 'Music', 'Twitter'];
 
 
-createS(sceneConstellations, firstSPos, [0.04, 0.02], -100, 0xffffff);
+createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
+createOrbits(sceneOrbits, firstSPos, [0.4, 0.5], -100, 0xffffff);
+createOrbits(sceneOrbits, firstSPos, [0.6, 0.6], -100, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textFPos, -100, hobbyTitles);
 //createLineTrace(scene, firstSPos, 0.1);
-createS(sceneConstellations, secondSPos, [0.04, 0.02], -100, 0xffffff);
+createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
+createOrbits(sceneOrbits, secondSPos, [0.4, 0.5], -100, 0xffffff);
+createOrbits(sceneOrbits, secondSPos, [0.6, 0.6], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textSPos, -100, workTitles);
+
+sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
 //This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
 
-for ( var i = 0; i < 30000; i ++ ) {
+for ( var i = 0; i < 100000; i ++ ) {
 
     var star = new THREE.Vector3();
-    star.x = THREE.Math.randFloatSpread( 2000 );
-    star.y = THREE.Math.randFloatSpread( 2000 );
+    star.x = THREE.Math.randFloatSpread( 5000 );
+    star.y = THREE.Math.randFloatSpread( 5000 );
     star.z = THREE.Math.randFloat(-350, -450 );
     // starsGeometry.filter(.vertices[0].x);
 
@@ -188,7 +231,6 @@ sceneStars.add( starField );
 
 camera.lookAt(new THREE.Vector3(-100, 0, 0));
 
-var controls = new THREE.OrbitControls(camera);
 
 
 var light = new THREE.PointLight(0xFFFFFF, 0.5, 0);
@@ -231,6 +273,8 @@ function preRender(){
     renderPass3.clear = false;
     var renderPass4 = new THREE.RenderPass(sceneText, camera);
     renderPass4.clear = false;
+    var renderPass5 = new THREE.RenderPass(sceneOrbits, camera);
+    renderPass5.clear = false;
 
 
 
@@ -255,6 +299,7 @@ function preRender(){
     composer.addPass(renderPass2);
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
+    composer.addPass(renderPass5);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
     composer.addPass(clearMask);
@@ -271,6 +316,7 @@ function preRender(){
 var stop = false;
 var frameCount = 0;
 var fps, fpsInterval, startTime, now, then, elapsed;
+
 
 
 
@@ -296,6 +342,7 @@ function animate(time) {
 
 
 document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+document.addEventListener("touch", touchHandler, false);
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -397,7 +444,7 @@ function onDocumentMouseMove( event ) {
                       textFilter[0].visible = true;
                     }
                     var radius = constChildren[j].geometry.parameters.radius;
-                    var scale = radius * 1500;
+                    var scale = radius * 150;
                     constChildren[j].scale.set(scale, scale, scale);
 
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
@@ -427,8 +474,18 @@ lookAtTween.onUpdate(function() {
   camera.lookAt(lookAtPosition);
 });
 
+function touchHandler(event){
+  if(event.touches.length > 1){
+    //the event is multi-touch
+    //you can then prevent the behavior
+    event.preventDefault()
+  }
+}
+
+
 
 function onDocumentMouseClick( event ) {
+
 
   event.preventDefault();
   if (Date.now() - lastMove < 80) { // 32 frames a second
@@ -453,6 +510,7 @@ function onDocumentMouseClick( event ) {
     if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
       for (var j=0; j < constChildren.length; j ++){
         if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
+          document.removeEventListener('mousemove', onDocumentMouseMove);
 
           UUID = constChildren[j].uuid;
           lookAtTween
@@ -471,29 +529,59 @@ function onDocumentMouseClick( event ) {
             // document.getElementById('speedAdjFactor').setAttribute('value', '0.7');
             // document.getElementById('density').setAttribute('value', '100');
             // document.getElementById('starSize').setAttribute('value', '0.7');
-            document.getElementById('holder').style.visibility = 'visible';
+            // keep this outside of the event-handler
+            var prePosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+            var preTween = new TWEEN.Tween(prePosition);
+
+// as lookAt is not a property we can assign to we need to
+// call it every time the tween was updated:
+            preTween.onUpdate(function() {
+              camera.position.x = prePosition.x;
+              camera.position.y = prePosition.y;
+              camera.position.z = prePosition.z + 20;
+              camera.lookAt(constChildren[j].position);
+            });
+
+            var newPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+            newPos.z = newPos.z -100 ;
+            preTween
+              .stop() // just in case it's still animating
+              .to(newPos, 1000) // set destination and duration
+              .start(); // start the tween
+
+
+            $('#holder').css('visibility','visible').hide().fadeIn("slow");
             mouseActive = true;
-            sleep(2000, j).then((j) => {
+            sleep(4000, j).then((j) => {
               mouseActive = false;
-              sleep(1000, j).then((j) => {
+              sleep(2000, j).then((j) => {
 
                 $('#holder').fadeTo("slow", 0);
                 console.log(constChildren[j]);
                 camera.position.x = constChildren[j].position.x;
                 camera.position.y = constChildren[j].position.y;
-                camera.position.z = constChildren[j].position.z + 10;
+                camera.position.z = constChildren[j].position.z + 20;
                 camera.lookAt(constChildren[j].position);
-                var currentPosition = new THREE.Vector3(camera.position);
+                var currentPosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
                 var currentTween = new TWEEN.Tween(currentPosition);
                 currentTween.onUpdate(function() {
                   camera.position.z = currentPosition.z;
                 });
                 var newPosition = new THREE.Vector3(camera.position);
-                newPosition.z = newPosition.z -98 ;
+                newPosition.z = newPosition.z -92 ;
                 currentTween
                   .stop() // just in case it's still animating
                   .to(newPosition, 1000) // set destination and duration
                   .start(); // start the tween
+                console.log("ChildOut:" + constChildren[j].position.x + ", " + constChildren[j].position.y + ", " + constChildren[j].position.z );
+                sceneOrbits.visible = true;
+                sceneOrbits.traverse( function ( object ) {
+                  if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
+                    console.log(object);
+                    object.visible = true;
+                  }
+                });
+
               });
 
             });
