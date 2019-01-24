@@ -279,7 +279,6 @@ function preRender(){
     renderPass4.clear = false;
     var renderPass5 = new THREE.RenderPass(sceneOrbits, camera);
     renderPass5.clear = false;
-  composer.autoClear = false;
 
 
 
@@ -299,10 +298,10 @@ function preRender(){
 
 
     composer.setSize(nearestPow2( window.innerWidth ), window.innerHeight);
-    composer.addPass(renderPass);
+    // composer.addPass(renderPass);
     composer.addPass(renderPass2);
     composer.addPass(renderPass3);
-    // composer.addPass(renderPass4);
+    composer.addPass(renderPass4);
     composer.addPass(renderPass5);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
