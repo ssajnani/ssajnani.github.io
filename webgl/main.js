@@ -302,7 +302,7 @@ function preRender(){
     composer.addPass(renderPass);
     composer.addPass(renderPass2);
     composer.addPass(renderPass3);
-    composer.addPass(renderPass4);
+    // composer.addPass(renderPass4);
     composer.addPass(renderPass5);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
