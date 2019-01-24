@@ -1,5 +1,5 @@
 
-var WIDTH = nearestPow2( window.innerWidth ),
+var WIDTH = window.innerWidth ,
     HEIGHT = window.innerHeight;
 var bloomStrength = 1.5;
 var bloomRadius = 0;
@@ -248,7 +248,7 @@ sceneSolarOutline.add(light);
 var materialColor = new THREE.MeshBasicMaterial({ depthTest: false, color: 0xFFFFFF});
 var bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), materialColor);
 bgPlane.position.z = -2000;
-bgPlane.scale.set(nearestPow2( window.innerWidth ), window.innerHeight, 1);
+bgPlane.scale.set( window.innerWidth , window.innerHeight, 1);
 sceneBG.add(bgPlane);
 
 // add the output of the renderer to the html element
@@ -286,19 +286,19 @@ function preRender(){
     var clearMask = new THREE.ClearMaskPass();
 
     var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
-    effectFXAA.uniforms['resolution'].value.set(1 / nearestPow2( window.innerWidth ), 1 / window.innerHeight );
+    effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth , 1 / window.innerHeight );
     var copyShader = new THREE.ShaderPass(THREE.CopyShader);
     copyShader.renderToScreen = true;
 
 
-    var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(nearestPow2( window.innerWidth ), window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
+    var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth , window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
 
     composer.renderTarget1.stencilBuffer = true;
     composer.renderTarget2.stencilBuffer = true;
 
 
-    composer.setSize(nearestPow2( window.innerWidth ), window.innerHeight);
-    // composer.addPass(renderPass);
+    composer.setSize( window.innerWidth , window.innerHeight);
+    composer.addPass(renderPass);
     composer.addPass(renderPass2);
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
@@ -363,7 +363,7 @@ var mouse = new THREE.Vector2();
 function onDocumentMouseDown( event ) {
 
     event.preventDefault();
-    mouse.x = ( event.clientX / nearestPow2( window.innerWidth ) ) * 2 - 1;
+    mouse.x = ( event.clientX /  window.innerWidth  ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
     // update the picking ray with the camera and mouse position
@@ -391,9 +391,8 @@ function dynamicallyResize(){
     var constChildren = sceneConstellations.children;
     var const2 = sceneStars.children;
     console.log(window);
-    if (nearestPow2( window.innerWidth ) <= window.innerHeight || (nearestPow2( window.innerWidth ) < 700 || window.innerHeight < 500)){
-        canvas.setAttribute( 'width', canvasWidth );
-        canvas.setAttribute( 'height', canvasHeight );
+    if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
+        composer.setSize(window.innerWidth/2, window.innerHeight);
         camera.position.x = -20;
         camera.position.y = 0;
         camera.position.z = 0;
@@ -409,6 +408,7 @@ function dynamicallyResize(){
             }
         }
     } else {
+        composer.setSize(window.innerWidth, window.innerHeight);
         camera.position.x = 0;
         camera.position.y = 0;
         camera.position.z = 0;
@@ -435,7 +435,7 @@ function onDocumentMouseMove( event ) {
     } else {
         lastMove = Date.now();
     }
-    mouse.x = ( event.clientX / nearestPow2( window.innerWidth ) ) * 2 - 1;
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
     // update the picking ray with the camera and mouse position
@@ -509,7 +509,7 @@ function onDocumentMouseClick( event ) {
   } else {
     lastMove = Date.now();
   }
-  mouse.x = ( event.clientX / nearestPow2( window.innerWidth ) ) * 2 - 1;
+  mouse.x = ( event.clientX / window.innerWidth  ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
   // update the picking ray with the camera and mouse position
@@ -612,12 +612,12 @@ window.addEventListener( 'resize', onWindowResize, false );
 
 function onWindowResize(){
 
-    camera.aspect = nearestPow2( window.innerWidth )/ window.innerHeight;
+    camera.aspect =  window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     dynamicallyResize();
 
-    webGLRenderer.setSize(nearestPow2( window.innerWidth ), window.innerHeight);
-    composer.setSize(nearestPow2( window.innerWidth ), window.innerHeight);
+    webGLRenderer.setSize(window.innerWidth , window.innerHeight);
+    composer.setSize( window.innerWidth , window.innerHeight);
     var constChildren = sceneConstellations.children;
     var textChildren = sceneText.children;
     for (var j=0; j < constChildren.length; j ++){

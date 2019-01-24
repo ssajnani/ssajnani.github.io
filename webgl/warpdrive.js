@@ -1,11 +1,8 @@
-function nearestPow2( aSize ){
-  return Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
-}
 
 
 //---
 
-var canvasWidth = nearestPow2( window.innerWidth );
+var canvasWidth = window.innerWidth ;
 var canvasHeight = window.innerHeight;
 
 //---
