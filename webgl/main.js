@@ -340,7 +340,6 @@ function animate(time) {
           composer.reset();
           composer.render();
           TWEEN.update(time);
-          render();
 
 
           delta = delta % interval;
@@ -391,7 +390,10 @@ var UUID = "";
 function dynamicallyResize(){
     var constChildren = sceneConstellations.children;
     var const2 = sceneStars.children;
+    console.log(window);
     if (window.innerWidth <= window.innerHeight || (window.innerWidth < 700 || window.innerHeight < 500)){
+        canvas.setAttribute( 'width', canvasWidth );
+        canvas.setAttribute( 'height', canvasHeight );
         camera.position.x = -20;
         camera.position.y = 0;
         camera.position.z = 0;

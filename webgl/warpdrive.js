@@ -223,12 +223,12 @@ window.requestAnimFrame = ( function() {
 
 } )();
 
-// function animloop() {
-//
-//   requestAnimFrame( animloop );
-//   render();
-//
-// };
+function animloop() {
+
+  requestAnimFrame( animloop );
+  render();
+
+};
 
 function render() {
 
@@ -503,4 +503,4 @@ function getTouchPos( canvas, event ) {
 //---
 
 addParticles();
-// animloop();
+animloop();
