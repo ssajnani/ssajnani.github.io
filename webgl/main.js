@@ -253,9 +253,12 @@ sceneBG.add(bgPlane);
 // add the output of the renderer to the html element
 document.getElementById('container').append(webGLRenderer.domElement);
 dynamicallyResize();
+let delta = 0;
+// 30 fps
+let interval = 1 / 30;
 
 var composer = preRender();
-requestAnimationFrame(animate);
+animate();
 
 
 
@@ -275,12 +278,11 @@ function preRender(){
     renderPass4.clear = false;
     var renderPass5 = new THREE.RenderPass(sceneOrbits, camera);
     renderPass5.clear = false;
+  composer.autoClear = false;
 
 
 
     var starMask = new THREE.MaskPass(sceneConstellations, camera);
-    var clearMask = new THREE.ClearMaskPass();
-    var textMask = new THREE.MaskPass(sceneText, camera);
     var clearMask = new THREE.ClearMaskPass();
 
     var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
@@ -293,6 +295,7 @@ function preRender(){
 
     composer.renderTarget1.stencilBuffer = true;
     composer.renderTarget2.stencilBuffer = true;
+
 
     composer.setSize(window.innerWidth, window.innerHeight);
     composer.addPass(renderPass);
@@ -329,10 +332,21 @@ function animate(time) {
         // render using requestAnimationFrame
         //            webGLRenderer.render(scene, camera);\
 
-        composer.reset();
-        composer.render();
+
         requestAnimationFrame(animate);
-        TWEEN.update(time);
+        delta += clock.getDelta();
+        if (delta  > interval) {
+          // The draw or time dependent code are here
+          composer.reset();
+          composer.render();
+          TWEEN.update(time);
+          render();
+
+
+          delta = delta % interval;
+        }
+
+
 
 
 
@@ -414,7 +428,7 @@ function dynamicallyResize(){
 function onDocumentMouseMove( event ) {
 
     event.preventDefault();
-    if (Date.now() - lastMove < 80) { // 32 frames a secon
+    if (Date.now() - lastMove < 120) { // 32 frames a secon
         return;
     } else {
         lastMove = Date.now();
@@ -552,9 +566,9 @@ function onDocumentMouseClick( event ) {
 
             $('#holder').css('visibility','visible').hide().fadeIn("slow");
             mouseActive = true;
-            sleep(4000, j).then((j) => {
+            sleep(2000, j).then((j) => {
               mouseActive = false;
-              sleep(2000, j).then((j) => {
+              sleep(1000, j).then((j) => {
 
                 $('#holder').fadeTo("slow", 0);
                 console.log(constChildren[j]);

@@ -51,7 +51,7 @@ var fov = 300;
 var fovMin = 210;
 var fovMax = fov;
 
-var starHolderCount = 6666;
+var starHolderCount = 666;
 var starHolder = [];
 var starBgHolder = [];
 var starSpeed = 0;
@@ -223,12 +223,12 @@ window.requestAnimFrame = ( function() {
 
 } )();
 
-function animloop() {
-
-  requestAnimFrame( animloop );
-  render();
-
-};
+// function animloop() {
+//
+//   requestAnimFrame( animloop );
+//   render();
+//
+// };
 
 function render() {
 
@@ -503,4 +503,4 @@ function getTouchPos( canvas, event ) {
 //---
 
 addParticles();
-animloop();
+// animloop();
