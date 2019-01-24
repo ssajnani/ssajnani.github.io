@@ -244,7 +244,6 @@ light2.position.x = 0;
 light2.position.y = 0;
 sceneConstellations.add(light2);
 sceneSolarOutline.add(light);
-console.log(gl.getParameter(gl.MAX_TEXTURE_SIZE));
 
 var materialColor = new THREE.MeshBasicMaterial({ depthTest: false, color: 0xFFFFFF});
 var bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), materialColor);
