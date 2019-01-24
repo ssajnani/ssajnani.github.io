@@ -253,12 +253,13 @@ sceneBG.add(bgPlane);
 
 // add the output of the renderer to the html element
 document.getElementById('container').append(webGLRenderer.domElement);
-dynamicallyResize();
+
 let delta = 0;
 // 30 fps
 let interval = 1 / 30;
 
 var composer = preRender();
+dynamicallyResize();
 animate();
 
 
