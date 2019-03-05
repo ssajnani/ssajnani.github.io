@@ -16,7 +16,7 @@ var angle = 45,
     near = 0.1,
     far = 3000;
 
-// document.getElementById('holder').style.visibility = 'hidden';
+document.getElementById('holder').style.visibility = 'hidden';
 
 
 var sphereMats = [];
@@ -594,10 +594,12 @@ function adjustCameraAndInitiateWarp(constChildren, position){
       .to(newPos, 1000) // set destination and duration
       .start(); // start the tween
 
-
-    $('#holder').css('visibility','visible').hide().fadeIn("slow");
-    mouseActive = true;
-    deactivateWarp(constChildren, position);
+      sleep(500, position).then((j) => {
+        $('#holder').css('visibility','visible').hide().fadeIn("slow");
+        mouseActive = true;
+        deactivateWarp(constChildren, position);
+      })
+    
   });
 }
 
