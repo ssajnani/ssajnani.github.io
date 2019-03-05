@@ -1,4 +1,8 @@
-
+var isMobile = false; //initiate as false
+if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
+  || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) {
+  isMobile = true;
+}
 var WIDTH = window.innerWidth ,
     HEIGHT = window.innerHeight;
 var bloomStrength = 1.5;
@@ -12,7 +16,7 @@ var angle = 45,
     near = 0.1,
     far = 3000;
 
-document.getElementById('holder').style.visibility = 'hidden';
+// document.getElementById('holder').style.visibility = 'hidden';
 
 
 var sphereMats = [];
@@ -81,8 +85,10 @@ function generateOrbit(scene, rotation, radius, widthSegment=40, heightSegment=4
   var sphereMat;
   var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
   sphereGeo.vertices.shift();
-  sphereGeo.rotateZ(-Math.PI / 2);
-  sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF } );
+  sphereGeo.rotateZ(THREE.Math.randFloatSpread(-Math.PI));
+  sphereGeo.rotateX(THREE.Math.randFloatSpread(-Math.PI));
+  sphereGeo.rotateY(THREE.Math.randFloatSpread(-Math.PI));
+  sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   var mesh = new THREE.Line( sphereGeo, sphereMat );
   mesh.position.z = meshZ;
   mesh.position.y = meshY;
@@ -176,7 +182,7 @@ var sceneOrbits = new THREE.Scene();
 // create a camera, which defines where we're looking at.
 var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 camera.position.x = 0;
-camera.position.y = 0;
+camera.position.y = 1000;
 camera.position.z = 0;
 
 // create a render and set the size
@@ -197,13 +203,19 @@ var hobbyTitles = ['Blog', 'Photography', 'Dance', 'Music', 'Twitter'];
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createOrbits(sceneOrbits, firstSPos, [0.4, 0.5], -100, 0xffffff);
-createOrbits(sceneOrbits, firstSPos, [0.6, 0.6], -100, 0xffffff);
+createOrbits(sceneOrbits, firstSPos, [0.8, 0.8], -100, 0xffffff);
+createOrbits(sceneOrbits, firstSPos, [1.2, 1.2], -100, 0xffffff);
+createOrbits(sceneOrbits, firstSPos, [2, 2], -100, 0xffffff);
+createOrbits(sceneOrbits, firstSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textFPos, -100, hobbyTitles);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
 createOrbits(sceneOrbits, secondSPos, [0.4, 0.5], -100, 0xffffff);
-createOrbits(sceneOrbits, secondSPos, [0.6, 0.6], -100, 0xffffff);
+createOrbits(sceneOrbits, secondSPos, [0.8, 0.8], -100, 0xffffff);
+createOrbits(sceneOrbits, secondSPos, [1.2, 1.2], -100, 0xffffff);
+createOrbits(sceneOrbits, secondSPos, [2, 2], -100, 0xffffff);
+createOrbits(sceneOrbits, secondSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textSPos, -100, workTitles);
 
@@ -230,7 +242,7 @@ var starField = new THREE.Points( starsGeometry, starsMaterial );
 sceneStars.add( starField );
 
 
-camera.lookAt(new THREE.Vector3(-100, 0, 0));
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
 
@@ -330,6 +342,7 @@ function animate(time) {
           sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
         }
 
+
         // render using requestAnimationFrame
         //            webGLRenderer.render(scene, camera);\
 
@@ -385,6 +398,16 @@ function onDocumentMouseDown( event ) {
 var lastMove = Date.now();
 document.addEventListener( 'mousemove', onDocumentMouseMove);
 document.addEventListener( 'click', onDocumentMouseClick);
+
+// Execute a function when the user releases a key on the keyboard
+document.addEventListener("keyup", function(event) {
+  // Cancel the default action, if needed
+  event.preventDefault();
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 8 || event.keyCode === 46 ){
+
+  }
+});
 
 var UUID = "";
 
@@ -481,8 +504,11 @@ function onDocumentMouseMove( event ) {
 const sleep = (milliseconds, j) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds, j))
 };
-// keep this outside of the event-handler
+//keep this outside of the event-handler
 var lookAtPosition = new THREE.Vector3(0, 0, -100);
+if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)) {
+  lookAtPosition.x = -20
+}
 var lookAtTween = new TWEEN.Tween(lookAtPosition);
 
 // as lookAt is not a property we can assign to we need to
@@ -498,7 +524,6 @@ function touchHandler(event){
     event.preventDefault()
   }
 }
-
 
 
 function onDocumentMouseClick( event ) {
@@ -540,73 +565,75 @@ function onDocumentMouseClick( event ) {
           }
           constChildren[j].scale.set(1, 1, 1);
           sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
-          sleep(1500,j).then((j)=> {
-            // document.getElementsByClassName('fixedContainer')[0].style.visibility = 'visible';
-            // document.getElementsByClassName('fixedContainer')[1].style.visibility = 'visible';
-            // document.getElementById('speedAdjFactor').setAttribute('value', '0.7');
-            // document.getElementById('density').setAttribute('value', '100');
-            // document.getElementById('starSize').setAttribute('value', '0.7');
-            // keep this outside of the event-handler
-            var prePosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-            var preTween = new TWEEN.Tween(prePosition);
-
-// as lookAt is not a property we can assign to we need to
-// call it every time the tween was updated:
-            preTween.onUpdate(function() {
-              camera.position.x = prePosition.x;
-              camera.position.y = prePosition.y;
-              camera.position.z = prePosition.z + 20;
-              camera.lookAt(constChildren[j].position);
-            });
-
-            var newPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-            newPos.z = newPos.z -100 ;
-            preTween
-              .stop() // just in case it's still animating
-              .to(newPos, 1000) // set destination and duration
-              .start(); // start the tween
-
-
-            $('#holder').css('visibility','visible').hide().fadeIn("slow");
-            mouseActive = true;
-            sleep(2000, j).then((j) => {
-              mouseActive = false;
-              sleep(1000, j).then((j) => {
-
-                $('#holder').fadeTo("slow", 0);
-                console.log(constChildren[j]);
-                camera.position.x = constChildren[j].position.x;
-                camera.position.y = constChildren[j].position.y;
-                camera.position.z = constChildren[j].position.z + 20;
-                camera.lookAt(constChildren[j].position);
-                var currentPosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-                var currentTween = new TWEEN.Tween(currentPosition);
-                currentTween.onUpdate(function() {
-                  camera.position.z = currentPosition.z;
-                });
-                var newPosition = new THREE.Vector3(camera.position);
-                newPosition.z = newPosition.z -92 ;
-                currentTween
-                  .stop() // just in case it's still animating
-                  .to(newPosition, 1000) // set destination and duration
-                  .start(); // start the tween
-                console.log("ChildOut:" + constChildren[j].position.x + ", " + constChildren[j].position.y + ", " + constChildren[j].position.z );
-                sceneOrbits.visible = true;
-                sceneOrbits.traverse( function ( object ) {
-                  if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
-                    console.log(object);
-                    object.visible = true;
-                  }
-                });
-
-              });
-
-            });
-          });
+          adjustCameraAndInitiateWarp(constChildren, j)
         }
       }
     }
   }
+}
+
+function adjustCameraAndInitiateWarp(constChildren, position){
+  sleep(1500, position).then((j)=> {
+    // keep this outside of the event-handler
+    var prePosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+    var preTween = new TWEEN.Tween(prePosition);
+
+// as lookAt is not a property we can assign to we need to
+// call it every time the tween was updated:
+    preTween.onUpdate(function() {
+      camera.position.x = prePosition.x;
+      camera.position.y = prePosition.y;
+      camera.position.z = prePosition.z + 20;
+      camera.lookAt(constChildren[j].position);
+    });
+
+    var newPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+    newPos.z = newPos.z -100 ;
+    preTween
+      .stop() // just in case it's still animating
+      .to(newPos, 1000) // set destination and duration
+      .start(); // start the tween
+
+
+    $('#holder').css('visibility','visible').hide().fadeIn("slow");
+    mouseActive = true;
+    deactivateWarp(constChildren, position);
+  });
+}
+
+function deactivateWarp(constChildren,position){
+  sleep(2000).then((j) => {
+    mouseActive = false;
+    zoomToStar(constChildren, position);
+  });
+}
+
+function zoomToStar(constChildren, position){
+  sleep(1000, position).then((j) => {
+    $('#holder').fadeTo("slow", 0);
+    camera.position.x = constChildren[j].position.x;
+    camera.position.y = constChildren[j].position.y;
+    camera.position.z = constChildren[j].position.z + 20;
+    camera.lookAt(constChildren[j].position);
+    var currentPosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+    var currentTween = new TWEEN.Tween(currentPosition);
+    currentTween.onUpdate(function() {
+      camera.position.z = currentPosition.z;
+    });
+    var newPosition = new THREE.Vector3(camera.position);
+    newPosition.z = newPosition.z -92 ;
+    currentTween
+      .stop() // just in case it's still animating
+      .to(newPosition, 1000) // set destination and duration
+      .start(); // start the tween
+    sceneOrbits.visible = true;
+    sceneOrbits.traverse( function ( object ) {
+      if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
+        object.visible = true;
+      }
+    });
+
+  });
 }
 
 window.addEventListener( 'resize', onWindowResize, false );
