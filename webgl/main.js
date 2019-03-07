@@ -16,7 +16,7 @@ var angle = 45,
     near = 0.1,
     far = 3000;
 
-document.getElementById('holder').style.visibility = 'hidden';
+document.getElementById('holder').style.display = 'none';
 
 
 var sphereMats = [];
