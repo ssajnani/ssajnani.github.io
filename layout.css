@@ -17,7 +17,7 @@ body {
     height: 30%;
     padding: 3px;
     position: relative;
-    top:25%;
+    top:20%;
     margin: auto;
     text-align: center;
     font-size: 4vmax;
@@ -31,17 +31,18 @@ body {
     height: 30%;
     padding: 3px;
     position: relative;
-    top:25%;
+    top:20%;
     margin: auto;
     -webkit-text-stroke-width: 0.1vw;
    	-webkit-text-stroke-color: black;
     text-align: center;
-    font-size: 1.2vw;
+    font-size: 1.5vmax;
     font-weight: bold;
-    color: #063F3C;
+    color: #8b4513;
 }
 .side, .side2, .mid, .mid2, .right, .right2 {
     width: 16%;
+    display: table;
     height: 15%;
     border: 4px solid #A7827C;
     margin: 10px;
@@ -97,12 +98,10 @@ a:link{
     font-size: 30px;
     text-align: center;
 }
-.projects {
-    width: 600px;
-    height: 600px;
-    border: 3px solid #000;
-    border: 3px solid #FFF;
-    margin: 10px;
+.mainBox {
+    width: 80%;
+    height: 75%;
+    margin: auto;
     position: relative;
     top: 50px;
     left: 10px;
@@ -139,11 +138,12 @@ a:link{
 }
 
 .item h2.new-label span{
-  position: relative;
+  position: absolute;
 }
 
-.new-label {
-   	vertical-align: middle;
+h2.new-label {
+  display: table-cell;
+  vertical-align: middle;
 }
 
 /* Set all parents to full height */
