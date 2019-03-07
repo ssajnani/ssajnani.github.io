@@ -138,7 +138,9 @@ a:link{
     text-align: center;
 }
 
-
+.item h1.new-label span{
+  position: relative;
+}
 
 /* Set all parents to full height */
 html, body, 
