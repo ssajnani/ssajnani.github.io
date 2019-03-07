@@ -138,8 +138,12 @@ a:link{
     text-align: center;
 }
 
-.item h1.new-label span{
+.item h2.new-label span{
   position: relative;
+}
+
+.new-label {
+   	vertical-align: middle;
 }
 
 /* Set all parents to full height */
