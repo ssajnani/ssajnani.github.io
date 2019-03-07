@@ -20,7 +20,7 @@ body {
     top:25%;
     margin: auto;
     text-align: center;
-    font-size: 4vw;
+    font-size: 4vmax;
     font-family: Georgia, serif;
     color: #0cc9c9;
     -webkit-text-stroke-width: 2px;
@@ -31,7 +31,7 @@ body {
     height: 30%;
     padding: 3px;
     position: relative;
-    top:20%;
+    top:25%;
     margin: auto;
     -webkit-text-stroke-width: 0.1vw;
    	-webkit-text-stroke-color: black;
