@@ -24,7 +24,7 @@ body {
     font-family: Georgia, serif;
     color: black;
     -webkit-text-stroke-width: 2px;
-   	-webkit-text-stroke-color: #8b4513;
+   	-webkit-text-stroke-color: black;
 }
 .education{
     width: 80%;
@@ -38,7 +38,7 @@ body {
     text-align: center;
     font-size: 1.5vmax;
     font-weight: bold;
-    color: #8b4513;
+    color: black;
 }
 .side, .side2, .mid, .mid2, .right, .right2 {
     width: 18%;
