@@ -179,8 +179,7 @@ function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opaci
   generateEndOfNames(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, 'ajnani');
   generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2]);
   generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3]);
-  generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4]);
-  generate
+  generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4])
 }
 
 function createOrbits(scene, positions, radius, zDistance, color=0x000000, opacity=1) {
