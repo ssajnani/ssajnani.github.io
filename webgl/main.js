@@ -131,6 +131,33 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
 
 }
 
+function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title){
+  console.log(title);
+  var loader = new THREE.FontLoader();
+  loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/sigreg.json', function ( font ) {
+
+    var options = {
+      size: 2,
+      weight: 'normal',
+      font: font,
+      style: 'normal',
+      height: 0,
+      curveSegments: 30
+    };
+
+    // the createMesh is the same function we saw earlier
+    var text1 = new THREE.Mesh(new THREE.TextGeometry(title, options), new THREE.MeshBasicMaterial({
+      color: color,
+    }));
+    text1.position.z = meshZ;
+    text1.position.y = meshY;
+    text1.position.x = meshX;
+    text1.rotation = rotation;
+    scene.add(text1);
+  });
+
+}
+
 
 function calculateStarRadius(max, min){
     return Math.random() * (max-min) + min;
@@ -147,10 +174,13 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opacity=1){
     console.log(titles[0]);
   generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0]);
+  generateEndOfNames(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, 'amar');
   generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+7, color, opacity, titles[1]);
+  generateEndOfNames(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, 'ajnani');
   generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2]);
   generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3]);
   generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4]);
+  generate
 }
 
 function createOrbits(scene, positions, radius, zDistance, color=0x000000, opacity=1) {
