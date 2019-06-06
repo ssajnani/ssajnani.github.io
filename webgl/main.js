@@ -246,8 +246,8 @@ createOrbits(sceneOrbits, secondSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textSPos, -100, workTitles);
 //scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title
-generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+10, 0xA9A9A9, 1, 'ajnani');
-generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+10, 0xA9A9A9, 1, 'amar');
+generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani');
+generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar');
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
