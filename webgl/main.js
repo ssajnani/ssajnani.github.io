@@ -222,10 +222,10 @@ webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
 var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
-var workTitles = ['Projects', 'Education', 'Resume', 'Youtube', 'Research'];
+var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Resume'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
-var hobbyTitles = ['Blog', 'Photography', 'Dance', 'Music', 'Twitter'];
+var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
@@ -510,8 +510,8 @@ function onDocumentMouseMove( event ) {
                     UUID = constChildren[j].uuid;
                     var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                     if (textFilter !== undefined && textFilter.length != 0) {
-
-                      textFilter[0].visible = true;
+                      textFilter[0].visible = false
+                      textFilter[1].visible = true;
                     }
                     var radius = constChildren[j].geometry.parameters.radius;
                     var scale = radius * 150;
@@ -522,7 +522,8 @@ function onDocumentMouseMove( event ) {
                     UUID = "";
                     var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                     if (textFilter !== undefined && textFilter.length != 0) {
-                      textFilter[0].visible = false;
+                      textFilter[0].visible = true;
+                      textFilter[1].visible = false;
                     }
                     constChildren[j].scale.set(1, 1, 1);
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
