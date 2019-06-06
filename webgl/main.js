@@ -137,7 +137,7 @@ function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, op
   loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/sigreg.json', function ( font ) {
 
     var options = {
-      size: 5,
+      size: 6,
       weight: 'normal',
       font: font,
       style: 'normal',
@@ -220,11 +220,11 @@ webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
-var firstSPos = [[20, 22], [10, 10], [0,20], [-10,30], [-20,15]];
-var textFPos = [[20, 25], [10,10], [0,20], [-10,30], [-20,15]];
+var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
+var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
 var workTitles = ['Projects', 'Education', 'Resume', 'Youtube', 'Research'];
-var secondSPos = [[20,-25], [10, -40], [0,-30], [-10,-20], [-20,-35]];
-var textSPos = [[20,-25], [10, -40], [0,-30], [-10,-20], [-20,-35]];
+var secondSPos = [[20,-35], [10, -50], [0,-40], [-10,-30], [-20,-45]];
+var textSPos = [[20,-35], [10, -50], [0,-40], [-10,-30], [-20,-45]];
 var hobbyTitles = ['Blog', 'Photography', 'Dance', 'Music', 'Twitter'];
 
 
