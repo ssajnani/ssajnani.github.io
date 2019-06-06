@@ -223,8 +223,8 @@ webGLRenderer.toneMapping = THREE.LinearToneMapping;
 var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
 var workTitles = ['Projects', 'Education', 'Resume', 'Youtube', 'Research'];
-var secondSPos = [[20,-35], [10, -50], [0,-40], [-10,-30], [-20,-45]];
-var textSPos = [[20,-35], [10, -50], [0,-40], [-10,-30], [-20,-45]];
+var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
+var textSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Blog', 'Photography', 'Dance', 'Music', 'Twitter'];
 
 
