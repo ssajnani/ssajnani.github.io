@@ -220,8 +220,8 @@ webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
-var firstSPos = [[20, 22], [10, 10], [0,20], [-10,30], [-20,15]];
-var textFPos = [[20, 25], [10, 10], [0,20], [-10,30], [-20,15]];
+var firstSPos = [[20, 32], [10, 20], [0,30], [-10,40], [-20,25]];
+var textFPos = [[20, 35], [10, 20], [0,30], [-10,40], [-20,25]];
 var workTitles = ['Projects', 'Education', 'Resume', 'Youtube', 'Research'];
 var secondSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
 var textSPos = [[20,-15], [10, -30], [0,-20], [-10,-10], [-20,-25]];
@@ -246,8 +246,8 @@ createOrbits(sceneOrbits, secondSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textSPos, -100, workTitles);
 //scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title
-generateEndOfNames(sceneText, 5, -100, textFPos[0][0], textFPos[0][1]-30, 0xA9A9A9, 1, 'amar');
-generateEndOfNames(sceneText, 5, -100, textSPos[0][0], textSPos[0][1]-30, 0xA9A9A9, 1, 'ajnani');
+generateEndOfNames(sceneText, 5, -100, textFPos[0][0], textFPos[0][1]+5, 0xA9A9A9, 1, 'amar');
+generateEndOfNames(sceneText, 5, -100, textSPos[0][0], textSPos[0][1]+5, 0xA9A9A9, 1, 'ajnani');
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
