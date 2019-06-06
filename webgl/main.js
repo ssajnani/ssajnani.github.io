@@ -137,7 +137,7 @@ function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, op
   loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/sigreg.json', function ( font ) {
 
     var options = {
-      size: 2,
+      size: 8,
       weight: 'normal',
       font: font,
       style: 'normal',
@@ -174,9 +174,7 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opacity=1){
     console.log(titles[0]);
   generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0]);
-  generateEndOfNames(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, 'amar');
   generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+7, color, opacity, titles[1]);
-  generateEndOfNames(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, 'ajnani');
   generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2]);
   generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3]);
   generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4])
@@ -247,6 +245,8 @@ createOrbits(sceneOrbits, secondSPos, [2, 2], -100, 0xffffff);
 createOrbits(sceneOrbits, secondSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textSPos, -100, workTitles);
+generateEndOfNames(sceneText, 5, zDistance, textFPos[0][0], textFPos[0][1]-30, 0xA9A9A9, 1, 'amar');
+generateEndOfNames(sceneText, 5, zDistance, textSPos[0][0], textSPos[0][1]-30, 0xA9A9A9, 1, 'ajnani');
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
