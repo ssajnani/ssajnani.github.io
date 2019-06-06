@@ -137,7 +137,7 @@ function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, op
   loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/sigreg.json', function ( font ) {
 
     var options = {
-      size: 8,
+      size: 5,
       weight: 'normal',
       font: font,
       style: 'normal',
