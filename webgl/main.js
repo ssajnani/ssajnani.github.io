@@ -224,7 +224,7 @@ var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
 var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Resume'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
-var textSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
+var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
 
@@ -508,10 +508,14 @@ function onDocumentMouseMove( event ) {
                 if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
 
                     UUID = constChildren[j].uuid;
-                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 9 && child.position.y === constChildren[j].position.y);
+                    var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
+
                     if (textFilter !== undefined && textFilter.length != 0) {
-                      textFilter[0].visible = false
-                      textFilter[1].visible = true;
+                      textFilter[0].visible = true;
+                    }
+                    if (endFilter !== undefined && endFilter.length != 0) {
+                      endFilter[0].visible = false;
                     }
                     var radius = constChildren[j].geometry.parameters.radius;
                     var scale = radius * 150;
@@ -520,10 +524,13 @@ function onDocumentMouseMove( event ) {
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 } else {
                     UUID = "";
-                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 9 && child.position.y === constChildren[j].position.y);
+                    var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (textFilter !== undefined && textFilter.length != 0) {
-                      textFilter[0].visible = true;
-                      textFilter[1].visible = false;
+                      textFilter[0].visible = false;
+                    }
+                    if (endFilter !== undefined && endFilter.length != 0) {
+                      endFilter[0].visible = true;
                     }
                     constChildren[j].scale.set(1, 1, 1);
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
