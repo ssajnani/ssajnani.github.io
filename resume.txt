@@ -1,0 +1,43 @@
+Samar Sajnani  Phone: (226) 700-6041 • Email: samar.sajnani@live.com • Website: ssajnani.github.io • GitHub: ssajnani  
+Experience   
+IBM Watson Data Platform Private Cloud Intern                                                               
+May. 2017 – Aug.2018  
+• Approximately 1300+ contributions on IBM’s enterprise GitHub  
+• Won an award for DSX poster presentation and a CrushIT award for the ICP4D Installer 
+• Lead developer in the ICP4D installer, a new product that made $12 million in 6 months 
+• Led the effort to create JDBC and HDFS functions used to obtain dataframes in Python, R, and Scala 
+• Optimized CI/CD time by 50%+: created an automated framework for provisioning, installing and testing ///
+Computer Science Teaching Assistant (First-Year Web Development Course)           
+Jan. – Apr. 2019 
+• Motivated students by providing topical links to new technologies and their uses in computer science 
+• Responsible for marking approximately 50 students assignments and providing feedback 
+Research
+Empirical Study of a Policy and POJO-based Reconfiguration System for the Cloud      
+Sept. 2018 – Apr. 2019  
+• Utilized the Kubernetes Java API as a metamodel to generate a POJO-based model of the cluster 
+• Modified the Kubernetes source code to implement custom policies that can trigger reconfiguration actions ///
+Optimization of a Fluorescence-Based Cancer Biosensor (Biochemistry Thesis)                   
+May. – Aug. 2014  
+• Dr. David Litchfield, the chair of the Biochemistry Department, directed the research project 
+• Majority of the work was cloning, protein extraction, and fluorescence microscopy    
+Skills    
+Cloud Computing: Knowledge of the inner workings of Kubernetes, Docker, Ansible and GlusterFS 
+Linux: In-depth analysis of repositories, research on disk usage, logging, scripting, and creating installer executables 
+Application Development: Many of my projects are web, desktop or mobile applications using JavaScript 
+Innovation: 3D Hologram Snake – Created a game using the peppers’ ghost illusion (Harvard University) 
+Projects   
+FaStack Mobile and Desktop Application                                                                                
+Mar. 2018 – Present  
+• Daily stack that allows users to context switch and prioritize daily tasks 
+• Using React Native to create the mobile application and Electron for the desktop application ///
+Life Vector Time-Management Mobile Application (Western University)                           
+Nov. 2016 – Present 
+• An application that takes location data and computes vectors based on a persons’ home location 
+Education 
+BSc Honours Specialization in Computer Science - Western University (2019)
+• 2019
+• 3.95/4 GPA ///
+BMSc Honours Specialization in Biochemistry – Western University (3.6 GPA)
+• 2016
+• 3.6/4 GPA
+Advanced Courses - AI II, Internet Algorithmics, Advanced Methods for Biochemistry   
