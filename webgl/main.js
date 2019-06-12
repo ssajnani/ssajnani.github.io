@@ -508,7 +508,7 @@ function onDocumentMouseMove( event ) {
                 if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
 
                     UUID = constChildren[j].uuid;
-                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) < 15 && child.position.y === constChildren[j].position.y);
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                     var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
 
                     if (textFilter !== undefined && textFilter.length != 0) {
@@ -524,7 +524,7 @@ function onDocumentMouseMove( event ) {
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 } else {
                     UUID = "";
-                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) < 15 && child.position.y === constChildren[j].position.y);
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                     var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (textFilter !== undefined && textFilter.length != 0) {
                       textFilter[0].visible = false;
