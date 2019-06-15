@@ -86,7 +86,8 @@ function generateOrbit(scene, planets, rotation, radius, widthSegment=40, height
   var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
   var point = THREE.GeometryUtils.randomPointsInGeometry(sphereGeo, 1);
   var geometry = new THREE.SphereGeometry(0.04, 32, 32);
-  var texture = THREE.ImageUtils.loadTexture('va@2x.png')
+  var texture = THREE.ImageUtils.loadTexture('va@2x.png');
+  texture.offset.y = 1;
   var material = new THREE.MeshBasicMaterial( {map:texture} );
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
