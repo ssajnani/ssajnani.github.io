@@ -87,6 +87,7 @@ function generateOrbit(scene, planets, rotation, radius, widthSegment=40, height
   var point = THREE.GeometryUtils.randomPointsInGeometry(sphereGeo, 1);
   var geometry = new THREE.SphereGeometry(0.04, 32, 32);
   var texture = THREE.ImageUtils.loadTexture('fastack_logo.svg')
+  texture.offset.x = 1;
   var material = new THREE.MeshBasicMaterial( {map:texture} );
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
