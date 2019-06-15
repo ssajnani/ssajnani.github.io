@@ -80,21 +80,32 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
 
 }
 
-function generateOrbit(scene, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
+function generateOrbit(scene, planets, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
   //geometry = new THREE.CubeGeometry(200,200,200);
   var sphereMat;
   var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
+  var point = THREE.GeometryUtils.randomPointsInGeometry(sphereGeo, 1);
+  var geometry = new THREE.SphereGeometry(0.04, 32, 32);
+  var texture = THREE.ImageUtils.loadTexture('fastack_logo.svg')
+  var material = new THREE.MeshBasicMaterial( {map:texture} );
+  sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
   sphereGeo.rotateZ(THREE.Math.randFloatSpread(-Math.PI));
   sphereGeo.rotateX(THREE.Math.randFloatSpread(-Math.PI));
   sphereGeo.rotateY(THREE.Math.randFloatSpread(-Math.PI));
-  sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   var mesh = new THREE.Line( sphereGeo, sphereMat );
   mesh.position.z = meshZ;
   mesh.position.y = meshY;
   mesh.position.x = meshX;
+  mesh.updateMatrixWorld();
+  var positions = mesh.localToWorld(mesh.geometry.vertices[20].clone());
+  var testmesh = new THREE.Mesh( geometry, material );
+  testmesh.position.x = positions.x;
+  testmesh.position.y = positions.y;
+  testmesh.position.z = positions.z;
   scene.add(mesh);
-  return mesh;
+  planets.add( testmesh );
+  return [testmesh, mesh];
   //               planetMaterial.shininess = 150;
 
   //
@@ -180,12 +191,12 @@ function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opaci
   generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4])
 }
 
-function createOrbits(scene, positions, radius, zDistance, color=0x000000, opacity=1) {
-    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[0][0], positions[0][1], color, opacity);
-    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[1][0], positions[1][1], color, opacity);
-    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[2][0], positions[2][1], color, opacity);
-    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[3][0], positions[3][1], color, opacity);
-    generateOrbit(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[4][0], positions[4][1], color, opacity);
+function createOrbits(scene, planets, positions, radius, zDistance, color=0x000000, opacity=1) {
+    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[0][0], positions[0][1], color, opacity);
+    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[1][0], positions[1][1], color, opacity);
+    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[2][0], positions[2][1], color, opacity);
+    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[3][0], positions[3][1], color, opacity);
+    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[4][0], positions[4][1], color, opacity);
 }
 
 // var geometry = new THREE.CircleGeometry(1, 128);
@@ -205,6 +216,7 @@ var sceneBG = new THREE.Scene();
 var sceneSolarOutline = new THREE.Scene();
 var sceneText = new THREE.Scene();
 var sceneOrbits = new THREE.Scene();
+var scenePlanets = new THREE.Scene();
 
 // create a camera, which defines where we're looking at.
 var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
@@ -229,20 +241,20 @@ var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
-createOrbits(sceneOrbits, firstSPos, [0.4, 0.5], -100, 0xffffff);
-createOrbits(sceneOrbits, firstSPos, [0.8, 0.8], -100, 0xffffff);
-createOrbits(sceneOrbits, firstSPos, [1.2, 1.2], -100, 0xffffff);
-createOrbits(sceneOrbits, firstSPos, [2, 2], -100, 0xffffff);
-createOrbits(sceneOrbits, firstSPos, [3, 3], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, firstSPos, [0.6, 0.6], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, firstSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textFPos, -100, hobbyTitles);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
-createOrbits(sceneOrbits, secondSPos, [0.4, 0.5], -100, 0xffffff);
-createOrbits(sceneOrbits, secondSPos, [0.8, 0.8], -100, 0xffffff);
-createOrbits(sceneOrbits, secondSPos, [1.2, 1.2], -100, 0xffffff);
-createOrbits(sceneOrbits, secondSPos, [2, 2], -100, 0xffffff);
-createOrbits(sceneOrbits, secondSPos, [3, 3], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, secondSPos, [0.6, 0.6], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.2, 1.2], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.8, 1.8], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, secondSPos, [2.4, 2.4], -100, 0xffffff);
+createOrbits(sceneOrbits, scenePlanets, secondSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textSPos, -100, workTitles);
 //scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title
@@ -322,6 +334,8 @@ function preRender(){
     renderPass4.clear = false;
     var renderPass5 = new THREE.RenderPass(sceneOrbits, camera);
     renderPass5.clear = false;
+    var renderPass6 = new THREE.RenderPass(scenePlanets, camera);
+    renderPass6.clear = false;
 
 
 
@@ -346,6 +360,7 @@ function preRender(){
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
+    composer.addPass(renderPass6);
     composer.addPass(starMask);
     composer.addPass(effectFXAA);
     composer.addPass(clearMask);
@@ -440,6 +455,7 @@ document.addEventListener("keyup", function(event) {
 });
 
 var UUID = "";
+var otherID = "";
 
 function dynamicallyResize(){
     var constChildren = sceneConstellations.children;
@@ -499,10 +515,20 @@ function onDocumentMouseMove( event ) {
     var children = sceneSolarOutline.children;
     var constChildren = sceneConstellations.children;
     var textChildren = sceneText.children;
+    var orbitChildren = sceneOrbits.children;
+    var planetChildren = scenePlanets.children;
 
     var intersects = raycaster.intersectObjects( children );
+    var planets = raycaster.intersectObjects(planetChildren);
+    var orbits = raycaster.intersectObjects(orbitChildren);
+    intersects.push(planets);
+    intersects.push(orbits);
 
     for (var i = 0; i < intersects.length; i ++){
+        if (Array.isArray(intersects[i]) && intersects[i].length > 0){
+          var temp = intersects[i][0];
+          intersects[i]=temp;
+        }
         if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
             for (var j=0; j < constChildren.length; j ++){
                 if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
@@ -524,6 +550,7 @@ function onDocumentMouseMove( event ) {
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 } else {
                     UUID = "";
+                    otherID = "";
                     var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                     var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (textFilter !== undefined && textFilter.length != 0) {
@@ -536,6 +563,59 @@ function onDocumentMouseMove( event ) {
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 }
             }
+            //  ||(intersects[i].object.position.x === orbitChildren[j].position.x && intersects[i].object.position.y === orbitChildren[j].position.y && intersects[i].object.position.z === orbitChildren[j].position.z && otherID !== orbitChildren[j].uuid)
+            for (var j=0; j < planetChildren.length; j++){
+              if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z && otherID !== planetChildren[j].uuid) {
+                otherID = planetChildren[j].uuid;;
+                // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                var endFilter = planetChildren.filter(child => planetChildren[j].position.x != 0 && planetChildren[j].position.x == child.position.x && child.position.y === planetChildren[j].position.y);
+                var radius = planetChildren[j].geometry.parameters.radius;
+                var scale = radius * 200;
+                planetChildren[j].scale.set(scale, scale, scale);
+                // if (textFilter !== undefined && textFilter.length != 0) {
+                //   textFilter[0].visible = true;
+                // }
+                // if (endFilter !== undefined && endFilter.length != 0) {
+                //   endFilter[0].visible = false;
+                // }
+                // var radius = constChildren[j].geometry.parameters.radius;
+                // var scale = radius * 150;
+                // constChildren[j].scale.set(scale, scale, scale);
+            
+              } else {
+                otherID = "";
+                planetChildren[j].scale.set(1, 1, 1);
+                //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
+              }
+            }
+            for (var j=0; j < orbitChildren.length; j++){
+              if (intersects[i].object.position.x === orbitChildren[j].position.x && intersects[i].object.position.y === orbitChildren[j].position.y && intersects[i].object.position.z === orbitChildren[j].position.z) {
+              var tPos = orbitChildren[j].localToWorld(orbitChildren[j].geometry.vertices[20].clone());
+              for (var k=0; k < planetChildren.length; k++){
+                if (tPos.x === planetChildren[k].position.x && tPos.y === planetChildren[k].position.y && tPos.z === planetChildren[k].position.z && otherID !== planetChildren[k].uuid) {
+                  otherID = planetChildren[k].uuid;
+                  // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                 var radius = planetChildren[k].geometry.parameters.radius;
+                  var scale = radius * 150;
+                  planetChildren[k].scale.set(scale, scale, scale);
+                  // if (textFilter !== undefined && textFilter.length != 0) {
+                  //   textFilter[0].visible = true;
+                  // }
+                  // if (endFilter !== undefined && endFilter.length != 0) {
+                  //   endFilter[0].visible = false;
+                  // }
+                  // var radius = constChildren[j].geometry.parameters.radius;
+                  // var scale = radius * 150;
+                  // constChildren[j].scale.set(scale, scale, scale);
+              
+                } else {
+                  otherID = "";
+                  planetChildren[k].scale.set(1, 1, 1);
+                  //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
+                }
+              }
+            }
+          }
         }
     }
 }
@@ -590,7 +670,7 @@ function onDocumentMouseClick( event ) {
     if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
       for (var j=0; j < constChildren.length; j ++){
         if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
-          document.removeEventListener('mousemove', onDocumentMouseMove);
+          // document.removeEventListener('mousemove', onDocumentMouseMove);
 
           UUID = constChildren[j].uuid;
           lookAtTween

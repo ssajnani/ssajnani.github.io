@@ -11,6 +11,7 @@ var YOUTUBE_CHANNEL_ID = "channelId=UCquU_YuZYEk-sMMyHPTBd0A";
 var YOUTUBE_OPTIONS = "part=snippet,id&order=date&maxResults=20";
 var INSTAGRAM = "https://www.instagram.com/samarsajnani/?__a=1";
 var RESUME_DETAILS = "";
+var SPOTIFY_ID_KEY = "2c31d0d4d1aa40849dd5ee49becbd6d1:c9f891d2e2604a129f016ede0e04bb35";
 var resume = "";
 
 
@@ -21,6 +22,7 @@ var resume = {};
 var itVideos = [];
 var tweets = [];
 var instagram_pics = [];
+var spotify_playlists = [];
 
 function gatherProjects() {
     var xmlHttp = new XMLHttpRequest();
@@ -93,20 +95,22 @@ function getInstagramInfo(){
 }
 
 function gatherMusic(){
-    $.ajax({
-        url: 'https://open.spotify.com/user/samar.sajnani',
-        success: function(data) {
-            console.log(data);
-            $("result").html(data);
-            alert('Load was performed.');
-            var url = 'http://yourdomain.com/page2.htm';
-            $('div#result').load(url);
-        }
+    $.get("https://fastack.herokuapp.com/spotify/authenticate").done(function (data) {
+        $.ajax({
+            url: "https://api.spotify.com/v1/users/samar.sajnani/playlists",
+            type: 'GET',
+            headers: {
+                'Authorization': "Bearer " + data.access_token
+            },
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+                spotify_playlists = result.items;
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
     });
-    // $.get("https://open.spotify.com/user/samar.sajnani", function(data) {
-    //     var data = $(data);
-    //     console.log(data);
-    // });
 }
 
 function ig_media_preview(base64data) {
@@ -122,14 +126,14 @@ function ig_media_preview(base64data) {
 	return base64data ? "data:image/jpeg;base64," + btoa(c.concat(p).join("")) : null
 };
       
-$(function(){
-    toDataUrl("https://instagram.fybz2-2.fna.fbcdn.net/vp/a10c2e7ea7c9df7e65ab601084fe1020/5D8DBF70/t51.2885-15/e35/14533460_223401458092722_4541944713137094656_n.jpg?_nc_ht=instagram.fybz2-2.fna.fbcdn.net", function(myBase64) {
-        var image = new Image();
-        image.src = myBase64
-        document.body.appendChild(image);
-    });
+// $(function(){
+//     toDataUrl("https://instagram.fybz2-2.fna.fbcdn.net/vp/a10c2e7ea7c9df7e65ab601084fe1020/5D8DBF70/t51.2885-15/e35/14533460_223401458092722_4541944713137094656_n.jpg?_nc_ht=instagram.fybz2-2.fna.fbcdn.net", function(myBase64) {
+//         var image = new Image();
+//         image.src = myBase64
+//         document.body.appendChild(image);
+//     });
     
-});
+// });
 
 function toDataUrl(url, callback) {
     var xhr = new XMLHttpRequest();
