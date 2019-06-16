@@ -16,6 +16,8 @@ var angle = 45,
     near = 0.1,
     far = 3000;
 
+var objectDict = {};
+
 document.getElementById('holder').style.display = 'none';
 
 
@@ -80,15 +82,18 @@ function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=
 
 }
 
-function generateOrbit(scene, planets, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
+function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
   //geometry = new THREE.CubeGeometry(200,200,200);
   var sphereMat;
   var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
   var point = THREE.GeometryUtils.randomPointsInGeometry(sphereGeo, 1);
   var geometry = new THREE.SphereGeometry(0.04, 32, 32);
-  var texture = THREE.ImageUtils.loadTexture('va@2x.png');
-  texture.offset.y = -0.5;
-  var material = new THREE.MeshBasicMaterial( {map:texture} );
+  const myUrl = imageurl;
+
+  const textureLoader = new THREE.TextureLoader();
+  const myTexture = textureLoader.load(myUrl);
+  myTexture.offset.x = 0.3;
+  var material = new THREE.MeshBasicMaterial( {map:myTexture, transparent: false, opacity: 1} );
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
   sphereGeo.rotateZ(THREE.Math.randFloatSpread(-Math.PI));
@@ -139,6 +144,7 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
       text1.rotation = rotation;
       text1.visible = false;
       scene.add(text1);
+      return text1;
     });
 
 }
@@ -184,7 +190,6 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 }
 
 function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opacity=1){
-    console.log(titles[0]);
   generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0]);
   generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+7, color, opacity, titles[1]);
   generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2]);
@@ -192,12 +197,18 @@ function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opaci
   generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4])
 }
 
-function createOrbits(scene, planets, positions, radius, zDistance, color=0x000000, opacity=1) {
-    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[0][0], positions[0][1], color, opacity);
-    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[1][0], positions[1][1], color, opacity);
-    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[2][0], positions[2][1], color, opacity);
-    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[3][0], positions[3][1], color, opacity);
-    generateOrbit(scene, planets, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[4][0], positions[4][1], color, opacity);
+function createOrbitsProjects(scene, planets, positions, zDistance, projects, color=0x000000, opacity=1) {
+  var pLength = projects.length;
+  var radius = 0.6;
+  if (pLength > 5){
+    pLength = 5;
+  }
+  for (var i = 0; i < pLength; i++){
+    var imageurl = "https://raw.githubusercontent.com/ssajnani/" + projects[i].name + "/master/images/va%402x.png"
+    var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    objectDict[result[0].uuid] = generateText(planets, 5, zDistance, positions[0], positions[1]+18, color, opacity, projects[i].description);
+    radius += 0.6;
+  }
 }
 
 // var geometry = new THREE.CircleGeometry(1, 128);
@@ -242,20 +253,20 @@ var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, firstSPos, [0.6, 0.6], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, firstSPos, [3, 3], -100, 0xffffff);
+createOrbitsProjects(sceneOrbits, scenePlanets, secondSPos[0], -100, projects, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, firstSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textFPos, -100, hobbyTitles);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, secondSPos, [0.6, 0.6], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.2, 1.2], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.8, 1.8], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, secondSPos, [2.4, 2.4], -100, 0xffffff);
-createOrbits(sceneOrbits, scenePlanets, secondSPos, [3, 3], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, secondSPos, [0.6, 0.6], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.2, 1.2], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.8, 1.8], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, secondSPos, [2.4, 2.4], -100, 0xffffff);
+// createOrbits(sceneOrbits, scenePlanets, secondSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
 createText(sceneText, textSPos, -100, workTitles);
 //scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title
@@ -361,14 +372,14 @@ function preRender(){
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
-    composer.addPass(renderPass6);
-    composer.addPass(starMask);
-    composer.addPass(effectFXAA);
-    composer.addPass(clearMask);
-    composer.addPass(effectFXAA);
+    // composer.addPass(renderPass6);
+    // composer.addPass(starMask);
+    // composer.addPass(clearMask);
     composer.addPass(bloomPass);
+    composer.addPass(renderPass6);
+    composer.addPass(effectFXAA);
     composer.addPass(copyShader);
-
+    
 
 
 
@@ -524,6 +535,14 @@ function onDocumentMouseMove( event ) {
     var orbits = raycaster.intersectObjects(orbitChildren);
     intersects.push(planets);
     intersects.push(orbits);
+    if (intersects.length == 2){
+      for (var j=0; j < constChildren.length; j ++){
+        constChildren[j].scale.set(1, 1, 1);
+      }
+      for (var j=0; j < planetChildren.length; j ++){
+        planetChildren[j].scale.set(1, 1, 1);
+      }
+    }
 
     for (var i = 0; i < intersects.length; i ++){
         if (Array.isArray(intersects[i]) && intersects[i].length > 0){
@@ -571,7 +590,7 @@ function onDocumentMouseMove( event ) {
                 // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                 var endFilter = planetChildren.filter(child => planetChildren[j].position.x != 0 && planetChildren[j].position.x == child.position.x && child.position.y === planetChildren[j].position.y);
                 var radius = planetChildren[j].geometry.parameters.radius;
-                var scale = radius * 200;
+                var scale = radius * 300;
                 planetChildren[j].scale.set(scale, scale, scale);
                 // if (textFilter !== undefined && textFilter.length != 0) {
                 //   textFilter[0].visible = true;
@@ -588,36 +607,8 @@ function onDocumentMouseMove( event ) {
                 planetChildren[j].scale.set(1, 1, 1);
                 //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
               }
-            }
-            for (var j=0; j < orbitChildren.length; j++){
-              if (intersects[i].object.position.x === orbitChildren[j].position.x && intersects[i].object.position.y === orbitChildren[j].position.y && intersects[i].object.position.z === orbitChildren[j].position.z) {
-              var tPos = orbitChildren[j].localToWorld(orbitChildren[j].geometry.vertices[20].clone());
-              for (var k=0; k < planetChildren.length; k++){
-                if (tPos.x === planetChildren[k].position.x && tPos.y === planetChildren[k].position.y && tPos.z === planetChildren[k].position.z && otherID !== planetChildren[k].uuid) {
-                  otherID = planetChildren[k].uuid;
-                  // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
-                 var radius = planetChildren[k].geometry.parameters.radius;
-                  var scale = radius * 150;
-                  planetChildren[k].scale.set(scale, scale, scale);
-                  // if (textFilter !== undefined && textFilter.length != 0) {
-                  //   textFilter[0].visible = true;
-                  // }
-                  // if (endFilter !== undefined && endFilter.length != 0) {
-                  //   endFilter[0].visible = false;
-                  // }
-                  // var radius = constChildren[j].geometry.parameters.radius;
-                  // var scale = radius * 150;
-                  // constChildren[j].scale.set(scale, scale, scale);
-              
-                } else {
-                  otherID = "";
-                  planetChildren[k].scale.set(1, 1, 1);
-                  //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
-                }
-              }
-            }
           }
-        }
+        } 
     }
 }
 const sleep = (milliseconds, j) => {
