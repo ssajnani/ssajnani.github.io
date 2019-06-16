@@ -223,7 +223,7 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (education[i].school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%402x.png";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%402x.gif";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' Grade: ' + education[i].grade + '///' + education[i].url;
