@@ -220,13 +220,16 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   if (pLength > 5){
     pLength = 5;
   }
-  // for (var i = 0; i < pLength; i++){
-  //   var imageurl = "https://raw.githubusercontent.com/ssajnani/" + projects[i].name + "/master/images/va%402x.png"
-  //   var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
-  //   console.log(projects[i]);
-  //   objectDict[result[0].uuid] = projects[i].name + '///' + projects[i].description.replace('((Project))','') + '///' + projects[i].html_url;
-  //   radius += 0.6;
-  // }
+  for (var i = 0; i < pLength; i++){
+    var imageurl = "";
+    if (education[i].school == "Western University"){
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%402x.png";
+    }
+    var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' Grade: ' + education[i].grade + '///' + education[i].url;
+    console.log(objectDict[result[0].uuid]);
+    radius += 0.6;
+  }
 }
 
 
@@ -275,6 +278,7 @@ var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, projects, 0xffffff);
+console.log(education);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, education, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);

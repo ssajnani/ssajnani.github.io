@@ -24,6 +24,10 @@ var tweets = [];
 var instagram_pics = [];
 var spotify_playlists = [];
 
+$.ajaxSetup({
+    async: false
+});
+
 function gatherProjects() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", GITHUB_URL, false ); 
