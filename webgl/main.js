@@ -203,6 +203,7 @@ function createOrbitsProjects(scene, planets, desc, positions, zDistance, projec
   var radius = 0.6;
   if (pLength > 5){
     pLength = 5;
+    projects = getRandom(projects, 5);
   }
   for (var i = 0; i < pLength; i++){
     var imageurl = "https://raw.githubusercontent.com/ssajnani/" + projects[i].name + "/master/images/va%402x.png"
@@ -219,14 +220,35 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   var radius = 0.6;
   if (pLength > 5){
     pLength = 5;
+    education = getRandom(education, 5);
   }
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (education[i].school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%402x.gif";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.gif";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
-    objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' Grade: ' + education[i].grade + '///' + education[i].url;
+    objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
+    console.log(objectDict[result[0].uuid]);
+    radius += 0.6;
+  }
+}
+
+function createOrbitsResearch(scene, planets, desc, positions, zDistance, research, color=0x000000, opacity=1) {
+  var pLength = research.length;
+  console.log(research);
+  var radius = 0.6;
+  if (pLength > 5){
+    pLength = 5;
+    research = getRandom(research, 5);
+  }
+  for (var i = 0; i < pLength; i++){
+    var imageurl = "";
+    if (research[i].school == "Western University"){
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.gif";
+    }
+    var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
     console.log(objectDict[result[0].uuid]);
     radius += 0.6;
   }
@@ -280,6 +302,7 @@ createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, projects, 0xffffff);
 console.log(education);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, education, 0xffffff);
+createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, research, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
@@ -528,6 +551,20 @@ function dynamicallyResize(){
     }
 }
 
+function getRandom(arr, n) {
+  var result = new Array(n),
+      len = arr.length,
+      taken = new Array(len);
+  if (n > len)
+      throw new RangeError("getRandom: more elements taken than available");
+  while (n--) {
+      var x = Math.floor(Math.random() * len);
+      result[n] = arr[x in taken ? taken[x] : x];
+      taken[x] = --len in taken ? taken[len] : len;
+  }
+  return result;
+}
+
 function onDocumentMouseMove( event ) {
 
     event.preventDefault();
@@ -608,8 +645,8 @@ function onDocumentMouseMove( event ) {
                 otherID = planetChildren[j].uuid;
                 var textVals = objectDict[otherID].split('///');
                 $('#text').css('visibility','visible').hide().fadeIn("slow");
-                $('#header1').text(textVals[0]);
-                $('#para').text(textVals[1]);
+                $('#header1').html(textVals[0]);
+                $('#para').html(textVals[1]);
                 // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                 var endFilter = planetChildren.filter(child => planetChildren[j].position.x != 0 && planetChildren[j].position.x == child.position.x && child.position.y === planetChildren[j].position.y);
                 var radius = planetChildren[j].geometry.parameters.radius;

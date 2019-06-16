@@ -5,6 +5,7 @@ var GITHUB_URL = "https://api.github.com/users/ssajnani/repos";
 var GITHUB_EDUCATION_JSON = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/education.json";
 var GITHUB_RESUME_JSON = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/resume.json";
 var GITHUB_RESEARCH = "https://api.github.com/repos/ssajnani/ResearchPapers/contents/";
+var GITHUB_RESEARCH_INFO = "https://raw.githubusercontent.com/ssajnani/ResearchPapers/master/readme.json";
 var YOUTUBE_API = "https://www.googleapis.com/youtube/v3/search?";
 var YOUTUBE_KEY = "key=AIzaSyBQGbkPx4FmwCAf_0vfGL4Mf3bZ2R2O1C4";
 var YOUTUBE_CHANNEL_ID = "channelId=UCquU_YuZYEk-sMMyHPTBd0A";
@@ -17,6 +18,7 @@ var resume = "";
 
 var projects = [];
 var education = [];
+var research_description = [];
 var research = [];
 var resume = {};
 var itVideos = [];
@@ -53,7 +55,15 @@ function gatherEducationMilestones(){
 
 function gatherResearchPapers(){
     $.getJSON(GITHUB_RESEARCH, function(data){
-        research = data;
+        
+        research = data.filter(function(item){
+            if (item.name != "readme.json"){
+                return item;
+            }
+        });
+        $.getJSON(GITHUB_RESEARCH_INFO, function(data){
+            research_description = data;
+        })
     });
 }
 
