@@ -213,6 +213,24 @@ function createOrbitsProjects(scene, planets, desc, positions, zDistance, projec
   }
 }
 
+function createOrbitsEducation(scene, planets, desc, positions, zDistance, education, color=0x000000, opacity=1) {
+  var pLength = education.length;
+  console.log(education);
+  var radius = 0.6;
+  if (pLength > 5){
+    pLength = 5;
+  }
+  // for (var i = 0; i < pLength; i++){
+  //   var imageurl = "https://raw.githubusercontent.com/ssajnani/" + projects[i].name + "/master/images/va%402x.png"
+  //   var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+  //   console.log(projects[i]);
+  //   objectDict[result[0].uuid] = projects[i].name + '///' + projects[i].description.replace('((Project))','') + '///' + projects[i].html_url;
+  //   radius += 0.6;
+  // }
+}
+
+
+
 // var geometry = new THREE.CircleGeometry(1, 128);
 // geometry.vertices.shift();
 // geometry.rotateZ(-Math.PI / 2);
@@ -257,6 +275,7 @@ var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, projects, 0xffffff);
+createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, education, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
@@ -377,7 +396,6 @@ function preRender(){
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
-    // composer.addPass(renderPass6);
     composer.addPass(bloomPass);
     composer.addPass(renderPass6);
     composer.addPass(renderPass7);
@@ -667,6 +685,7 @@ function onDocumentMouseClick( event ) {
       var temp = intersects[i][0];
       intersects[i]=temp;
     }
+    console.log(intersects[i]);
     if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
       for (var j=0; j < constChildren.length; j ++){
         if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
@@ -686,9 +705,11 @@ function onDocumentMouseClick( event ) {
           adjustCameraAndInitiateWarp(constChildren, j)
         }
       }
+      console.log('here');
       for (var j=0; j < planetChildren.length; j++){
-          if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z && otherID !== planetChildren[j].uuid) {
+          if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z) {
             var textVals = objectDict[planetChildren[j].uuid].split('///');
+            console.log(textVals[2]);
             window.location.href = textVals[2];
           }
       }
