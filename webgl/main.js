@@ -18,7 +18,6 @@ var angle = 45,
 
 var objectDict = {};
 
-document.getElementById('holder').style.display = 'none';
 
 
 var sphereMats = [];
@@ -87,12 +86,11 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   var sphereMat;
   var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
   var point = THREE.GeometryUtils.randomPointsInGeometry(sphereGeo, 1);
-  var geometry = new THREE.SphereGeometry(0.04, 32, 32);
+  var geometry = new THREE.CircleGeometry(0.06, 32, 32);
   const myUrl = imageurl;
 
   const textureLoader = new THREE.TextureLoader();
   const myTexture = textureLoader.load(myUrl);
-  myTexture.offset.x = 0.3;
   var material = new THREE.MeshBasicMaterial( {map:myTexture, transparent: false, opacity: 1} );
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
@@ -120,13 +118,13 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 
 }
 
-function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title){
+function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, size, uuid=0){
     console.log(title);
     var loader = new THREE.FontLoader();
     loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/helvetiker_regular.typeface.json', function ( font ) {
 
       var options = {
-        size: 2,
+        size: size,
         weight: 'normal',
         font: font,
         style: 'normal',
@@ -144,6 +142,9 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
       text1.rotation = rotation;
       text1.visible = false;
       scene.add(text1);
+      if (uuid != 0){
+        objectDict[uuid] = text1;
+      }
       return text1;
     });
 
@@ -190,14 +191,14 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 }
 
 function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opacity=1){
-  generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0]);
-  generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+7, color, opacity, titles[1]);
-  generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2]);
-  generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3]);
-  generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4])
+  generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0],2);
+  generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+7, color, opacity, titles[1],2);
+  generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2],2);
+  generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3],2);
+  generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+7, color, opacity, titles[4],2)
 }
 
-function createOrbitsProjects(scene, planets, positions, zDistance, projects, color=0x000000, opacity=1) {
+function createOrbitsProjects(scene, planets, desc, positions, zDistance, projects, color=0x000000, opacity=1) {
   var pLength = projects.length;
   var radius = 0.6;
   if (pLength > 5){
@@ -206,7 +207,8 @@ function createOrbitsProjects(scene, planets, positions, zDistance, projects, co
   for (var i = 0; i < pLength; i++){
     var imageurl = "https://raw.githubusercontent.com/ssajnani/" + projects[i].name + "/master/images/va%402x.png"
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
-    objectDict[result[0].uuid] = generateText(planets, 5, zDistance, positions[0], positions[1]+18, color, opacity, projects[i].description);
+    console.log(projects[i]);
+    objectDict[result[0].uuid] = projects[i].name + '///' + projects[i].description.replace('((Project))','') + '///' + projects[i].html_url;
     radius += 0.6;
   }
 }
@@ -229,6 +231,7 @@ var sceneSolarOutline = new THREE.Scene();
 var sceneText = new THREE.Scene();
 var sceneOrbits = new THREE.Scene();
 var scenePlanets = new THREE.Scene();
+var sceneDescriptions = new THREE.Scene();
 
 // create a camera, which defines where we're looking at.
 var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
@@ -253,7 +256,7 @@ var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
 
 createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
-createOrbitsProjects(sceneOrbits, scenePlanets, secondSPos[0], -100, projects, 0xffffff);
+createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, projects, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
@@ -348,6 +351,8 @@ function preRender(){
     renderPass5.clear = false;
     var renderPass6 = new THREE.RenderPass(scenePlanets, camera);
     renderPass6.clear = false;
+    var renderPass7 = new THREE.RenderPass(sceneDescriptions, camera);
+    renderPass7.clear = false;
 
 
 
@@ -373,10 +378,9 @@ function preRender(){
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
     // composer.addPass(renderPass6);
-    // composer.addPass(starMask);
-    // composer.addPass(clearMask);
     composer.addPass(bloomPass);
     composer.addPass(renderPass6);
+    composer.addPass(renderPass7);
     composer.addPass(effectFXAA);
     composer.addPass(copyShader);
     
@@ -415,13 +419,6 @@ function animate(time) {
 
           delta = delta % interval;
         }
-
-
-
-
-
-
-
 }
 
 
@@ -534,14 +531,14 @@ function onDocumentMouseMove( event ) {
     var planets = raycaster.intersectObjects(planetChildren);
     var orbits = raycaster.intersectObjects(orbitChildren);
     intersects.push(planets);
-    intersects.push(orbits);
-    if (intersects.length == 2){
+    if (intersects.length == 1){
       for (var j=0; j < constChildren.length; j ++){
         constChildren[j].scale.set(1, 1, 1);
       }
       for (var j=0; j < planetChildren.length; j ++){
         planetChildren[j].scale.set(1, 1, 1);
       }
+      document.getElementById('text').style.display = 'none';
     }
 
     for (var i = 0; i < intersects.length; i ++){
@@ -549,7 +546,7 @@ function onDocumentMouseMove( event ) {
           var temp = intersects[i][0];
           intersects[i]=temp;
         }
-        if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
+        if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
             for (var j=0; j < constChildren.length; j ++){
                 if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
 
@@ -586,11 +583,15 @@ function onDocumentMouseMove( event ) {
             //  ||(intersects[i].object.position.x === orbitChildren[j].position.x && intersects[i].object.position.y === orbitChildren[j].position.y && intersects[i].object.position.z === orbitChildren[j].position.z && otherID !== orbitChildren[j].uuid)
             for (var j=0; j < planetChildren.length; j++){
               if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z && otherID !== planetChildren[j].uuid) {
-                otherID = planetChildren[j].uuid;;
+                otherID = planetChildren[j].uuid;
+                var textVals = objectDict[otherID].split('///');
+                $('#text').css('visibility','visible').hide().fadeIn("slow");
+                $('#header1').text(textVals[0]);
+                $('#para').text(textVals[1]);
                 // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
                 var endFilter = planetChildren.filter(child => planetChildren[j].position.x != 0 && planetChildren[j].position.x == child.position.x && child.position.y === planetChildren[j].position.y);
                 var radius = planetChildren[j].geometry.parameters.radius;
-                var scale = radius * 300;
+                var scale = radius * 200;
                 planetChildren[j].scale.set(scale, scale, scale);
                 // if (textFilter !== undefined && textFilter.length != 0) {
                 //   textFilter[0].visible = true;
@@ -655,11 +656,18 @@ function onDocumentMouseClick( event ) {
   var children = sceneSolarOutline.children;
   var constChildren = sceneConstellations.children;
   var textChildren = sceneText.children;
+  var planetChildren = scenePlanets.children;
+  var planets = raycaster.intersectObjects(planetChildren);
 
   var intersects = raycaster.intersectObjects( children );
-
+  intersects.push(planets);
+  console.log(intersects);
   for (var i = 0; i < intersects.length; i ++){
-    if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && intersects[i].object.geometry.type === "SphereGeometry"){
+    if (Array.isArray(intersects[i]) && intersects[i].length > 0){
+      var temp = intersects[i][0];
+      intersects[i]=temp;
+    }
+    if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
       for (var j=0; j < constChildren.length; j ++){
         if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
           // document.removeEventListener('mousemove', onDocumentMouseMove);
@@ -678,8 +686,15 @@ function onDocumentMouseClick( event ) {
           adjustCameraAndInitiateWarp(constChildren, j)
         }
       }
+      for (var j=0; j < planetChildren.length; j++){
+          if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z && otherID !== planetChildren[j].uuid) {
+            var textVals = objectDict[planetChildren[j].uuid].split('///');
+            window.location.href = textVals[2];
+          }
+      }
     }
   }
+  
 }
 
 function adjustCameraAndInitiateWarp(constChildren, position){
