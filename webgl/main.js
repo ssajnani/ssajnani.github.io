@@ -90,6 +90,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   const myUrl = imageurl;
 
   const textureLoader = new THREE.TextureLoader();
+  textureLoader.crossOrigin = '';
   const myTexture = textureLoader.load(myUrl);
   var material = new THREE.MeshBasicMaterial( {map:myTexture, transparent: false, opacity: 1} );
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
@@ -234,7 +235,7 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   }
 }
 
-function createOrbitsResearch(scene, planets, desc, positions, zDistance, research, color=0x000000, opacity=1) {
+function createOrbitsResearch(scene, planets, desc, positions, zDistance, research, research_description, color=0x000000, opacity=1) {
   var pLength = research.length;
   console.log(research);
   var radius = 0.6;
@@ -244,12 +245,30 @@ function createOrbitsResearch(scene, planets, desc, positions, zDistance, resear
   }
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
-    if (research[i].school == "Western University"){
+    var name = research[i].name.replace('\.pdf', '');
+    var description = research_description.find(o => o.name === name);
+    if (description.school == "Western University"){
       imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.gif";
+    } else {
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/waterloo%403x.png";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
-    objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
-    console.log(objectDict[result[0].uuid]);
+    objectDict[result[0].uuid] = description.title + '///Description: ' + description.description +' <br> Supervisor: ' + description.supervisor + ' <br> University: '+ description.school+ '///' + research[i].html_url;
+    radius += 0.6;
+  }
+}
+function createOrbitsYoutube(scene, planets, desc, positions, zDistance, youtube, color=0x000000, opacity=1) {
+  var pLength = youtube.length;
+  var radius = 0.6;
+  if (pLength > 5){
+    pLength = 5;
+    youtube = getRandom(youtube, 5);
+  }
+  console.log(youtube);
+  for (var i = 0; i < pLength; i++){
+    console.log(youtube[i].snippet.thumbnails.high.url);
+    var result = generateOrbit(scene, planets, youtube[i].snippet.thumbnails.high.url, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    objectDict[result[0].uuid] = youtube[i].snippet.title + '///Description: ' + youtube[i].snippet.description + '///https://www.youtube.com/watch?v=' + youtube[i].id.videoId;
     radius += 0.6;
   }
 }
@@ -302,12 +321,13 @@ createS(sceneConstellations, firstSPos, [0.2, 0.1], -100, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, projects, 0xffffff);
 console.log(education);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, education, 0xffffff);
-createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, research, 0xffffff);
+createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, research, research_description, 0xffffff);
+createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, itVideos, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [3, 3], -100, 0xffffff);
-createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.2);
+createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.3);
 createText(sceneText, textFPos, -100, hobbyTitles);
 //createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
@@ -316,7 +336,7 @@ createS(sceneConstellations, secondSPos, [0.2, 0.1], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.8, 1.8], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, secondSPos, [2.4, 2.4], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, secondSPos, [3, 3], -100, 0xffffff);
-createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.2);
+createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
 createText(sceneText, textSPos, -100, workTitles);
 //scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title
 generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani');
@@ -351,7 +371,7 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 var light = new THREE.PointLight(0xFFFFFF, 0.5, 0);
 light.position.z = -100;
-light.position.x = 0;
+light.position.x = -10;
 light.position.y = 0;
 var light2 = new THREE.PointLight(0xFFFFFF, 3, 0);
 light2.position.z = -100;
@@ -426,7 +446,7 @@ function preRender(){
     composer.addPass(bloomPass);
     composer.addPass(renderPass6);
     composer.addPass(renderPass7);
-    composer.addPass(effectFXAA);
+    // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
     
 
@@ -517,10 +537,10 @@ function dynamicallyResize(){
     console.log(window);
     if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
         composer.setSize(window.innerWidth/2, window.innerHeight);
-        camera.position.x = -20;
+        camera.position.x = -35;
         camera.position.y = 0;
-        camera.position.z = 0;
-        camera.lookAt(new THREE.Vector3(-20, 0, -100));
+        camera.position.z = 50;
+        camera.lookAt(new THREE.Vector3(-35, 0, -100));
         for (var j=0; j < constChildren.length; j ++){
             if (constChildren[j].position.x > 0){
             constChildren[j].visible = false;
@@ -810,7 +830,7 @@ function zoomToStar(constChildren, position){
       camera.position.z = currentPosition.z;
     });
     var newPosition = new THREE.Vector3(camera.position);
-    newPosition.z = newPosition.z -92 ;
+    newPosition.z = newPosition.z -89 ;
     currentTween
       .stop() // just in case it's still animating
       .to(newPosition, 1000) // set destination and duration

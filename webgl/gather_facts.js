@@ -61,6 +61,7 @@ function gatherResearchPapers(){
                 return item;
             }
         });
+        console.log(research);
         $.getJSON(GITHUB_RESEARCH_INFO, function(data){
             research_description = data;
         })
@@ -69,7 +70,9 @@ function gatherResearchPapers(){
 
 function gatherITVideoInfo(){
     $.getJSON(YOUTUBE_API+"&"+YOUTUBE_KEY+"&"+YOUTUBE_CHANNEL_ID+"&"+YOUTUBE_OPTIONS, function(data){
-        itVideos = data.items.splice(-1,1);
+        var result_arr = data.items;
+        result_arr.pop();
+        itVideos = result_arr;
     });
 }
 function getResume(){
