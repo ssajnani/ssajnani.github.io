@@ -90,7 +90,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   const myUrl = imageurl;
 
   const textureLoader = new THREE.TextureLoader();
-  textureLoader.crossOrigin = '';
+  textureLoader.crossOrigin = 'Anonymous';
   const myTexture = textureLoader.load(myUrl);
   var material = new THREE.MeshBasicMaterial( {map:myTexture, transparent: false, opacity: 1} );
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
@@ -267,12 +267,30 @@ function createOrbitsYoutube(scene, planets, desc, positions, zDistance, youtube
   console.log(youtube);
   for (var i = 0; i < pLength; i++){
     console.log(youtube[i].snippet.thumbnails.high.url);
-    var result = generateOrbit(scene, planets, youtube[i].snippet.thumbnails.high.url, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    var result = generateOrbit(scene, planets, "https://cors-anywhere.herokuapp.com/http://img.youtube.com/vi/"+youtube[i].id.videoId + '/0.jpg', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = youtube[i].snippet.title + '///Description: ' + youtube[i].snippet.description + '///https://www.youtube.com/watch?v=' + youtube[i].id.videoId;
     radius += 0.6;
   }
 }
 
+
+function createOrbitsWork(scene, planets, desc, positions, zDistance, work, color=0x000000, opacity=1) {
+  work = work.Experience;
+  var pLength = work.length;
+  console.log(work);
+  var radius = 0.6;
+  if (pLength > 5){
+    pLength = 5;
+    work = getRandom(work, 5);
+  }
+  console.log(youtube);
+  for (var i = 0; i < pLength; i++){
+    console.log(youtube[i].snippet.thumbnails.high.url);
+    var result = generateOrbit(scene, planets, "https://cors-anywhere.herokuapp.com/http://img.youtube.com/vi/"+youtube[i].id.videoId + '/0.jpg', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    objectDict[result[0].uuid] = youtube[i].snippet.title + '///Description: ' + youtube[i].snippet.description + '///https://www.youtube.com/watch?v=' + youtube[i].id.videoId;
+    radius += 0.6;
+  }
+}
 
 
 // var geometry = new THREE.CircleGeometry(1, 128);
@@ -311,7 +329,7 @@ webGLRenderer.toneMapping = THREE.LinearToneMapping;
 
 var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
-var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Resume'];
+var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
@@ -323,6 +341,7 @@ console.log(education);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, education, 0xffffff);
 createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, research, research_description, 0xffffff);
 createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, itVideos, 0xffffff);
+createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, resume, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
 // createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
