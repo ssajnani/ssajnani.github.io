@@ -637,9 +637,9 @@ function dynamicallyResize(){
         }
         var ccLength = constChildren.length;
         for (var j=0; j < ccLength; j ++){
-            if (constChildren[j].position.x > 0){
+            if (constChildren[j].position.x > -10){
               constChildren[j].visible = false;
-              var cLength = const2.lengt;
+              var cLength = const2.length;
                 for (var i = 0; i < cLength; i ++){
                     if (const2[i].position.x === constChildren[j].position.x){
                         const2[i].visible = false;
@@ -669,8 +669,9 @@ function dynamicallyResize(){
         }
         var constChildren = sceneConstellations.children;
         var ccLength = constChildren.length;
+        
         for (var j=0; j < ccLength; j ++){
-            if (constChildren[j].position.x > 0){
+            if (constChildren[j].position.x > -10){
             constChildren[j].visible = true;
             var cLength = const2.length;
                 for (var i = 0; i < cLength; i ++){
