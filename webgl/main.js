@@ -240,7 +240,7 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (education[i].school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.jpg";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo@3x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
@@ -260,7 +260,7 @@ function createOrbitsResearch(scene, planets, desc, positions, zDistance, resear
     var name = research[i].name.replace('\.pdf', '');
     var description = research_description.find(o => o.name === name);
     if (description.school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.jpg";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo@3x.jpg";
     } else {
       imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/waterloo%403x.png";
     }
@@ -297,7 +297,7 @@ function createOrbitsWork(scene, planets, desc, positions, zDistance, work, colo
     if (work[i].position.includes("IBM")){
       imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/ibm_logo%403x.png";
     } else {
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.jpg";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo@3x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///';
@@ -318,7 +318,8 @@ function createOrbitsTwitter(scene, planets, desc, positions, zDistance, tweets,
     var tweetWTags = tweets[i].match(/<p class="tweet">([.\u0000-\uFFFF]*?)<\/p>/g);
     var tweet = tweetWTags[0].replace('<\/p>', '').replace('<p class="tweet">', '').trim().replace(/\s+/g, ' ');
     var tweetURL = "https://twitter.com/statuses/" + tweets[i].match(/tweet_id=([.\u0000-\uFFFF]*?)"/g)[0].replace("tweet_id=", '').replace('"', '');
-    var result = generateOrbit(scene, planets, '', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    var user_id = tweeter.split('@')[1];
+    var result = generateOrbit(scene, planets, 'https://cors-anywhere.herokuapp.com/https://twitter.com/'+ user_id + '/profile_image?size=original', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = tweeter + '///'+ tweet + '///' + tweetURL;
     radius += 0.6;
   }
