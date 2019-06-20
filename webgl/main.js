@@ -94,7 +94,6 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   const myUrl = imageurl;
 
   const textureLoader = new THREE.TextureLoader();
-  textureLoader.crossOrigin = 'Anonymous';
   const myTexture = textureLoader.load(myUrl);
   var material = new THREE.MeshBasicMaterial( {map:myTexture, transparent: false, opacity: 1} );
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
@@ -325,6 +324,7 @@ function createOrbitsTwitter(scene, planets, desc, positions, zDistance, tweets,
     var tweet = tweetWTags[0].replace('<\/p>', '').replace('<p class="tweet">', '').trim().replace(/\s+/g, ' ');
     var tweetURL = "https://twitter.com/statuses/" + tweets[i].match(/tweet_id=([.\u0000-\uFFFF]*?)"/g)[0].replace("tweet_id=", '').replace('"', '');
     var user_id = tweeter.split('@')[1];
+    console.log();
     var result = generateOrbit(scene, planets, 'https://cors-anywhere.herokuapp.com/https://twitter.com/'+ user_id + '/profile_image?size=original', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = tweeter + '///'+ tweet + '///' + tweetURL;
     radius += 0.6;
