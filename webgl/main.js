@@ -1105,6 +1105,48 @@ function zoomToStar(constChildren, position, textFilter){
           object.visible = false;
         }
       });
+      if (samar != undefined){
+        samar.visible = true;
+      }
+      if (sajnani != undefined){
+        sajnani.visible = false;
+      }
+      if (secondText != undefined){
+        var stLength = secondText.length;
+        for (var i=0; i < stLength; i++){
+          if (secondText[i] != undefined){
+            secondText[i].visible = false;
+          }
+        }
+      }
+      if (firstText != undefined){
+        var ftLength = firstText.length;
+        for (var i=0; i < ftLength; i++){
+          if (firstText[i] != undefined){
+            firstText[i].visible = true;
+          }
+        }
+      }
+      var ccLength = constChildren.length;
+      for (var j=0; j < ccLength; j ++){
+          if (constChildren[j].position.x < -10){
+            constChildren[j].visible = true;
+            var cLength = const2.length;
+              for (var i = 0; i < cLength; i ++){
+                  if (const2[i].position.x === constChildren[j].position.x){
+                      const2[i].visible = true;
+                  }
+              }
+          } else {
+            constChildren[j].visible = false;
+            var cLength = const2.length;
+              for (var i = 0; i < cLength; i ++){
+                  if (const2[i].position.x === constChildren[j].position.x){
+                      const2[i].visible = false;
+                  }
+              }
+          }
+      }
       textFilter[0].visible = true;
       dynamicallyResize();
       $('#nextS').show();
