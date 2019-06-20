@@ -399,7 +399,7 @@ var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
-var sajnani, firstTet;
+var sajnani, firstText;
 var loader = new THREE.FontLoader();
 loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
   var loader = new THREE.FontLoader();
