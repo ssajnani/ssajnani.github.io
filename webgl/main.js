@@ -122,7 +122,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 
 }
 
-function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, size, font uuid=0){
+function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, size, font, uuid=0){
     
       var options = {
         size: size,
