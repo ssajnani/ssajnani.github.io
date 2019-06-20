@@ -231,7 +231,7 @@ function createOrbitsProjects(scene, planets, desc, positions, zDistance, projec
 }
 
 function createOrbitsEducation(scene, planets, desc, positions, zDistance, education, color=0x000000, opacity=1) {
-  var pLength = education.length;
+  var pLength = education.length; 
   var radius = 0.6;
   if (pLength > 5){
     pLength = 5;
@@ -240,7 +240,7 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (education[i].school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.gif";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
@@ -260,7 +260,7 @@ function createOrbitsResearch(scene, planets, desc, positions, zDistance, resear
     var name = research[i].name.replace('\.pdf', '');
     var description = research_description.find(o => o.name === name);
     if (description.school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.gif";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.jpg";
     } else {
       imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/waterloo%403x.png";
     }
@@ -297,7 +297,7 @@ function createOrbitsWork(scene, planets, desc, positions, zDistance, work, colo
     if (work[i].position.includes("IBM")){
       imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/ibm_logo%403x.png";
     } else {
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.gif";
+      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo%403x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///';
