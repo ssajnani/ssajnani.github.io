@@ -63,7 +63,6 @@ function gatherResearchPapers(callback){
                 return item;
             }
         });
-        console.log(research);
         $.getJSON(GITHUB_RESEARCH_INFO, function(data){
             research_description = data;
             return callback();
@@ -116,6 +115,35 @@ function getInstagramInfo(callback){
      });
 }
 
+var MyRequestsCompleted = (function() {
+    var numRequestToComplete, requestsCompleted, callBacks, singleCallBack;
+
+    return function(options) {
+        if (!options) options = {};
+
+        numRequestToComplete = options.numRequest || 0;
+        requestsCompleted = options.requestsCompleted || 0;
+        callBacks = [];
+        var fireCallbacks = function() {
+            for (var i = 0; i < callBacks.length; i++) callBacks[i]();
+        };
+        if (options.singleCallback) callBacks.push(options.singleCallback);
+
+        this.addCallbackToQueue = function(isComplete, callback) {
+            if (isComplete) requestsCompleted++;
+            if (callback) callBacks.push(callback);
+            if (requestsCompleted == numRequestToComplete) fireCallbacks();
+        };
+        this.requestComplete = function(isComplete) {
+            if (isComplete) requestsCompleted++;
+            if (requestsCompleted == numRequestToComplete) fireCallbacks();
+        };
+        this.setCallback = function(callback) {
+            callBacks.push(callBack);
+        };
+    };
+})();
+
 function gatherMusic(callback){
     $.get("https://fastack.herokuapp.com/spotify/authenticate").done(function (data) {
         $.ajax({
@@ -128,6 +156,13 @@ function gatherMusic(callback){
             success: function (result) {
                 spotify_playlists = result.items;
                 var spot_length = spotify_playlists.length;
+                var requestCallback = new MyRequestsCompleted({
+                    numRequest: 4,
+                    singleCallback: function(){
+                        return callback();
+                    }
+                });
+                
                 for (var i = 0; i < spot_length; i++){
                     (function(i){
                         $.ajax({
@@ -138,11 +173,8 @@ function gatherMusic(callback){
                             },
                             contentType: 'application/json; charset=utf-8',
                             success: function (result) {
-                                console.log(i);
                                 spotify_playlists[i]['track_info'] = result;
-                                if (i == spot_length-1){
-                                    return callback();
-                                }
+                                requestCallback.requestComplete(true);
                             },
                             error: function (error) {
                                 console.log(error);
@@ -202,35 +234,30 @@ function getInfo(callback){
     var count = 0;
     gatherProjects(function(){
         count++;
-        console.log('projects ' + count);
         if (count == 7){
             return callback();
         }
     });
     gatherEducationMilestones(function(){
         count++;
-        console.log('edu ' + count);
         if (count == 7){
             return callback();
         }
     });
     gatherResearchPapers(function(){
         count++;
-        console.log('research ' +count);
         if (count == 7){
             return callback();
         }
     });
     gatherITVideoInfo(function(){
         count++;
-        console.log('yt ' +count);
         if (count == 7){
             return callback();
         }
     });
     getResume(function(){
         count++;
-        console.log('resume ' +count);
         if (count == 7){
             return callback();
         }
@@ -238,14 +265,12 @@ function getInfo(callback){
     getTweets();
     getInstagramInfo(function(){
         count++;
-        console.log('insta ' +count);
         if (count == 7){
             return callback();
         }
     });
     gatherMusic(function(){
         count++;
-        console.log('music ' +count);
         if (count == 7){
             return callback();
         }

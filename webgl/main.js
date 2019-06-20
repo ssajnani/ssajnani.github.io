@@ -353,6 +353,7 @@ function createOrbitsSpotify(scene, planets, desc, positions, zDistance, spotify
     spotify = getRandom(spotify, 5);
   }
   for (var i = 0; i < pLength; i++){
+    console.log(spotify[i].track_info);
     var result = generateOrbit(scene, planets, spotify[i].images[0].url, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     var tracks = spotify[i].track_info.items;
     var tLength = tracks.length;
