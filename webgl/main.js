@@ -424,6 +424,8 @@ loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
 
 });
 
+
+
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
 //This will add a starfield to the background of a scene
@@ -476,7 +478,7 @@ let delta = 0;
 let interval = 1 / 30;
 
 var composer = preRender();
-
+dynamicallyResize();
 animate();
 
 
@@ -612,8 +614,9 @@ function dynamicallyResize(){
         for (var l =0; l < plLength; l++){
           planetChildren[l].scale.set(2, 2, 2);
         }
-        var ftLength = firstText.length;
-        if (firstText != undefined && ftLength > 0){
+        
+        if (firstText != undefined){
+          var ftLength = firstText.length;
           for (var i=0; i < ftLength; i++){
             if (firstText[i] != undefined){
               firstText[i].visible = true;
@@ -644,8 +647,9 @@ function dynamicallyResize(){
         if (sajnani != undefined){
           sajnani.visible = true;
         }
-        var ftLength = firstText.length;
-        if (firstText != undefined && ftLength > 0){
+        
+        if (firstText != undefined){
+          var ftLength = firstText.length;
           for (var i=0; i < ftLength; i++){
             if (firstText[i] != undefined){
               firstText[i].visible = false;
