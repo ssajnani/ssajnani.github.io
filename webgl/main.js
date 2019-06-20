@@ -300,7 +300,7 @@ function createOrbitsWork(scene, planets, desc, positions, zDistance, work, colo
       imageurl = "../western_logo@3x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
-    objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///';
+    objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///https://www.linkedin.com/in/samarsajnani/';
     radius += 0.6;
   }
 }
@@ -865,9 +865,6 @@ function onDocumentMouseClick( event ) {
             .to(constChildren[j].position, 1000) // set destination and duration
             .start(); // start the tween
           var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
-          if (textFilter !== undefined && textFilter.length != 0) {
-            textFilter[0].visible = false;
-          }
           constChildren[j].scale.set(1, 1, 1);
           sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
           adjustCameraAndInitiateWarp(constChildren, j, textFilter)
@@ -930,6 +927,7 @@ function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
 
       sleep(500, position).then((j) => {
         $('#holder').css('visibility','visible').css('opacity', 1).fadeIn("slow");
+        textFilter[0].visible = false;
         mouseActive = true;
         deactivateWarp(constChildren, position, textFilter);
       })
