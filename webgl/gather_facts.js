@@ -85,19 +85,19 @@ function getTweets(){
     var configProfile = {
         "profile": {"screenName": 'samar_sajnani'},
         "domId": '',
-        "maxTweets": 3,
-        "enableLinks": true, 
+        "maxTweets": 5,
+        "enableLinks": false,
         "showUser": true,
         "showTime": true,
-        "showImages": true,
-        "customCallback": handleTweets,
-        "lang": 'en'
+        "dateFunction": '',
+        "customCallback": handleTweets
       };
       twitterFetcher.fetch(configProfile);
 }
 
 function handleTweets(twts){
     tweets = twts;
+    createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 }
 
 function getInstagramInfo(){
@@ -105,9 +105,8 @@ function getInstagramInfo(){
         var edges = data.graphql.user.edge_owner_to_timeline_media.edges;
         var picLength = edges.length;
         for (var i = 0; i < picLength; i++){
-            instagram_pics.push(edges[i].node.display_url);
+            instagram_pics.push({"url": edges[i].node.display_url, "code":edges[i].node.shortcode, "desc": edges[i].node.edge_media_to_caption.edges[0].node.text});
         }
-        console.log(instagram_pics);
      });
 }
 
@@ -122,6 +121,23 @@ function gatherMusic(){
             contentType: 'application/json; charset=utf-8',
             success: function (result) {
                 spotify_playlists = result.items;
+                var spot_length = spotify_playlists.length;
+                for (var i = 0; i < spot_length; i++){
+                    $.ajax({
+                        url: "https://api.spotify.com/v1/playlists/" + spotify_playlists[i].id + '/tracks',
+                        type: 'GET',
+                        headers: {
+                            'Authorization': "Bearer " + data.access_token
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (result) {
+                            spotify_playlists[i]['track_info'] = result;
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                }
             },
             error: function (error) {
                 console.log(error);
