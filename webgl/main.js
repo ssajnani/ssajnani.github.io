@@ -664,7 +664,7 @@ $('#nextS').click(function(){
     var const2 = sceneSolarOutline.children;
     camera.position.x = -35;
     camera.position.y = 0;
-    camera.position.z = 50;
+    camera.position.z = 70;
     camera.lookAt(new THREE.Vector3(-35, 0, -100));
     if (sajnani != undefined){
       sajnani.visible = true;
@@ -753,6 +753,7 @@ function dynamicallyResize(){
         $('#nextS').hide();
         composer.setSize(window.innerWidth, window.innerHeight);
         if (camera.position.z == 0){
+          $('#back').hide();
           camera.position.x = 0;
           camera.position.y = 0;
           camera.position.z = 0;
