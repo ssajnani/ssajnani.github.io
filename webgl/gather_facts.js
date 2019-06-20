@@ -26,11 +26,11 @@ var tweets = [];
 var instagram_pics = [];
 var spotify_playlists = [];
 
-$.ajaxSetup({
-    async: false
-});
+// $.ajaxSetup({
+//     async: false
+// });
 
-function gatherProjects() {
+function gatherProjects(callback) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", GITHUB_URL, false ); 
     xmlHttp.send( null );
@@ -42,18 +42,20 @@ function gatherProjects() {
             projects.push(json[i]);
         }
     }
+    return callback();
 }
 
-function gatherEducationMilestones(){
+function gatherEducationMilestones(callback){
     $.getJSON(GITHUB_EDUCATION_JSON, function( data ) {
         education = data;
+        return callback();
      });
 }
 
 // var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Resume'];
 // var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 
-function gatherResearchPapers(){
+function gatherResearchPapers(callback){
     $.getJSON(GITHUB_RESEARCH, function(data){
         
         research = data.filter(function(item){
@@ -64,20 +66,23 @@ function gatherResearchPapers(){
         console.log(research);
         $.getJSON(GITHUB_RESEARCH_INFO, function(data){
             research_description = data;
+            return callback();
         })
     });
 }
 
-function gatherITVideoInfo(){
+function gatherITVideoInfo(callback){
     $.getJSON(YOUTUBE_API+"&"+YOUTUBE_KEY+"&"+YOUTUBE_CHANNEL_ID+"&"+YOUTUBE_OPTIONS, function(data){
         var result_arr = data.items;
         result_arr.pop();
         itVideos = result_arr;
+        return callback();
     });
 }
-function getResume(){
+function getResume(callback){
     $.getJSON(GITHUB_RESUME_JSON, function(data) {
         resume = data;
+        return callback();
      });
 }
 
@@ -100,17 +105,18 @@ function handleTweets(twts){
     createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 }
 
-function getInstagramInfo(){
+function getInstagramInfo(callback){
     $.getJSON(INSTAGRAM, function(data) {
         var edges = data.graphql.user.edge_owner_to_timeline_media.edges;
         var picLength = edges.length;
         for (var i = 0; i < picLength; i++){
             instagram_pics.push({"url": edges[i].node.display_url, "code":edges[i].node.shortcode, "desc": edges[i].node.edge_media_to_caption.edges[0].node.text});
         }
+        return callback();
      });
 }
 
-function gatherMusic(){
+function gatherMusic(callback){
     $.get("https://fastack.herokuapp.com/spotify/authenticate").done(function (data) {
         $.ajax({
             url: "https://api.spotify.com/v1/users/samar.sajnani/playlists",
@@ -123,20 +129,26 @@ function gatherMusic(){
                 spotify_playlists = result.items;
                 var spot_length = spotify_playlists.length;
                 for (var i = 0; i < spot_length; i++){
-                    $.ajax({
-                        url: "https://api.spotify.com/v1/playlists/" + spotify_playlists[i].id + '/tracks',
-                        type: 'GET',
-                        headers: {
-                            'Authorization': "Bearer " + data.access_token
-                        },
-                        contentType: 'application/json; charset=utf-8',
-                        success: function (result) {
-                            spotify_playlists[i]['track_info'] = result;
-                        },
-                        error: function (error) {
-                            console.log(error);
-                        }
-                    });
+                    (function(i){
+                        $.ajax({
+                            url: "https://api.spotify.com/v1/playlists/" + spotify_playlists[i].id + '/tracks',
+                            type: 'GET',
+                            headers: {
+                                'Authorization': "Bearer " + data.access_token
+                            },
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (result) {
+                                console.log(i);
+                                spotify_playlists[i]['track_info'] = result;
+                                if (i == spot_length-1){
+                                    return callback();
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    })(i);
                 }
             },
             error: function (error) {
@@ -186,12 +198,57 @@ function toDataUrl(url, callback) {
 //     console.log(myBase64); // myBase64 is the base64 string
 // });
 
+function getInfo(callback){
+    var count = 0;
+    gatherProjects(function(){
+        count++;
+        console.log('projects ' + count);
+        if (count == 7){
+            return callback();
+        }
+    });
+    gatherEducationMilestones(function(){
+        count++;
+        console.log('edu ' + count);
+        if (count == 7){
+            return callback();
+        }
+    });
+    gatherResearchPapers(function(){
+        count++;
+        console.log('research ' +count);
+        if (count == 7){
+            return callback();
+        }
+    });
+    gatherITVideoInfo(function(){
+        count++;
+        console.log('yt ' +count);
+        if (count == 7){
+            return callback();
+        }
+    });
+    getResume(function(){
+        count++;
+        console.log('resume ' +count);
+        if (count == 7){
+            return callback();
+        }
+    });
+    getTweets();
+    getInstagramInfo(function(){
+        count++;
+        console.log('insta ' +count);
+        if (count == 7){
+            return callback();
+        }
+    });
+    gatherMusic(function(){
+        count++;
+        console.log('music ' +count);
+        if (count == 7){
+            return callback();
+        }
+    });
+}
 
-gatherProjects();
-gatherEducationMilestones();
-gatherResearchPapers();
-gatherITVideoInfo();
-getResume();
-getTweets();
-getInstagramInfo();
-gatherMusic();
