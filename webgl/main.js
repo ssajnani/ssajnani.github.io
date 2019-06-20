@@ -411,7 +411,7 @@ var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
-var firstText, sajnani;
+var firstText, secondText, sajnani;
 getInfo(function(){
 console.log('here');
 
@@ -428,7 +428,7 @@ createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], 
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
 var loader = new THREE.FontLoader();
 loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
-  createText(sceneText, textFPos, -100, hobbyTitles, font);
+  secondText = createText(sceneText, textFPos, -100, hobbyTitles, font);
   firstText = createText(sceneText, textSPos, -100, workTitles, font);
 });
 var loader = new THREE.FontLoader();
@@ -607,12 +607,114 @@ document.addEventListener("keyup", function(event) {
 var UUID = "";
 var otherID = "";
 
+$('#nextS').click(function(){
+  $('#nextS').hide();
+  var constChildren = sceneConstellations.children;
+  var planetChildren = scenePlanets.children;
+  var const2 = sceneSolarOutline.children;
+  camera.position.x = 35;
+  camera.position.y = 0;
+  camera.position.z = 50;
+  camera.lookAt(new THREE.Vector3(35, 0, -100));
+  if (sajnani != undefined){
+    sajnani.visible = true;
+  }
+  if (secondText != undefined){
+    var stLength = secondText.length;
+    for (var i=0; i < stLength; i++){
+      if (secondText[i] != undefined){
+        secondText[i].visible = true;
+      }
+    }
+  }
+  if (firstText != undefined){
+    var ftLength = firstText.length;
+    for (var i=0; i < ftLength; i++){
+      if (firstText[i] != undefined){
+        firstText[i].visible = false;
+      }
+    }
+  }
+  var ccLength = constChildren.length;
+  for (var j=0; j < ccLength; j ++){
+      if (constChildren[j].position.x < -10){
+        constChildren[j].visible = false;
+        var cLength = const2.length;
+          for (var i = 0; i < cLength; i ++){
+              if (const2[i].position.x === constChildren[j].position.x){
+                  const2[i].visible = false;
+              }
+          }
+      } else {
+        constChildren[j].visible = true;
+        var cLength = const2.length;
+          for (var i = 0; i < cLength; i ++){
+              if (const2[i].position.x === constChildren[j].position.x){
+                  const2[i].visible = true;
+              }
+          }
+      }
+  }
+  $('#back').show();
+  $('#back').click(function(){
+    $('#back').hide();
+    $('#nextS').show();
+    var constChildren = sceneConstellations.children;
+    var planetChildren = scenePlanets.children;
+    var const2 = sceneSolarOutline.children;
+    camera.position.x = -35;
+    camera.position.y = 0;
+    camera.position.z = 50;
+    camera.lookAt(new THREE.Vector3(-35, 0, -100));
+    if (sajnani != undefined){
+      sajnani.visible = true;
+    }
+    if (secondText != undefined){
+      var stLength = secondText.length;
+      for (var i=0; i < stLength; i++){
+        if (secondText[i] != undefined){
+          secondText[i].visible = false;
+        }
+      }
+    }
+    if (firstText != undefined){
+      var ftLength = firstText.length;
+      for (var i=0; i < ftLength; i++){
+        if (firstText[i] != undefined){
+          firstText[i].visible = true;
+        }
+      }
+    }
+    var ccLength = constChildren.length;
+    for (var j=0; j < ccLength; j ++){
+        if (constChildren[j].position.x < -10){
+          constChildren[j].visible = true;
+          var cLength = const2.length;
+            for (var i = 0; i < cLength; i ++){
+                if (const2[i].position.x === constChildren[j].position.x){
+                    const2[i].visible = true;
+                }
+            }
+        } else {
+          constChildren[j].visible = false;
+          var cLength = const2.length;
+            for (var i = 0; i < cLength; i ++){
+                if (const2[i].position.x === constChildren[j].position.x){
+                    const2[i].visible = false;
+                }
+            }
+        }
+    }
+  })
+})
+
 function dynamicallyResize(){
     var constChildren = sceneConstellations.children;
     var planetChildren = scenePlanets.children;
     var const2 = sceneSolarOutline.children;
     if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
         composer.setSize(window.innerWidth/2, window.innerHeight);
+        $('#nextS').show();
         if (camera.position.z == 0){
           camera.position.x = -35;
           camera.position.y = 0;
@@ -648,6 +750,7 @@ function dynamicallyResize(){
             }
         }
     } else {
+        $('#nextS').hide();
         composer.setSize(window.innerWidth, window.innerHeight);
         if (camera.position.z == 0){
           camera.position.x = 0;
@@ -866,6 +969,7 @@ function onDocumentMouseClick( event ) {
               headerText = hobbyTitles[l];
             }
           }
+          $('#nextS').hide();
           lookAtTween
             .stop() // just in case it's still animating
             .to(constChildren[j].position, 1000) // set destination and duration
@@ -993,6 +1097,7 @@ function zoomToStar(constChildren, position, textFilter){
       });
       textFilter[0].visible = true;
       dynamicallyResize();
+      $('#nextS').show();
     })
 
   });
