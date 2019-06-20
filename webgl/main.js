@@ -614,7 +614,7 @@ $('#nextS').click(function(){
   var const2 = sceneSolarOutline.children;
   camera.position.x = 35;
   camera.position.y = 0;
-  camera.position.z = 50;
+  camera.position.z = 90;
   camera.lookAt(new THREE.Vector3(35, 0, -100));
   if (sajnani != undefined){
     sajnani.visible = true;
@@ -667,7 +667,7 @@ $('#nextS').click(function(){
     var const2 = sceneSolarOutline.children;
     camera.position.x = -35;
     camera.position.y = 0;
-    camera.position.z = 70;
+    camera.position.z = 60;
     camera.lookAt(new THREE.Vector3(-35, 0, -100));
     if (samar != undefined){
       samar.visible = true;
@@ -724,7 +724,7 @@ function dynamicallyResize(){
         if (camera.position.z == 0){
           camera.position.x = -35;
           camera.position.y = 0;
-          camera.position.z = 50;
+          camera.position.z = 60;
           camera.lookAt(new THREE.Vector3(-35, 0, -100));
         }
         if (sajnani != undefined){
