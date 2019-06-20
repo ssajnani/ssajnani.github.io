@@ -603,6 +603,7 @@ var otherID = "";
 
 function dynamicallyResize(){
     var constChildren = sceneConstellations.children;
+    var planetChildren = scenePlanets.children;
     var const2 = sceneSolarOutline.children;
     if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
         composer.setSize(window.innerWidth/2, window.innerHeight);
@@ -614,6 +615,9 @@ function dynamicallyResize(){
         }
         if (sajnani != undefined){
           sajnani.visible = false;
+        }
+        for (var l =0; l < planetChildren.length; l++){
+          planetChildren[l].scale.set(2, 2, 2);
         }
         if (firstText != undefined && firstText.length > 0){
           for (var i=0; i < firstText.length; i++){
@@ -810,7 +814,7 @@ lookAtTween.onUpdate(function() {
 });
 
 
-
+var planetID = "";
 function onDocumentMouseClick( event ) {
 
 
@@ -846,34 +850,51 @@ function onDocumentMouseClick( event ) {
           // document.removeEventListener('mousemove', onDocumentMouseMove);
 
           UUID = constChildren[j].uuid;
-          console.log(constChildren[j].position);
-          console.log(secondSPos);
           for (var l = 0; l < 5; l++){
-
             if (constChildren[j].position.x == secondSPos[l][1] && constChildren[j].position.y == secondSPos[l][0]){
               headerText = workTitles[l];
             } else if (constChildren[j].position.x == firstSPos[l][1] && constChildren[j].position.y == firstSPos[l][0]){
               headerText = hobbyTitles[l];
             }
           }
-          console.log(headerText);
           lookAtTween
             .stop() // just in case it's still animating
             .to(constChildren[j].position, 1000) // set destination and duration
             .start(); // start the tween
-          // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
-          // if (textFilter !== undefined && textFilter.length != 0) {
-          //   textFilter[0].visible = false;
-          // }
+          var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+          if (textFilter !== undefined && textFilter.length != 0) {
+            textFilter[0].visible = false;
+          }
           constChildren[j].scale.set(1, 1, 1);
           sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
-          adjustCameraAndInitiateWarp(constChildren, j)
+          adjustCameraAndInitiateWarp(constChildren, j, textFilter)
         }
       }
       for (var j=0; j < planetChildren.length; j++){
           if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z) {
             var textVals = objectDict[planetChildren[j].uuid].split('///');
-            window.open(textVals[2], '_blank');
+            if (( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
+              if (planetID == planetChildren[j].uuid){
+                window.open(textVals[2], '_blank');    
+              } else {
+                var radius = planetChildren[j].geometry.parameters.radius;
+                var scale = radius * 100;
+                planetChildren[j].scale.set(scale, scale, scale);
+                $('#text').css('visibility','visible').hide().fadeIn("slow");
+                $('#header1').html(textVals[0]);
+                $('#para').html(textVals[1]);
+              }
+            } else {
+              window.open(textVals[2], '_blank');    
+            }
+            planetID = planetChildren[j].uuid;
+          } else {
+            if (( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
+                planetChildren[j].scale.set(2, 2, 2);
+            } else {
+              planetChildren[j].scale.set(1,1,1); 
+            }
+                       
           }
       }
     }
@@ -881,7 +902,7 @@ function onDocumentMouseClick( event ) {
   
 }
 
-function adjustCameraAndInitiateWarp(constChildren, position){
+function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
   sleep(1500, position).then((j)=> {
     // keep this outside of the event-handler
     var prePosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
@@ -904,22 +925,22 @@ function adjustCameraAndInitiateWarp(constChildren, position){
       .start(); // start the tween
 
       sleep(500, position).then((j) => {
-        $('#holder').css('visibility','visible').hide().fadeIn("slow");
+        $('#holder').css('visibility','visible').css('opacity', 1).fadeIn("slow");
         mouseActive = true;
-        deactivateWarp(constChildren, position);
+        deactivateWarp(constChildren, position, textFilter);
       })
     
   });
 }
 
-function deactivateWarp(constChildren,position){
+function deactivateWarp(constChildren,position,textFilter){
   sleep(2000).then((j) => {
     mouseActive = false;
-    zoomToStar(constChildren, position);
+    zoomToStar(constChildren, position, textFilter);
   });
 }
 
-function zoomToStar(constChildren, position){
+function zoomToStar(constChildren, position, textFilter){
   sleep(1000, position).then((j) => {
     $('#holder').fadeTo("slow", 0);
     $('#topHeader').text(headerText);
@@ -956,11 +977,13 @@ function zoomToStar(constChildren, position){
       sceneSolarOutline.traverse( function ( object ) { object.visible = true; } );
       $('#back').hide();
       $('#topHeader').hide();
+      $('#text').hide();
       sceneOrbits.traverse( function ( object ) {
         if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
           object.visible = false;
         }
       });
+      textFilter[0].visible = true;
       dynamicallyResize();
     })
 
