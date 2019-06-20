@@ -411,7 +411,7 @@ var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
-var firstText, secondText, sajnani;
+var firstText, secondText, sajnani, samar;
 getInfo(function(){
 console.log('here');
 
@@ -434,7 +434,7 @@ loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
 var loader = new THREE.FontLoader();
 loader.load( './fonts/sigreg.json', function ( font ) {
   sajnani = generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani', font);
-  generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
+  samar = generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
 });
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
@@ -619,6 +619,9 @@ $('#nextS').click(function(){
   if (sajnani != undefined){
     sajnani.visible = true;
   }
+  if (samar != undefined){
+    samar.visible = false;
+  }
   if (secondText != undefined){
     var stLength = secondText.length;
     for (var i=0; i < stLength; i++){
@@ -666,8 +669,11 @@ $('#nextS').click(function(){
     camera.position.y = 0;
     camera.position.z = 70;
     camera.lookAt(new THREE.Vector3(-35, 0, -100));
+    if (samar != undefined){
+      samar.visible = true;
+    }
     if (sajnani != undefined){
-      sajnani.visible = true;
+      sajnani.visible = false;
     }
     if (secondText != undefined){
       var stLength = secondText.length;
@@ -723,6 +729,9 @@ function dynamicallyResize(){
         }
         if (sajnani != undefined){
           sajnani.visible = false;
+        }
+        if (samar != undefined){
+          samar.visible = true;
         }
         var plLength = planetChildren.length;
         for (var l =0; l < plLength; l++){
