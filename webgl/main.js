@@ -123,7 +123,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 }
 
 function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, size, font, uuid=0){
-    
+      console.log
 
       var options = {
         size: size,
@@ -196,7 +196,7 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
   }
 }
 
-function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opacity=1, font){
+function createText(scene, positions, zDistance, titles, font, color = 0xA9A9A9, opacity=1){
   var results = [];
   results.push(generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0],2, font));
   results.push(generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+10, color, opacity, titles[1],2, font))
