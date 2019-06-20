@@ -842,7 +842,7 @@ function onDocumentMouseClick( event ) {
     }
     if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
       for (var j=0; j < constChildren.length; j ++){
-        if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
+        if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5){
           // document.removeEventListener('mousemove', onDocumentMouseMove);
 
           UUID = constChildren[j].uuid;
