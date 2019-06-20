@@ -124,7 +124,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 
 function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, size, uuid=0){
     var loader = new THREE.FontLoader();
-    loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/helvetiker_regular.typeface.json', function ( font ) {
+    loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
 
       var options = {
         size: size,
@@ -158,7 +158,7 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
 
 function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title){
   var loader = new THREE.FontLoader();
-  loader.load( './webgl/fonts/sigreg.json', function ( font ) {
+  loader.load( './fonts/sigreg.json', function ( font ) {
 
     var options = {
       size: 6,
@@ -240,7 +240,7 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (education[i].school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo@3x.jpg";
+      imageurl = "../western_logo@3x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
@@ -260,9 +260,9 @@ function createOrbitsResearch(scene, planets, desc, positions, zDistance, resear
     var name = research[i].name.replace('\.pdf', '');
     var description = research_description.find(o => o.name === name);
     if (description.school == "Western University"){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo@3x.jpg";
+      imageurl = "../western_logo@3x.jpg";
     } else {
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/waterloo%403x.png";
+      imageurl = "../waterloo%403x.png";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = description.title + '///Description: ' + description.description +' <br> Supervisor: ' + description.supervisor + ' <br> University: '+ description.school+ '///' + research[i].html_url;
@@ -295,9 +295,9 @@ function createOrbitsWork(scene, planets, desc, positions, zDistance, work, colo
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (work[i].position.includes("IBM")){
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/ibm_logo%403x.png";
+      imageurl = "../ibm_logo%403x.png";
     } else {
-      imageurl = "https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/western_logo@3x.jpg";
+      imageurl = "../western_logo@3x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///';
