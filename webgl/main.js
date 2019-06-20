@@ -158,7 +158,7 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
 
 function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title){
   var loader = new THREE.FontLoader();
-  loader.load( 'https://raw.githubusercontent.com/ssajnani/ssajnani.github.io/master/webgl/fonts/sigreg.json', function ( font ) {
+  loader.load( './webgl/fonts/sigreg.json', function ( font ) {
 
     var options = {
       size: 6,
@@ -412,25 +412,13 @@ createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1
 createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, research, research_description, 0xffffff);
 createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, itVideos, 0xffffff);
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, resume, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.2, 1.2], -100, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, firstSPos, [1.8, 1.8], -100, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, firstSPos, [2.4, 2.4], -100, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, firstSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.3);
 createText(sceneText, textFPos, -100, hobbyTitles);
-//createLineTrace(scene, firstSPos, 0.1);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, spotify_playlists, 0xffffff);
-// createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, tweets, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, secondSPos, [0.6, 0.6], -100, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.2, 1.2], -100, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, secondSPos, [1.8, 1.8], -100, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, secondSPos, [2.4, 2.4], -100, 0xffffff);
-// createOrbits(sceneOrbits, scenePlanets, secondSPos, [3, 3], -100, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
 var firstText = createText(sceneText, textSPos, -100, workTitles);
-//scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title
 var sajnani = generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani');
 generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar');
 
@@ -556,7 +544,8 @@ var fps, fpsInterval, startTime, now, then, elapsed;
 
 function animate(time) {
     // Put your drawing code here
-        for (var num=0; num < sphereMats.length; num ++){
+        var smLength = sphereMats.length;
+        for (var num=0; num < smLength; num ++){
           sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
         }
 
@@ -617,20 +606,24 @@ function dynamicallyResize(){
         if (sajnani != undefined){
           sajnani.visible = false;
         }
-        for (var l =0; l < planetChildren.length; l++){
+        var plLength = planetChildren.length;
+        for (var l =0; l < plLength; l++){
           planetChildren[l].scale.set(2, 2, 2);
         }
-        if (firstText != undefined && firstText.length > 0){
-          for (var i=0; i < firstText.length; i++){
+        var ftLength = firstText.length;
+        if (firstText != undefined && ftLength > 0){
+          for (var i=0; i < ftLength; i++){
             if (firstText[i] != undefined){
               firstText[i].visible = true;
             }
           }
         }
-        for (var j=0; j < constChildren.length; j ++){
+        var ccLength = constChildren.length;
+        for (var j=0; j < ccLength; j ++){
             if (constChildren[j].position.x > 0){
               constChildren[j].visible = false;
-                for (var i = 0; i < const2.length; i ++){
+              var cLength = const2.lengt;
+                for (var i = 0; i < cLength; i ++){
                     if (const2[i].position.x === constChildren[j].position.x){
                         const2[i].visible = false;
                     }
@@ -649,18 +642,21 @@ function dynamicallyResize(){
         if (sajnani != undefined){
           sajnani.visible = true;
         }
-        if (firstText != undefined && firstText.length > 0){
-          for (var i=0; i < firstText.length; i++){
+        var ftLength = firstText.length;
+        if (firstText != undefined && ftLength > 0){
+          for (var i=0; i < ftLength; i++){
             if (firstText[i] != undefined){
               firstText[i].visible = false;
             }
           }
         }
         var constChildren = sceneConstellations.children;
-        for (var j=0; j < constChildren.length; j ++){
+        var ccLength = constChildren.length;
+        for (var j=0; j < ccLength; j ++){
             if (constChildren[j].position.x > 0){
             constChildren[j].visible = true;
-                for (var i = 0; i < const2.length; i ++){
+            var cLength = const2.length;
+                for (var i = 0; i < cLength; i ++){
                     if (const2[i].position.x === constChildren[j].position.x){
                         const2[i].visible = true;
                     }
@@ -712,22 +708,25 @@ function onDocumentMouseMove( event ) {
     var orbits = raycaster.intersectObjects(orbitChildren);
     intersects.push(planets);
     if (intersects.length == 1){
-      for (var j=0; j < constChildren.length; j ++){
+      var ccLength = constChildren.length;
+      for (var j=0; j < ccLength; j ++){
         constChildren[j].scale.set(1, 1, 1);
       }
-      for (var j=0; j < planetChildren.length; j ++){
+      var pcLength = planetChildren.length;
+      for (var j=0; j < pcLength; j ++){
         planetChildren[j].scale.set(1, 1, 1);
       }
       document.getElementById('text').style.display = 'none';
     }
-
-    for (var i = 0; i < intersects.length; i ++){
+    var iLength = intersects.length;
+    for (var i = 0; i < iLength; i ++){
         if (Array.isArray(intersects[i]) && intersects[i].length > 0){
           var temp = intersects[i][0];
           intersects[i]=temp;
         }
         if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
-            for (var j=0; j < constChildren.length; j ++){
+          var ccLength = constChildren.length;  
+          for (var j=0; j < ccLength; j ++){
                 if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
 
                     UUID = constChildren[j].uuid;
@@ -766,7 +765,8 @@ function onDocumentMouseMove( event ) {
                 }
             }
             //  ||(intersects[i].object.position.x === orbitChildren[j].position.x && intersects[i].object.position.y === orbitChildren[j].position.y && intersects[i].object.position.z === orbitChildren[j].position.z && otherID !== orbitChildren[j].uuid)
-            for (var j=0; j < planetChildren.length; j++){
+            var pcLength = planetChildren.length;
+            for (var j=0; j < pcLength; j++){
               if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z && otherID !== planetChildren[j].uuid) {
                 otherID = planetChildren[j].uuid;
                 var textVals = objectDict[otherID].split('///');
@@ -840,13 +840,15 @@ function onDocumentMouseClick( event ) {
 
   var intersects = raycaster.intersectObjects( children );
   intersects.push(planets);
-  for (var i = 0; i < intersects.length; i ++){
+  var iLength = intersects.length;
+  for (var i = 0; i < iLength; i ++){
     if (Array.isArray(intersects[i]) && intersects[i].length > 0){
       var temp = intersects[i][0];
       intersects[i]=temp;
     }
     if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
-      for (var j=0; j < constChildren.length; j ++){
+      var ccLength = constChildren.length;
+      for (var j=0; j < ccLength; j ++){
         if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5){
           // document.removeEventListener('mousemove', onDocumentMouseMove);
 
@@ -871,7 +873,8 @@ function onDocumentMouseClick( event ) {
           adjustCameraAndInitiateWarp(constChildren, j, textFilter)
         }
       }
-      for (var j=0; j < planetChildren.length; j++){
+      var pcLength = planetChildren.length;
+      for (var j=0; j < pcLength; j++){
           if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z) {
             var textVals = objectDict[planetChildren[j].uuid].split('///');
             if (( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
@@ -1003,10 +1006,12 @@ function onWindowResize(){
     composer.setSize( window.innerWidth , window.innerHeight);
     var constChildren = sceneConstellations.children;
     var textChildren = sceneText.children;
-    for (var j=0; j < constChildren.length; j ++){
+    var ccLength = constChildren.length;
+    for (var j=0; j < ccLength; j ++){
         constChildren[j].scale.set(1,1,1);
     }
-    for (var j=0; j < textChildren.length; j ++){
+    var tcLength = textChildren.length;
+    for (var j=0; j < tcLength; j ++){
         textChildren[j].visible = false;
     }
 
