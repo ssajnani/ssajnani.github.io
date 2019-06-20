@@ -122,10 +122,8 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 
 }
 
-function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, size, uuid=0){
-    var loader = new THREE.FontLoader();
-    loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
-
+function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, size, font uuid=0){
+    
       var options = {
         size: size,
         weight: 'normal',
@@ -152,14 +150,10 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
         text1.visible = true;
       }
       return text1;
-    });
 
 }
 
-function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title){
-  var loader = new THREE.FontLoader();
-  loader.load( './fonts/sigreg.json', function ( font ) {
-
+function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, font){
     var options = {
       size: 6,
       weight: 'normal',
@@ -182,8 +176,6 @@ function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, op
       text1.visible = false;
     }
     return text1;
-  });
-
 }
 
 
@@ -201,17 +193,17 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
   }
 }
 
-function createText(scene, positions, zDistance, titles, color = 0xA9A9A9, opacity=1){
+function createText(scene, positions, zDistance, titles, font, color = 0xA9A9A9, opacity=1){
   var results = [];
-  results.push(generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0],2));
-  results.push(generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+10, color, opacity, titles[1],2))
-  results.push(generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2],2));
-  results.push(generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3],2));
+  results.push(generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0],2, font));
+  results.push(generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+10, color, opacity, titles[1],2, font))
+  results.push(generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2],2, font));
+  results.push(generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3],2, font));
   var offset = 10;
   if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
     offset = -13;
   }
-  results.push(generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+offset, color, opacity, titles[4],2));
+  results.push(generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+offset, color, opacity, titles[4],2, font));
   return results; 
 }
 
@@ -404,7 +396,7 @@ var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
-
+var firstText, sajnani;
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, projects, 0xffffff);
@@ -413,14 +405,20 @@ createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2]
 createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, itVideos, 0xffffff);
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, resume, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.3);
-createText(sceneText, textFPos, -100, hobbyTitles);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, spotify_playlists, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
-var firstText = createText(sceneText, textSPos, -100, workTitles);
-var sajnani = generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani');
-generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar');
+var loader = new THREE.FontLoader();
+loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
+  createText(sceneText, textFPos, -100, hobbyTitles, font);
+  firstText = createText(sceneText, textSPos, -100, workTitles, font);
+});
+var loader = new THREE.FontLoader();
+loader.load( './fonts/sigreg.json', function ( font ) {
+  sajnani = generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani', font);
+  generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
+});
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
