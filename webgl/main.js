@@ -413,18 +413,21 @@ var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar;
 getInfo(function(){
-console.log('here');
+  $.getJSON('https://fastack.herokuapp.com/gatheredFacts', function(data){
+
+ 
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
-createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, projects, 0xffffff);
-createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, education, 0xffffff);
-createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, research, research_description, 0xffffff);
-createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, itVideos, 0xffffff);
-createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, resume, 0xffffff);
+createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, data.projects, 0xffffff);
+createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, data.education, 0xffffff);
+createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, data.research, data.research_description, 0xffffff);
+createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, data.itVideos, 0xffffff);
+createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.3);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
-createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, instagram_pics, 0xffffff);
-createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, spotify_playlists, 0xffffff);
+createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, tweets, 0xffffff);
+createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
+createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
 var loader = new THREE.FontLoader();
 loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
@@ -435,6 +438,7 @@ var loader = new THREE.FontLoader();
 loader.load( './fonts/sigreg.json', function ( font ) {
   sajnani = generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani', font);
   samar = generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
+});
 });
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );

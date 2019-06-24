@@ -85,7 +85,7 @@ function getResume(callback){
      });
 }
 
-function getTweets(){
+function getTweets(callback){
     var configProfile = {
         "profile": {"screenName": 'samar_sajnani'},
         "domId": '',
@@ -94,15 +94,15 @@ function getTweets(){
         "showUser": true,
         "showTime": true,
         "dateFunction": '',
-        "customCallback": handleTweets
+        "customCallback": callback
       };
       twitterFetcher.fetch(configProfile);
 }
 
-function handleTweets(twts){
-    tweets = twts;
-    createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
-}
+// function handleTweets(twts){
+//     tweets = twts;
+//     createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
+// }
 
 function getInstagramInfo(callback){
     $.getJSON(INSTAGRAM, function(data) {
@@ -231,49 +231,9 @@ function toDataUrl(url, callback) {
 // });
 
 function getInfo(callback){
-    var count = 0;
-    gatherProjects(function(){
-        count++;
-        if (count == 7){
-            return callback();
-        }
-    });
-    gatherEducationMilestones(function(){
-        count++;
-        if (count == 7){
-            return callback();
-        }
-    });
-    gatherResearchPapers(function(){
-        count++;
-        if (count == 7){
-            return callback();
-        }
-    });
-    gatherITVideoInfo(function(){
-        count++;
-        if (count == 7){
-            return callback();
-        }
-    });
-    getResume(function(){
-        count++;
-        if (count == 7){
-            return callback();
-        }
-    });
-    getTweets();
-    getInstagramInfo(function(){
-        count++;
-        if (count == 7){
-            return callback();
-        }
-    });
-    gatherMusic(function(){
-        count++;
-        if (count == 7){
-            return callback();
-        }
+    getTweets(function(twts){
+        tweets = twts;
+        return callback();
     });
 }
 
