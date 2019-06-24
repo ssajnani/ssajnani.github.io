@@ -1111,7 +1111,9 @@ function zoomToStar(constChildren, position, textFilter){
       $('#back').hide();
       $('#topHeader').hide();
       $('#text').hide();
-      
+      sceneOrbits.traverse( function ( object ) {
+        object.visible = false;
+      });
       if (samar != undefined){
         samar.visible = true;
       }
