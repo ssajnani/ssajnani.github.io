@@ -991,6 +991,11 @@ function onDocumentMouseClick( event ) {
           var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
           constChildren[j].scale.set(1, 1, 1);
           sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
+          sceneOrbits.traverse( function ( object ) {
+            if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
+              object.visible = true;
+            }
+          });
           adjustCameraAndInitiateWarp(constChildren, j, textFilter)
         }
       }
@@ -1089,11 +1094,6 @@ function zoomToStar(constChildren, position, textFilter){
       .stop() // just in case it's still animating
       .to(newPosition, 1000) // set destination and duration
       .start(); // start the tween
-    sceneOrbits.traverse( function ( object ) {
-      if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
-        object.visible = true;
-      }
-    });
     $('#back').click(function(){
       var const2 = sceneSolarOutline.children;
       if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
