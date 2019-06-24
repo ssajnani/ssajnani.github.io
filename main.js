@@ -245,7 +245,7 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (education[i].school == "Western University"){
-      imageurl = "../western_logo@3x.jpg";
+      imageurl = "./western_logo@3x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
@@ -265,9 +265,9 @@ function createOrbitsResearch(scene, planets, desc, positions, zDistance, resear
     var name = research[i].name.replace('\.pdf', '');
     var description = research_description.find(o => o.name === name);
     if (description.school == "Western University"){
-      imageurl = "../western_logo@3x.jpg";
+      imageurl = "./western_logo@3x.jpg";
     } else {
-      imageurl = "../waterloo%403x.png";
+      imageurl = "./waterloo%403x.png";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = description.title + '///Description: ' + description.description +' <br> Supervisor: ' + description.supervisor + ' <br> University: '+ description.school+ '///' + research[i].html_url;
@@ -300,9 +300,9 @@ function createOrbitsWork(scene, planets, desc, positions, zDistance, work, colo
   for (var i = 0; i < pLength; i++){
     var imageurl = "";
     if (work[i].position.includes("IBM")){
-      imageurl = "../ibm_logo%403x.png";
+      imageurl = "./ibm_logo%403x.png";
     } else {
-      imageurl = "../western_logo@3x.jpg";
+      imageurl = "./western_logo@3x.jpg";
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///https://www.linkedin.com/in/samarsajnani/';
