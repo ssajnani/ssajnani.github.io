@@ -1089,7 +1089,6 @@ function zoomToStar(constChildren, position, textFilter){
       .stop() // just in case it's still animating
       .to(newPosition, 1000) // set destination and duration
       .start(); // start the tween
-    sceneOrbits.visible = true;
     sceneOrbits.traverse( function ( object ) {
       if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
         object.visible = true;
