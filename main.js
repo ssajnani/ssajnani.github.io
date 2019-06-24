@@ -988,7 +988,7 @@ function onDocumentMouseClick( event ) {
             .stop() // just in case it's still animating
             .to(constChildren[j].position, 1000) // set destination and duration
             .start(); // start the tween
-          var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+          var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 25 && child.position.y === constChildren[j].position.y);
           constChildren[j].scale.set(1, 1, 1);
           sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
           adjustCameraAndInitiateWarp(constChildren, j, textFilter)
