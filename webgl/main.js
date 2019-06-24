@@ -1096,10 +1096,17 @@ function zoomToStar(constChildren, position, textFilter){
       }
     });
     $('#back').click(function(){
-      camera.position.x = 0;
-      camera.position.y = 0;
-      camera.position.z = 0;
-      camera.lookAt(new THREE.Vector3(0, 0, -100));
+      if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
+        camera.position.x = -35;
+        camera.position.y = 0;
+        camera.position.z = 60;
+        camera.lookAt(new THREE.Vector3(-35, 0, -100));
+      } else {
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 0;
+        camera.lookAt(new THREE.Vector3(0, 0, -100));
+      }
       sceneSolarOutline.traverse( function ( object ) { object.visible = true; } );
       $('#back').hide();
       $('#topHeader').hide();
