@@ -412,7 +412,7 @@ var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar;
-getInfo(function(){
+getInfo(function(tweets){
   $.getJSON('https://fastack.herokuapp.com/gatheredFacts', function(data){
 
  
@@ -425,7 +425,7 @@ createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3],
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.3);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
-createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, tweets, 0xffffff);
+createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
