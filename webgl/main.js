@@ -1096,6 +1096,7 @@ function zoomToStar(constChildren, position, textFilter){
       }
     });
     $('#back').click(function(){
+      var const2 = sceneSolarOutline.children;
       if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
         camera.position.x = -35;
         camera.position.y = 0;
