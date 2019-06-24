@@ -409,7 +409,7 @@ var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
 var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
 var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
-var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
+var textSPos = [[20,-40], [10, -58], [0,-53], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar;
 getInfo(function(){
@@ -854,7 +854,7 @@ function onDocumentMouseMove( event ) {
 
                     UUID = constChildren[j].uuid;
                     
-                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 25 && child.position.y === constChildren[j].position.y);
                     var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (!( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
                       if (textFilter !== undefined && textFilter.length != 0) {
@@ -873,7 +873,7 @@ function onDocumentMouseMove( event ) {
                 } else {
                     UUID = "";
                     otherID = "";
-                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 25 && child.position.y === constChildren[j].position.y);
                     var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (!( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
                       if (textFilter !== undefined && textFilter.length != 0) {
@@ -1096,6 +1096,7 @@ function zoomToStar(constChildren, position, textFilter){
       }
     });
     $('#back').click(function(){
+      var const2 = sceneSolarOutline.children;
       if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
         camera.position.x = -35;
         camera.position.y = 0;
@@ -1112,9 +1113,7 @@ function zoomToStar(constChildren, position, textFilter){
       $('#topHeader').hide();
       $('#text').hide();
       sceneOrbits.traverse( function ( object ) {
-        if (object.position.x === constChildren[j].position.x && object.position.y === constChildren[j].position.y && object.position.z === constChildren[j].position.z) {
-          object.visible = false;
-        }
+        object.visible = false;
       });
       if (samar != undefined){
         samar.visible = true;
