@@ -412,7 +412,7 @@ var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-52], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar;
-getInfo(function(tweets){
+getInfo(function(){
   $.getJSON('https://fastack.herokuapp.com/gatheredFacts', function(data){
 
  
