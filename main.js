@@ -164,9 +164,7 @@ function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, op
     };
 
     // the createMesh is the same function we saw earlier
-    var text1 = new THREE.Mesh(new THREE.TextGeometry(title, options), new THREE.MeshBasicMaterial({
-      color: color,
-    }));
+    var text1 = new THREE.Mesh(new THREE.TextGeometry(title, options));
     text1.position.z = meshZ;
     text1.position.y = meshY;
     text1.position.x = meshX;
