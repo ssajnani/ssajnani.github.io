@@ -1157,7 +1157,6 @@ function zoomToStar(constChildren, position, textFilter){
       }
       textFilter[0].visible = true;
       dynamicallyResize();
-      $('#nextS').show();
     })
 
   });
