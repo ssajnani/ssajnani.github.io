@@ -232,8 +232,8 @@ function toDataUrl(url, callback) {
 
 function getInfo(callback){
     getTweets(function(twts){
-        tweets = twts;
+        console.log(twts);
+	tweets = twts;
         return callback();
     });
 }
-
