@@ -385,6 +385,7 @@ var sceneStars = new THREE.Scene();
 var sceneBG = new THREE.Scene();
 var sceneSolarOutline = new THREE.Scene();
 var sceneText = new THREE.Scene();
+var sceneTextName = new THREE.Scene();
 var sceneOrbits = new THREE.Scene();
 var scenePlanets = new THREE.Scene();
 var sceneDescriptions = new THREE.Scene();
@@ -434,8 +435,8 @@ loader.load( './fonts/Pacifico_Regular.json', function ( font ) {
 });
 var loader = new THREE.FontLoader();
 loader.load( './fonts/sigreg.json', function ( font ) {
-  sajnani = generateEndOfNames(sceneText, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani', font);
-  samar = generateEndOfNames(sceneText, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
+  sajnani = generateEndOfNames(sceneTextName, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani', font);
+  samar = generateEndOfNames(sceneTextName, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
 });
 });
 
@@ -511,12 +512,14 @@ function preRender(){
     renderPass3.clear = false;
     var renderPass4 = new THREE.RenderPass(sceneText, camera);
     renderPass4.clear = false;
-    var renderPass5 = new THREE.RenderPass(sceneOrbits, camera);
+    var renderPass5 = new THREE.RenderPass(sceneTextName, camera);
     renderPass5.clear = false;
-    var renderPass6 = new THREE.RenderPass(scenePlanets, camera);
+    var renderPass6 = new THREE.RenderPass(sceneOrbits, camera);
     renderPass6.clear = false;
-    var renderPass7 = new THREE.RenderPass(sceneDescriptions, camera);
+    var renderPass7 = new THREE.RenderPass(scenePlanets, camera);
     renderPass7.clear = false;
+    var renderPass8 = new THREE.RenderPass(sceneDescriptions, camera);
+    renderPass8.clear = false;
 
 
 
@@ -541,9 +544,10 @@ function preRender(){
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
-    composer.addPass(bloomPass);
     composer.addPass(renderPass6);
+    composer.addPass(bloomPass);
     composer.addPass(renderPass7);
+    composer.addPass(renderPass8);
     // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
     
@@ -821,6 +825,7 @@ function onDocumentMouseMove( event ) {
     var children = sceneSolarOutline.children;
     var constChildren = sceneConstellations.children;
     var textChildren = sceneText.children;
+    var textChildrenName = sceneTextName.children;
     var orbitChildren = sceneOrbits.children;
     var planetChildren = scenePlanets.children;
 
@@ -853,7 +858,7 @@ function onDocumentMouseMove( event ) {
                     UUID = constChildren[j].uuid;
                     
                     var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 30 && child.position.y === constChildren[j].position.y);
-                    var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
+                    var endFilter = textChildrenName.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (!( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
                       if (textFilter !== undefined && textFilter.length != 0) {
                         textFilter[0].visible = true;
@@ -872,7 +877,7 @@ function onDocumentMouseMove( event ) {
                     UUID = "";
                     otherID = "";
                     var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 30 && child.position.y === constChildren[j].position.y);
-                    var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
+                    var endFilter = textChildrenName.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (!( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
                       if (textFilter !== undefined && textFilter.length != 0) {
                         textFilter[0].visible = false;
@@ -955,6 +960,7 @@ function onDocumentMouseClick( event ) {
   // calculate objects intersecting the picking ray
   var children = sceneSolarOutline.children;
   var constChildren = sceneConstellations.children;
+  var textChildrenName = sceneTextName.children;
   var textChildren = sceneText.children;
   var planetChildren = scenePlanets.children;
   var planets = raycaster.intersectObjects(planetChildren);
