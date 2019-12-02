@@ -428,7 +428,7 @@ createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -1
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
 var loader = new THREE.FontLoader();
-loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
+loader.load( './fonts/Pacifico_Regular.json', function ( font ) {
   secondText = createText(sceneText, textFPos, -100, hobbyTitles, font);
   firstText = createText(sceneText, textSPos, -100, workTitles, font);
 });
