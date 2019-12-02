@@ -32,10 +32,9 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-function generateSphere(scene, rotation, radius, widthSegment=40, heightSegment=400, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
+function generateSphere(scene, rotation, sphereGeo, meshZ=-100, meshY, meshX, ambient=0x000000, opacity=1) {
   //geometry = new THREE.CubeGeometry(200,200,200);
     var sphereMat;
-    var sphereGeo = new THREE.SphereGeometry(radius, widthSegment, heightSegment);
     var transparent = false;
     if (opacity < 1) {
         transparent = true;
@@ -186,8 +185,9 @@ function calculateRandomInt(max, min){
 }
 
 function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1) {
+  var sphereGeo = new THREE.SphereGeometry(calculateStarRadius(radius[0], radius[1]), 40, 400);
   for (var i = 0; i < 5; i++){
-    generateSphere(scene, 5, calculateStarRadius(radius[0], radius[1]), 40, 400, zDistance, positions[i][0], positions[i][1], color, opacity);
+    generateSphere(scene, 5, sphereGeo, zDistance, positions[i][0], positions[i][1], color, opacity);
   }
 }
 function getRandom(arr, n) {
