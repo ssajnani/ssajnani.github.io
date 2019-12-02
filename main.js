@@ -206,15 +206,15 @@ function getRandom(arr, n) {
 
 function createText(scene, positions, zDistance, titles, font, color = 0xA9A9A9, opacity=1){
   var results = [];
-  results.push(generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0],2, font));
-  results.push(generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+10, color, opacity, titles[1],2, font))
-  results.push(generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2],2, font));
-  results.push(generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3],2, font));
+  results.push(generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0],2.2, font));
+  results.push(generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+10, color, opacity, titles[1],2.2, font))
+  results.push(generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2],2.2, font));
+  results.push(generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3],2.2, font));
   var offset = 10;
   if ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500)){
     offset = -13;
   }
-  results.push(generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+offset, color, opacity, titles[4],2, font));
+  results.push(generateText(scene, 5, zDistance, positions[4][0], positions[4][1]+offset, color, opacity, titles[4],2.2, font));
   return results; 
 }
 
@@ -871,7 +871,7 @@ function onDocumentMouseMove( event ) {
                 } else {
                     UUID = "";
                     otherID = "";
-                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 25 && child.position.y === constChildren[j].position.y);
+                    var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 30 && child.position.y === constChildren[j].position.y);
                     var endFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) == 15 && child.position.y === constChildren[j].position.y);
                     if (!( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
                       if (textFilter !== undefined && textFilter.length != 0) {
