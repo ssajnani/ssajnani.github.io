@@ -9,9 +9,10 @@ var WIDTH = window.innerWidth ,
     HEIGHT = window.innerHeight;
     
 var headerText = "";
-var bloomStrength = 1.5;
-var bloomRadius = 0;
+var bloomStrength = 0.9
+var bloomRadius = 0.1;
 var bloomThreshold = 0.1;
+var exposure = 1.5;
 var start = Date.now();
 var colors = {"20": {"25": 0xff0000, "-15": 0xffa500}, "10": {"10": 0xffff00, "-30": 0xff0011}, "0": {"20": 0x0000ff, "-20": 0x0000ff}, "-10": {"30": 0xff0011, "-10": 0xffff00}, "-20": {"15": 0xffa500, "-25": 0xff0000}};
 
@@ -402,7 +403,7 @@ webGLRenderer.setClearColor(0x000, 0.0);
 webGLRenderer.setPixelRatio(window.devicePixelRatio);
 webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
-webGLRenderer.toneMapping = THREE.LinearToneMapping;
+webGLRenderer.toneMappingExposure = Math.pow(exposure, 4.0 );
 
 var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
