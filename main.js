@@ -423,12 +423,12 @@ createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1
 createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, data.research, data.research_description, 0xffffff);
 createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, data.itVideos, 0xffffff);
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
-createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.3);
+createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.1);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
-createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.3);
+createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.1);
 var loader = new THREE.FontLoader();
 loader.load( './fonts/Pacifico_Regular.json', function ( font ) {
   secondText = createText(sceneText, textFPos, -100, hobbyTitles, font);
