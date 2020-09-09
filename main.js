@@ -93,12 +93,10 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   var geometry = new THREE.CircleGeometry(0.06, 32, 32);
   const myUrl = imageurl;
 
-  var material = new THREE.MeshBasicMaterial( {overdraw: true, transparent: false, opacity: 1} );
   const textureLoader = new THREE.TextureLoader();
-  const myTexture = textureLoader.load(myUrl, function(texture){
-    material.map = texture;
-    material.needsUpdate = true;
-  });
+  const myTexture = textureLoader.load(myUrl);
+  myTexture.encoding = sRGBEncoding;
+  var material = new THREE.MeshBasicMaterial( {map: myTexture, overdraw: true, transparent: false, opacity: 1} );
 
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
