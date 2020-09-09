@@ -546,8 +546,8 @@ function preRender(){
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
     composer.addPass(renderPass6);
-    composer.addPass(bloomPass);
     composer.addPass(renderPass7);
+    composer.addPass(bloomPass);
     composer.addPass(renderPass8);
     // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
