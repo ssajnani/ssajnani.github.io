@@ -527,8 +527,6 @@ function preRender(){
     var starMask = new THREE.MaskPass(sceneConstellations, camera);
     var clearMask = new THREE.ClearMaskPass();
 
-    var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
-    effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth , 1 / window.innerHeight );
     var copyShader = new THREE.ShaderPass(THREE.CopyShader);
     copyShader.renderToScreen = true;
 
@@ -546,8 +544,8 @@ function preRender(){
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
     composer.addPass(renderPass6);
-    composer.addPass(renderPass7);
     composer.addPass(bloomPass);
+    composer.addPass(renderPass7);
     composer.addPass(renderPass8);
     // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
