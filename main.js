@@ -95,7 +95,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 
   const textureLoader = new THREE.TextureLoader();
   const myTexture = textureLoader.load(myUrl);
-  myTexture.encoding = sRGBEncoding;
+  myTexture.encoding = THREE.sRGBEncoding;
   var material = new THREE.MeshBasicMaterial( {map: myTexture, overdraw: true, transparent: false, opacity: 1} );
 
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
