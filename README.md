@@ -1,6 +1,6 @@
 # Samar Sajnani's Website
 
-[samarsajnani.com](samarsajnani.com)
+[samarsajnani.com](https://samarsajnani.com)
 
 Backend in Heroku
 
