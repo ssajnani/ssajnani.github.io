@@ -326,7 +326,7 @@ function createOrbitsTwitter(scene, planets, desc, positions, zDistance, tweets,
     var tweetURL = "https://twitter.com/anyuse/status/" + tweets[i].match(/tweet_id=([.\u0000-\uFFFF]*?)"/g)[0].replace("tweet_id=", '').replace('"', '');
     var user_id = tweeter.split('@')[1];
     console.log();
-    var result = generateOrbit(scene, planets, 'https://cors-anywhere.herokuapp.com/https://twitter.com/'+ user_id + '/profile_image?size=original', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    var result = generateOrbit(scene, planets, '', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = tweeter + '///'+ tweet + '///' + tweetURL;
     radius += 0.6;
   }
