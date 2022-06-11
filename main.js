@@ -379,6 +379,7 @@ function createOrbitsSpotify(scene, planets, desc, positions, zDistance, spotify
 // orbit.add(mesh);
 
 
+console.log("PRE SCENE INIT");
 
 // create a scene, that will hold all our elements such as objects, cameras and lights.
 var sceneConstellations = new THREE.Scene();
@@ -405,6 +406,7 @@ var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
 var textSPos = [[20,-40], [10, -58], [0,-53], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar;
+console.log("PRE DATA");
 getInfo(function(){
   $.getJSON('https://fastack.herokuapp.com/gatheredFacts', function(data){
 
@@ -433,6 +435,7 @@ loader.load( './fonts/sigreg.json', function ( font ) {
   samar = generateEndOfNames(sceneTextName, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
 });
 });
+console.log("POST DATA");
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
@@ -456,6 +459,7 @@ var starField = new THREE.Points( starsGeometry, starsMaterial );
 
 sceneStars.add( starField );
 
+console.log("PRE CAMERA");
 
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -476,6 +480,7 @@ var materialColor = new THREE.MeshBasicMaterial({ depthTest: false, color: 0xFFF
 var bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), materialColor);
 bgPlane.position.z = -2000;
 bgPlane.scale.set( window.innerWidth , window.innerHeight, 1);
+console.log("POST CAMERA");
 sceneBG.add(bgPlane);
 
 // add the output of the renderer to the html element
