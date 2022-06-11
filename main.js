@@ -484,6 +484,7 @@ webGLRenderer.setPixelRatio(window.devicePixelRatio);
 webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMappingExposure = Math.pow(exposure, 4.0 );
+console.log("RENDER");
 
 
 let delta = 0;
