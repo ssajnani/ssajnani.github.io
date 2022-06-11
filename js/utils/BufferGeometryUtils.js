@@ -88,7 +88,7 @@ THREE.BufferGeometryUtils = {
 
 	    return result;
 
-	}
+	},
 
 	computeTangents: function ( geometry ) {
 
