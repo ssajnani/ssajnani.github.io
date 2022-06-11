@@ -408,6 +408,14 @@ var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar;
 console.log("PRE DATA");
 getInfo(function(){
+  $.getJSON( "https://fastack.herokuapp.com/gatheredFacts", {} )
+	  .done(function( json ) {
+	    console.log(json);
+	  })
+	  .fail(function( jqxhr, textStatus, error ) {
+	    var err = textStatus + ", " + error;
+	    console.log( "Request Failed: " + err );
+	});
   $.getJSON('https://fastack.herokuapp.com/gatheredFacts', function(data){
 	  console.log(data);
 
