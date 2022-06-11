@@ -3,7 +3,7 @@
  */
 
 THREE.BufferGeometryUtils = {
-    randomPointsInBufferGeometry = function ( geometry, n ) {
+	randomPointsInBufferGeometry: function ( geometry, n ) {
 
 
 	    var i,
