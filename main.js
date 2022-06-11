@@ -87,7 +87,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   //geometry = new THREE.CubeGeometry(200,200,200);
   var sphereMat;
   var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
-  var point = THREE.GeometryUtils.randomPointsInGeometry(sphereGeo, 1);
+  var point = THREE.BufferGeometryUtils.randomPointsInGeometry(sphereGeo, 1);
   var geometry = new THREE.CircleGeometry(0.06, 32, 32);
   const myUrl = imageurl;
 
@@ -452,7 +452,7 @@ console.log("POST DATA");
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
 //This will add a starfield to the background of a scene
-var starsGeometry = new THREE.Geometry();
+var starsGeometry = new THREE.BufferGeometry();
 
 for ( var i = 0; i < 100000; i ++ ) {
 
