@@ -396,13 +396,6 @@ camera.position.y = 1000;
 camera.position.z = 0;
 
 // create a render and set the size
-var webGLRenderer = new THREE.WebGLRenderer({antialiasing : true, alpha: true});
-webGLRenderer.setClearColor(0x000, 0.0);
-webGLRenderer.setPixelRatio(window.devicePixelRatio);
-webGLRenderer.autoClear = true;
-webGLRenderer.setSize(WIDTH, HEIGHT);
-webGLRenderer.toneMappingExposure = Math.pow(exposure, 4.0 );
-
 var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
 var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
@@ -484,7 +477,14 @@ bgPlane.scale.set( window.innerWidth , window.innerHeight, 1);
 sceneBG.add(bgPlane);
 
 // add the output of the renderer to the html element
-document.getElementById('container').append(webGLRenderer.domElement);
+canva = document.getElementById('container');
+var webGLRenderer = new THREE.WebGLRenderer({antialiasing : true, alpha: true, canvas: canva});
+webGLRenderer.setClearColor(0x000, 0.0);
+webGLRenderer.setPixelRatio(window.devicePixelRatio);
+webGLRenderer.autoClear = true;
+webGLRenderer.setSize(WIDTH, HEIGHT);
+webGLRenderer.toneMappingExposure = Math.pow(exposure, 4.0 );
+
 
 let delta = 0;
 // 30 fps
