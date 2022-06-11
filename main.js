@@ -195,7 +195,7 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 }
 
 function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
-  var material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+  var material = new THREE.LineBasicMaterial( { color: 0xffffff, width: 10 } );
   var geometry = new THREE.Geometry();
 
   for (var i = 0; i < 5; i++){
@@ -435,7 +435,7 @@ getInfo(function(){
  
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
-writeS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
+writeS(sceneS, firstSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, data.projects, 0xffffff);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, data.education, 0xffffff);
 createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, data.research, data.research_description, 0xffffff);
@@ -443,7 +443,7 @@ createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3],
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.1);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
-writeS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
+writeS(sceneS, secondSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
@@ -496,6 +496,7 @@ light2.position.z = -100;
 light2.position.x = 0;
 light2.position.y = 0;
 sceneConstellations.add(light2);
+sceneS.add(light2);
 sceneSolarOutline.add(light);
 
 var materialColor = new THREE.MeshBasicMaterial({ depthTest: false, color: 0xFFFFFF});
@@ -524,6 +525,8 @@ function preRender(){
 
 
 
+    var renderPass = new THREE.RenderPass(sceneS, camera);
+    renderPass.clear = false;
     var renderPass = new THREE.RenderPass(sceneConstellations, camera);
     renderPass.clear = false;
     var renderPass2 = new THREE.RenderPass(sceneStars, camera);
@@ -543,6 +546,8 @@ function preRender(){
 
 
 
+    var starMask = new THREE.MaskPass(sceneS, camera);
+    var clearMask = new THREE.ClearMaskPass();
     var starMask = new THREE.MaskPass(sceneConstellations, camera);
     var clearMask = new THREE.ClearMaskPass();
 
