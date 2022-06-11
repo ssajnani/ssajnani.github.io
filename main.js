@@ -87,7 +87,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   //geometry = new THREE.CubeGeometry(200,200,200);
   var sphereMat;
   var sphereGeo = new THREE.CircleGeometry(radius, 128, 0, 6.3);
-  var point = THREE.BufferGeometryUtils.randomPointsInGeometry(sphereGeo, 1);
+  var point = THREE.BufferGeometryUtils.randomPointsInBufferGeometry(sphereGeo, 1);
   var geometry = new THREE.CircleGeometry(0.06, 32, 32);
   const myUrl = imageurl;
 
@@ -98,9 +98,9 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
-  sphereGeo.rotateZ(THREE.Math.randFloatSpread(-Math.PI/1.3));
-  sphereGeo.rotateX(THREE.Math.randFloatSpread(-Math.PI/1.3));
-  sphereGeo.rotateY(THREE.Math.randFloatSpread(-Math.PI/1.3));
+  sphereGeo.rotateZ(THREE.MathUtils.randFloatSpread(-Math.PI/1.3));
+  sphereGeo.rotateX(THREE.MathUtils.randFloatSpread(-Math.PI/1.3));
+  sphereGeo.rotateY(THREE.MathUtils.randFloatSpread(-Math.PI/1.3));
   var mesh = new THREE.Line( sphereGeo, sphereMat );
   mesh.position.z = meshZ;
   mesh.position.y = meshY;
@@ -457,9 +457,9 @@ var starsGeometry = new THREE.BufferGeometry();
 for ( var i = 0; i < 100000; i ++ ) {
 
     var star = new THREE.Vector3();
-    star.x = THREE.Math.randFloatSpread( 5000 );
-    star.y = THREE.Math.randFloatSpread( 5000 );
-    star.z = THREE.Math.randFloat(-350, -450 );
+    star.x = THREE.MathUtils.randFloatSpread( 5000 );
+    star.y = THREE.MathUtils.randFloatSpread( 5000 );
+    star.z = THREE.MathUtils.randFloat(-350, -450 );
     // starsGeometry.filter(.vertices[0].x);
 
     starsGeometry.vertices.push( star );
