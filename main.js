@@ -1,4 +1,4 @@
-
+console.log("PRE_VARS");
 
 var isMobile = navigator.userAgentData.mobile; 
 var WIDTH = window.innerWidth ,
@@ -21,9 +21,11 @@ var objectDict = {};
 
 
 
+
 var sphereMats = [];
 
 var clock = new THREE.Clock();
+console.log("POST_VARS");
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
