@@ -231,9 +231,11 @@ function toDataUrl(url, callback) {
 // });
 
 function getInfo(callback){
-    getTweets(function(twts){
-        console.log(twts);
-	tweets = twts;
-        return callback();
-    });
+    //getTweets(function(twts){
+    //    console.log(twts);
+    //	tweets = twts;
+    //    return callback();
+    //});
+    tweets = [];
+    return callback();
 }
