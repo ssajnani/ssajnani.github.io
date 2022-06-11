@@ -409,7 +409,9 @@ var firstText, secondText, sajnani, samar;
 console.log("PRE DATA");
 getInfo(function(){
   $.getJSON('https://fastack.herokuapp.com/gatheredFacts', function(data){
+	  console.log(data);
 
+	  console.log("BEFORE_ORBITS");
  
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
@@ -424,6 +426,7 @@ createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], 
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.1);
+	  console.log("AFTER_ORBITS");
 var loader = new THREE.FontLoader();
 loader.load( './fonts/Pacifico_Regular.json', function ( font ) {
   secondText = createText(sceneText, textFPos, -100, hobbyTitles, font);
@@ -433,6 +436,7 @@ var loader = new THREE.FontLoader();
 loader.load( './fonts/sigreg.json', function ( font ) {
   sajnani = generateEndOfNames(sceneTextName, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani', font);
   samar = generateEndOfNames(sceneTextName, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
+	  console.log("AFTER_FONTS");
 });
 });
 console.log("POST DATA");
