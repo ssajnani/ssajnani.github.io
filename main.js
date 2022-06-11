@@ -193,6 +193,20 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
     generateSphere(scene, 5, sphereGeo, zDistance, positions[i][0], positions[i][1], color, opacity);
   }
 }
+
+function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
+  var material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+  var geometry = new THREE.Geometry();
+
+  for (var i = 0; i < 5; i++){
+	  
+    geometry.vertices.push(new THREE.Vector3( positions[i][0], positions[i][1], zDistance));
+  }
+  var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({}));
+
+}
+
+
 function getRandom(arr, n) {
   var result = new Array(n),
       len = arr.length,
@@ -384,6 +398,7 @@ function createOrbitsSpotify(scene, planets, desc, positions, zDistance, spotify
 
 // create a scene, that will hold all our elements such as objects, cameras and lights.
 var sceneConstellations = new THREE.Scene();
+var sceneS = new THREE.Scene();
 var sceneStars = new THREE.Scene();
 var sceneBG = new THREE.Scene();
 var sceneSolarOutline = new THREE.Scene();
@@ -420,6 +435,7 @@ getInfo(function(){
  
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
+writeS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, data.projects, 0xffffff);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, data.education, 0xffffff);
 createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, data.research, data.research_description, 0xffffff);
@@ -427,6 +443,7 @@ createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3],
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.1);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
+writeS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
 createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
