@@ -196,7 +196,7 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 
 function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
   var material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 10 } )
-  curve = new THREE.SplineCurve([
+  curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3( positions[0][1], positions[0][0], zDistance),
     new THREE.Vector3( positions[1][1], positions[1][0], zDistance),
     new THREE.Vector3( positions[2][1], positions[2][0], zDistance),
