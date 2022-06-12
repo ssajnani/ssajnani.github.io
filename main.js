@@ -195,13 +195,17 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 }
 
 function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
-  var material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 10 } );
+  var material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 10 } )
+  curve = new THREE.CubicBezierCurve3(
+    new THREE.Vector3( position[0][1], position[0][0], zDistance),
+    new THREE.Vector3( position[1][1], position[1][0], zDistance),
+    new THREE.Vector3( position[2][1], position[2][0], zDistance),
+    new THREE.Vector3( position[3][1], position[3][0], zDistance),
+    new THREE.Vector3( position[4][1], position[4][0], zDistance)
+  );
   var geometry = new THREE.Geometry();
+  geometry.vertices = curve.getPoints(50);
 
-  for (var i = 0; i < 5; i++){
-	  
-    geometry.vertices.push(new THREE.Vector3( positions[i][1], positions[i][0], zDistance));
-  }
   var line = new THREE.Line(geometry, material);
   scene.add(line);
   return line;
