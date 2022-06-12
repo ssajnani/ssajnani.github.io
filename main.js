@@ -195,14 +195,14 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 }
 
 function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
-  var material = new THREE.LineBasicMaterial( { color: 0xffffff, width: 10 } );
+  var material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 10 } );
   var geometry = new THREE.Geometry();
 
   for (var i = 0; i < 5; i++){
 	  
     geometry.vertices.push(new THREE.Vector3( positions[i][0], positions[i][1], zDistance));
   }
-  var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({}));
+  var line = new THREE.Line(geometry, material);
 
 }
 
