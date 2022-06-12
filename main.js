@@ -197,11 +197,11 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
   var material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 10 } )
   curve = new THREE.CubicBezierCurve3(
-    new THREE.Vector3( position[0][1], position[0][0], zDistance),
-    new THREE.Vector3( position[1][1], position[1][0], zDistance),
-    new THREE.Vector3( position[2][1], position[2][0], zDistance),
-    new THREE.Vector3( position[3][1], position[3][0], zDistance),
-    new THREE.Vector3( position[4][1], position[4][0], zDistance)
+    new THREE.Vector3( positions[0][1], positions[0][0], zDistance),
+    new THREE.Vector3( positions[1][1], positions[1][0], zDistance),
+    new THREE.Vector3( positions[2][1], positions[2][0], zDistance),
+    new THREE.Vector3( positions[3][1], positions[3][0], zDistance),
+    new THREE.Vector3( positions[4][1], positions[4][0], zDistance)
   );
   var geometry = new THREE.Geometry();
   geometry.vertices = curve.getPoints(50);
