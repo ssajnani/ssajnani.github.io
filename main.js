@@ -200,9 +200,11 @@ function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1)
 
   for (var i = 0; i < 5; i++){
 	  
-    geometry.vertices.push(new THREE.Vector3( positions[i][0], positions[i][1], zDistance));
+    geometry.vertices.push(new THREE.Vector3( positions[i][1], positions[i][0], zDistance));
   }
   var line = new THREE.Line(geometry, material);
+  scene.add(line);
+  return line;
 
 }
 
@@ -525,8 +527,6 @@ function preRender(){
 
 
 
-    var renderPass = new THREE.RenderPass(sceneS, camera);
-    renderPass.clear = false;
     var renderPass = new THREE.RenderPass(sceneConstellations, camera);
     renderPass.clear = false;
     var renderPass2 = new THREE.RenderPass(sceneStars, camera);
@@ -543,6 +543,8 @@ function preRender(){
     renderPass7.clear = false;
     var renderPass8 = new THREE.RenderPass(sceneDescriptions, camera);
     renderPass8.clear = false;
+    var renderPass9 = new THREE.RenderPass(sceneS, camera);
+    renderPass9.clear = false;
 
 
 
@@ -571,6 +573,7 @@ function preRender(){
     composer.addPass(bloomPass);
     composer.addPass(renderPass7);
     composer.addPass(renderPass8);
+    composer.addPass(renderPass9);
     // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
     
