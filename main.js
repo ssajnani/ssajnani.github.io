@@ -38,13 +38,15 @@ function generateSphere(scene, rotation, sphereGeo, meshZ=-100, meshY, meshX, am
     var sphereMat;
     var transparent = false;
     if (opacity < 1) {
+        sphereGeo = new THREE.CircleGeometry( 6, 32 );
+        //sphereGeo.rotateY(Math.PI/4);
         transparent = true;
         sphereMat = new THREE.MeshPhongMaterial({color: 0xffffff, opacity: opacity, transparent: transparent});
         var mesh = new THREE.Mesh(sphereGeo, sphereMat);
         mesh.position.z = meshZ;
         mesh.position.y = meshY;
         mesh.position.x = meshX;
-        mesh.rotation.y=rotation;
+        //mesh.rotation.y=rotation;
         scene.add(mesh);
         return mesh;
     } else {
@@ -195,18 +197,26 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 }
 
 function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
-  var material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 10 } )
+  var material = new MeshLineMaterial( { color: new THREE.Color(0xffffff), linewidth: 3 } )
   curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3( positions[5][1], positions[5][0], zDistance),
+    new THREE.Vector3( positions[6][1], positions[6][0], zDistance),
     new THREE.Vector3( positions[0][1], positions[0][0], zDistance),
     new THREE.Vector3( positions[1][1], positions[1][0], zDistance),
     new THREE.Vector3( positions[2][1], positions[2][0], zDistance),
     new THREE.Vector3( positions[3][1], positions[3][0], zDistance),
-    new THREE.Vector3( positions[4][1], positions[4][0], zDistance)
-  ], false, "catmullrom", -2);
+    new THREE.Vector3( positions[4][1], positions[4][0], zDistance),
+    new THREE.Vector3( positions[7][1], positions[7][0], zDistance),
+    new THREE.Vector3( positions[8][1], positions[8][0], zDistance),
+    new THREE.Vector3( positions[9][1], positions[9][0], zDistance),
+    new THREE.Vector3( positions[10][1], positions[10][0], zDistance)
+  ], false, "centripetal", -2);
   var geometry = new THREE.Geometry();
   geometry.vertices = curve.getPoints(50);
+  var meshLine = new MeshLine();
+  meshLine.setGeometry(geometry,p => p > 0.5 ? 1.2-p : p+0.2);
 
-  var line = new THREE.Line(geometry, material);
+  var line = new THREE.Mesh(meshLine.geometry, material);
   scene.add(line);
   return line;
 
@@ -428,10 +438,10 @@ webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMappingExposure = Math.pow(exposure, 4.0 );
 
-var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10]];
+var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10], [-20, 0], [15,22], [-8, 1], [-6, 1], [-4, 2], [-20, 24.5]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
 var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
-var secondSPos = [[20,-40], [10, -60], [0,-50], [-10,-40], [-20,-55]];
+var secondSPos = [[20,-45], [10, -60], [0,-50], [-10,-40], [-20,-55], [-20, -65], [15,-40], [-8, -62], [-6, -62], [-4, -60], [-20, -40.5]];
 var textSPos = [[20,-40], [10, -58], [0,-53], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar;
@@ -441,7 +451,7 @@ getInfo(function(){
  
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
-writeS(sceneS, firstSPos, [0.3, 0.2], -100, 0xffffff);
+writeS(sceneS, firstSPos, [0.3, 0.2], -99.5, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, data.projects, 0xffffff);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, data.education, 0xffffff);
 createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, data.research, data.research_description, 0xffffff);
@@ -449,7 +459,7 @@ createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3],
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.1);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
-writeS(sceneS, secondSPos, [0.3, 0.2], -100, 0xffffff);
+writeS(sceneS, secondSPos, [0.3, 0.2], -99.5, 0xffffff);
 createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
@@ -494,7 +504,7 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
 var light = new THREE.PointLight(0xFFFFFF, 0.5, 0);
-light.position.z = -100;
+light.position.z = -97;
 light.position.x = -10;
 light.position.y = 0;
 var light2 = new THREE.PointLight(0xFFFFFF, 3, 0);
@@ -502,7 +512,6 @@ light2.position.z = -100;
 light2.position.x = 0;
 light2.position.y = 0;
 sceneConstellations.add(light2);
-sceneS.add(light2);
 sceneSolarOutline.add(light);
 
 var materialColor = new THREE.MeshBasicMaterial({ depthTest: false, color: 0xFFFFFF});
@@ -573,11 +582,11 @@ function preRender(){
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
+    composer.addPass(renderPass9);
     composer.addPass(renderPass6);
     composer.addPass(bloomPass);
     composer.addPass(renderPass7);
     composer.addPass(renderPass8);
-    composer.addPass(renderPass9);
     // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
     
@@ -856,6 +865,7 @@ function onDocumentMouseMove( event ) {
     var constChildren = sceneConstellations.children;
     var textChildren = sceneText.children;
     var textChildrenName = sceneTextName.children;
+    var ss = sceneS.children;
     var orbitChildren = sceneOrbits.children;
     var planetChildren = scenePlanets.children;
 
@@ -883,8 +893,8 @@ function onDocumentMouseMove( event ) {
         if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
           var ccLength = constChildren.length;  
           for (var j=0; j < ccLength; j ++){
-                if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5 && UUID !== constChildren[j].uuid){
-
+                if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.parameters.radius <= 0.5 && UUID !== constChildren[j].uuid){
+                
                     UUID = constChildren[j].uuid;
                     
                     var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 30 && child.position.y === constChildren[j].position.y);
@@ -897,6 +907,7 @@ function onDocumentMouseMove( event ) {
                         endFilter[0].visible = false;
                       }
                     }
+                    sceneS.traverse( function ( object ) { object.visible = false; } );
                     
                     var radius = constChildren[j].geometry.parameters.radius;
                     var scale = radius * 30;
@@ -916,6 +927,7 @@ function onDocumentMouseMove( event ) {
                         endFilter[0].visible = true;
                       }
                     }
+                    sceneS.traverse( function ( object ) { object.visible = true; } );
                     constChildren[j].scale.set(1, 1, 1);
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 }
@@ -1006,7 +1018,7 @@ function onDocumentMouseClick( event ) {
     if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
       var ccLength = constChildren.length;
       for (var j=0; j < ccLength; j ++){
-        if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.boundingSphere.radius <= 0.5){
+        if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.parameters.radius <= 0.5){
           // document.removeEventListener('mousemove', onDocumentMouseMove);
 
           UUID = constChildren[j].uuid;
@@ -1025,6 +1037,7 @@ function onDocumentMouseClick( event ) {
           var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 25 && child.position.y === constChildren[j].position.y);
           constChildren[j].scale.set(1, 1, 1);
           sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
+          sceneS.traverse( function ( object ) { object.visible = false; } );
           adjustCameraAndInitiateWarp(constChildren, j, textFilter)
         }
       }
