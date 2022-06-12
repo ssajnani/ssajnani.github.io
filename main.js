@@ -202,7 +202,7 @@ function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1)
     new THREE.Vector3( positions[2][1], positions[2][0], zDistance),
     new THREE.Vector3( positions[3][1], positions[3][0], zDistance),
     new THREE.Vector3( positions[4][1], positions[4][0], zDistance)
-  ], false, "catmullrom", 2);
+  ], false, "centripetal", -1);
   var geometry = new THREE.Geometry();
   geometry.vertices = curve.getPoints(50);
 
