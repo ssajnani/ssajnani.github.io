@@ -7,7 +7,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 }
 var WIDTH = window.innerWidth ,
     HEIGHT = window.innerHeight;
-    
+
 var headerText = "";
 var bloomStrength = 0.9
 var bloomRadius = 0.1;
@@ -15,7 +15,7 @@ var bloomThreshold = 0.1;
 var exposure = 1.5;
 var start = Date.now();
 var colors = {"20": {"25": 0xff0000, "-15": 0xffa500}, "10": {"10": 0xffff00, "-30": 0xff0011}, "0": {"20": 0x0000ff, "-20": 0x0000ff}, "-10": {"30": 0xff0011, "-10": 0xffff00}, "-20": {"15": 0xffa500, "-25": 0xff0000}};
-
+var twinkle = true;
 var angle = 45,
     aspect = WIDTH / HEIGHT,
     near = 0.1,
@@ -528,10 +528,53 @@ document.getElementById('container').append(webGLRenderer.domElement);
 let delta = 0;
 // 30 fps
 let interval = 1 / 30;
-
+var diamond_children = sceneConstellations.children;
 
 var composer = preRender();
 dynamicallyResize();
+var is_tweening = false;
+var current_size = 1;
+var children = [];
+var buildUp = function () {
+    return new TWEEN.Tween({
+        scale: 1
+    }).to ({
+        scale : 2
+    }, 125).easing(TWEEN.Easing.Elastic.Out)
+      .onStart(function(){
+        current_size = getRandomInt(3);
+        children = getRandom(sceneConstellations.children, current_size);
+      })
+      .onUpdate(function (test) {
+        for (var i = 0; i < current_size; i ++){
+          //console.log(children[i]);
+          children[i].scale.set(test.scale,test.scale,test.scale);
+        } 
+  }).onComplete(function () {
+      buildDown().start();
+  });
+};
+var buildDown = function () {
+    return new TWEEN.Tween({
+        scale: 2
+    }).to ({
+        scale : 1
+    }, 125).onUpdate(function (test) {
+
+        for (var i = 0; i < current_size; i ++){
+          //console.log(children[i]);
+          children[i].scale.set(test.scale,test.scale,test.scale);
+        } 
+    }).onComplete(function () {
+        if (twinkle == true) {
+          buildUp().start();
+        }
+    });
+};
+
+console.log(sceneConstellations.children);
+buildUp().start();
+
 animate();
 
 
@@ -602,8 +645,7 @@ var stop = false;
 var frameCount = 0;
 var fps, fpsInterval, startTime, now, then, elapsed;
 
-
-
+  
 
 function animate(time) {
     // Put your drawing code here
@@ -623,18 +665,16 @@ function animate(time) {
           // The draw or time dependent code are here
           composer.reset();
           composer.render();
+          
           TWEEN.update(time);
-
 
           delta = delta % interval;
         }
 }
 
 
-
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
-
 
 
 var lastMove = Date.now();
@@ -1047,6 +1087,7 @@ function onDocumentMouseClick( event ) {
           constChildren[j].scale.set(1, 1, 1);
           sceneSolarOutline.traverse( function ( object ) { object.visible = false; } );
           sceneS.traverse( function ( object ) { object.visible = false; } );
+          twinkle = false;
           adjustCameraAndInitiateWarp(constChildren, j, textFilter)
         }
       }
@@ -1165,6 +1206,8 @@ function zoomToStar(constChildren, position, textFilter){
         camera.lookAt(new THREE.Vector3(0, 0, -100));
       }
       sceneS.traverse( function ( object ) { object.visible = true; } );
+      twinkle = true;
+      buildUp().start();
       sceneSolarOutline.traverse( function ( object ) { object.visible = true; } );
       $('#back').hide();
       $('#topHeader').hide();
