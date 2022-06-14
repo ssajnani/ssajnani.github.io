@@ -240,7 +240,7 @@ function getRandom(arr, n) {
 
 function createText(scene, positions, zDistance, titles, font, color = 0xA9A9A9, opacity=1){
   var results = [];
-  results.push(generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-18, color, opacity, titles[0],2.2, font));
+  results.push(generateText(scene, 5, zDistance, positions[0][0], positions[0][1]-21, color, opacity, titles[0],2.2, font));
   results.push(generateText(scene, 5, zDistance, positions[1][0], positions[1][1]+10, color, opacity, titles[1],2.2, font))
   results.push(generateText(scene, 5, zDistance, positions[2][0], positions[2][1]-16, color, opacity, titles[2],2.2, font));
   results.push(generateText(scene, 5, zDistance, positions[3][0], positions[3][1]-18, color, opacity, titles[3],2.2, font));
