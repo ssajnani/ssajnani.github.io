@@ -134,7 +134,7 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
         font: font,
         style: 'normal',
         height: 0,
-        curveSegments: 30
+        curveSegments: 10
       };
 
       // the createMesh is the same function we saw earlier
@@ -159,7 +159,7 @@ function generateText(scene, rotation, meshZ=-100, meshY, meshX, color, opacity,
 
 function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, opacity, title, font){
     var options = {
-      size: 6,
+      size: 8,
       weight: 'normal',
       font: font,
       style: 'normal',
@@ -174,7 +174,7 @@ function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, op
     text1.position.x = meshX;
     text1.rotation = rotation;
     scene.add(text1);
-    if (title == "ajnani" && ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
+    if (title == "aj" && ( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
       text1.visible = false;
     }
     return text1;
@@ -199,22 +199,23 @@ function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1
 function writeS (scene, positions, radius, zDistance, color=0x000000, opacity=1) { 
   var material = new MeshLineMaterial( { color: new THREE.Color(0xffffff), linewidth: 3 } )
   curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3( positions[5][1], positions[5][0], zDistance),
-    new THREE.Vector3( positions[6][1], positions[6][0], zDistance),
+    //new THREE.Vector3( positions[4][1], positions[4][0], zDistance),
+    //new THREE.Vector3( positions[6][1], positions[6][0], zDistance),
     new THREE.Vector3( positions[0][1], positions[0][0], zDistance),
     new THREE.Vector3( positions[1][1], positions[1][0], zDistance),
     new THREE.Vector3( positions[2][1], positions[2][0], zDistance),
     new THREE.Vector3( positions[3][1], positions[3][0], zDistance),
     new THREE.Vector3( positions[4][1], positions[4][0], zDistance),
-    new THREE.Vector3( positions[7][1], positions[7][0], zDistance),
-    new THREE.Vector3( positions[8][1], positions[8][0], zDistance),
-    new THREE.Vector3( positions[9][1], positions[9][0], zDistance),
-    new THREE.Vector3( positions[10][1], positions[10][0], zDistance)
-  ], false, "centripetal", -2);
+    //new THREE.Vector3( positions[7][1], positions[7][0], zDistance),
+    //new THREE.Vector3( positions[8][1], positions[8][0], zDistance),
+    //new THREE.Vector3( positions[9][1], positions[9][0], zDistance),
+    //new THREE.Vector3( positions[10][1], positions[10][0], zDistance),
+    //new THREE.Vector3( positions[11][1], positions[11][0], zDistance)
+  ], false, "centripetal");
   var geometry = new THREE.Geometry();
   geometry.vertices = curve.getPoints(50);
   var meshLine = new MeshLine();
-  meshLine.setGeometry(geometry,p => p > 0.5 ? 1.2-p : p+0.2);
+  meshLine.setGeometry(geometry,p => p > 0.5 ? 1.2 - p : p + 0.1);
 
   var line = new THREE.Mesh(meshLine.geometry, material);
   scene.add(line);
@@ -438,20 +439,20 @@ webGLRenderer.autoClear = true;
 webGLRenderer.setSize(WIDTH, HEIGHT);
 webGLRenderer.toneMappingExposure = Math.pow(exposure, 4.0 );
 
-var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10], [-20, 0], [15,22], [-8, 1], [-6, 1], [-4, 2], [-20, 24.5]];
+var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10], [-20, 0], [15,22], [-8, 7], [-6, 7], [-4, 8], [-20, 23.5], [-19.75, 24.5]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
 var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
-var secondSPos = [[20,-45], [10, -60], [0,-50], [-10,-40], [-20,-55], [-20, -65], [15,-40], [-8, -62], [-6, -62], [-4, -60], [-20, -40.5]];
+var secondSPos = [[20,-45], [10, -60], [0,-50], [-10,-40], [-20,-55], [-20, -65], [15,-40], [-8, -62], [-6, -62], [-4, -60], [-20, -41.5], [-19.75, -40.5]];
 var textSPos = [[20,-40], [10, -58], [0,-53], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
-var firstText, secondText, sajnani, samar;
+var firstText, secondText, sajnani, samar, s1, s2;
 getInfo(function(){
   $.getJSON('https://fastack.herokuapp.com/gatheredFacts', function(data){
 
  
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
-writeS(sceneS, firstSPos, [0.3, 0.2], -99.5, 0xffffff);
+s1 = writeS(sceneS, firstSPos, [0.3, 0.2], -99.5, 0xffffff);
 createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, data.projects, 0xffffff);
 createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, data.education, 0xffffff);
 createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, data.research, data.research_description, 0xffffff);
@@ -459,20 +460,21 @@ createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3],
 createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.1);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
-writeS(sceneS, secondSPos, [0.3, 0.2], -99.5, 0xffffff);
+s2 = writeS(sceneS, secondSPos, [0.3, 0.2], -99.5, 0xffffff);
 createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.1);
 var loader = new THREE.FontLoader();
-loader.load( './fonts/Pacifico_Regular.json', function ( font ) {
+loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
   secondText = createText(sceneText, textFPos, -100, hobbyTitles, font);
   firstText = createText(sceneText, textSPos, -100, workTitles, font);
 });
 var loader = new THREE.FontLoader();
 loader.load( './fonts/sigreg.json', function ( font ) {
-  sajnani = generateEndOfNames(sceneTextName, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'ajnani', font);
-  samar = generateEndOfNames(sceneTextName, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'amar', font);
+  sajnani = generateEndOfNames(sceneTextName, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'aj', font);
+  console.log(sajnani);
+  samar = generateEndOfNames(sceneTextName, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'am', font);
 });
 });
 
@@ -504,7 +506,7 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
 var light = new THREE.PointLight(0xFFFFFF, 0.5, 0);
-light.position.z = -97;
+light.position.z = -95;
 light.position.x = -10;
 light.position.y = 0;
 var light2 = new THREE.PointLight(0xFFFFFF, 3, 0);
@@ -845,7 +847,7 @@ function dynamicallyResize(){
 
 
 function onDocumentMouseMove( event ) {
-
+         
     event.preventDefault();
     if (!( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
 
@@ -884,7 +886,9 @@ function onDocumentMouseMove( event ) {
       }
       document.getElementById('text').style.display = 'none';
     }
+    var check = false;
     var iLength = intersects.length;
+    console.log(camera.position.z);
     for (var i = 0; i < iLength; i ++){
         if (Array.isArray(intersects[i]) && intersects[i].length > 0){
           var temp = intersects[i][0];
@@ -893,7 +897,7 @@ function onDocumentMouseMove( event ) {
         if ("object" in intersects[i] && "geometry" in intersects[i].object && "type" in intersects[i].object.geometry && (intersects[i].object.geometry.type === "SphereGeometry" || intersects[i].object.geometry.type === "CircleGeometry")){
           var ccLength = constChildren.length;  
           for (var j=0; j < ccLength; j ++){
-                if (intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.parameters.radius <= 0.5 && UUID !== constChildren[j].uuid){
+                if (camera.position.x === 0 && intersects[i].object.position.x === constChildren[j].position.x && intersects[i].object.position.y === constChildren[j].position.y && intersects[i].object.position.z === constChildren[j].position.z && constChildren[j].geometry.parameters.radius <= 0.5 && UUID !== constChildren[j].uuid){
                 
                     UUID = constChildren[j].uuid;
                     
@@ -907,11 +911,11 @@ function onDocumentMouseMove( event ) {
                         endFilter[0].visible = false;
                       }
                     }
-                    sceneS.traverse( function ( object ) { object.visible = false; } );
-                    
+                   
                     var radius = constChildren[j].geometry.parameters.radius;
                     var scale = radius * 30;
                     constChildren[j].scale.set(scale, scale, scale);
+                    check = true;
 
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 } else {
@@ -927,43 +931,48 @@ function onDocumentMouseMove( event ) {
                         endFilter[0].visible = true;
                       }
                     }
-                    sceneS.traverse( function ( object ) { object.visible = true; } );
+                    
                     constChildren[j].scale.set(1, 1, 1);
                     //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
                 }
             }
-            //  ||(intersects[i].object.position.x === orbitChildren[j].position.x && intersects[i].object.position.y === orbitChildren[j].position.y && intersects[i].object.position.z === orbitChildren[j].position.z && otherID !== orbitChildren[j].uuid)
-            var pcLength = planetChildren.length;
-            for (var j=0; j < pcLength; j++){
-              if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z && otherID !== planetChildren[j].uuid) {
-                otherID = planetChildren[j].uuid;
-                var textVals = objectDict[otherID].split('///');
-                $('#text').css('visibility','visible').hide().fadeIn("slow");
-                $('#header1').html(textVals[0]);
-                $('#para').html(textVals[1]);
-                // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
-                var endFilter = planetChildren.filter(child => planetChildren[j].position.x != 0 && planetChildren[j].position.x == child.position.x && child.position.y === planetChildren[j].position.y);
-                var radius = planetChildren[j].geometry.parameters.radius;
-                var scale = radius * 200;
-                planetChildren[j].scale.set(scale, scale, scale);
-                // if (textFilter !== undefined && textFilter.length != 0) {
-                //   textFilter[0].visible = true;
-                // }
-                // if (endFilter !== undefined && endFilter.length != 0) {
-                //   endFilter[0].visible = false;
-                // }
-                // var radius = constChildren[j].geometry.parameters.radius;
-                // var scale = radius * 150;
-                // constChildren[j].scale.set(scale, scale, scale);
-            
-              } else {
-                otherID = "";
-                planetChildren[j].scale.set(1, 1, 1);
-                //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
-              }
+  
+       
+              //  ||(intersects[i].object.position.x === orbitChildren[j].position.x && intersects[i].object.position.y === orbitChildren[j].position.y && intersects[i].object.position.z === orbitChildren[j].position.z && otherID !== orbitChildren[j].uuid)
+          var pcLength = planetChildren.length;
+          for (var j=0; j < pcLength; j++){
+            if (intersects[i].object.position.x === planetChildren[j].position.x && intersects[i].object.position.y === planetChildren[j].position.y && intersects[i].object.position.z === planetChildren[j].position.z && otherID !== planetChildren[j].uuid) {
+              otherID = planetChildren[j].uuid;
+              var textVals = objectDict[otherID].split('///');
+              $('#text').css('visibility','visible').hide().fadeIn("slow");
+              $('#header1').html(textVals[0]);
+              $('#para').html(textVals[1]);
+              // var textFilter = textChildren.filter(child => constChildren[j].position.x != 0 && Math.abs(constChildren[j].position.x - child.position.x) <= 18 && child.position.y === constChildren[j].position.y);
+              var endFilter = planetChildren.filter(child => planetChildren[j].position.x != 0 && planetChildren[j].position.x == child.position.x && child.position.y === planetChildren[j].position.y);
+              var radius = planetChildren[j].geometry.parameters.radius;
+              var scale = radius * 200;
+              planetChildren[j].scale.set(scale, scale, scale);
+              // if (textFilter !== undefined && textFilter.length != 0) {
+              //   textFilter[0].visible = true;
+              // }
+              // if (endFilter !== undefined && endFilter.length != 0) {
+              //   endFilter[0].visible = false;
+              // }
+              // var radius = constChildren[j].geometry.parameters.radius;
+              // var scale = radius * 150;
+              // constChildren[j].scale.set(scale, scale, scale);
+          
+            } else {
+              otherID = "";
+              planetChildren[j].scale.set(1, 1, 1);
+              //constChildren[j].material.color.setHex(colors[constChildren[j].position.y.toString()][constChildren[j].position.x.toString()]);
+            }
           }
         } 
     }
+      if (check == true) {
+              sceneS.traverse( function ( object ) { object.position.z = -1; } );               
+          } 
   }
 }
 const sleep = (milliseconds, j) => {
@@ -1155,6 +1164,7 @@ function zoomToStar(constChildren, position, textFilter){
         camera.position.z = 0;
         camera.lookAt(new THREE.Vector3(0, 0, -100));
       }
+      sceneS.traverse( function ( object ) { object.visible = true; } );
       sceneSolarOutline.traverse( function ( object ) { object.visible = true; } );
       $('#back').hide();
       $('#topHeader').hide();
