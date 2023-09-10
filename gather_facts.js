@@ -145,7 +145,7 @@ var MyRequestsCompleted = (function() {
 })();
 
 function gatherMusic(callback){
-    $.get("http://server.samar.pw/spotify/authenticate").done(function (data) {
+    $.get("https://server.samar.pw/spotify/authenticate").done(function (data) {
         $.ajax({
             url: "https://api.spotify.com/v1/users/samar.sajnani/playlists",
             type: 'GET',

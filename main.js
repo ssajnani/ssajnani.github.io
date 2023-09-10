@@ -447,7 +447,7 @@ var textSPos = [[20,-40], [10, -58], [0,-53], [-10,-40], [-20,-55]];
 var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
 var firstText, secondText, sajnani, samar, s1, s2;
 getInfo(function(){
-  $.getJSON('http://server.samar.pw:3000/gatheredFacts', function(data){
+  $.getJSON('https://server.samar.pw:3000/gatheredFacts', function(data){
 
  
 
