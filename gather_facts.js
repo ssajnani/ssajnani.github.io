@@ -145,7 +145,7 @@ var MyRequestsCompleted = (function() {
 })();
 
 function gatherMusic(callback){
-    $.get("https://fastack.herokuapp.com/spotify/authenticate").done(function (data) {
+    $.get("http://server.samar.pw/spotify/authenticate").done(function (data) {
         $.ajax({
             url: "https://api.spotify.com/v1/users/samar.sajnani/playlists",
             type: 'GET',
