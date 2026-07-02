@@ -33,16 +33,296 @@
     }
     @font-face {
       font-family: 'permanent_marker';
-      src: url('fonts/PermanentMarker-Regular.ttf')  format('truetype'); /* Safari, Android, iOS */
+      src: url('fonts/PermanentMarker-Regular.ttf')  format('truetype');
     }
     .textHeadBack {
 	    font-family: Helvetica, Sans-Serif;
+    }
+
+    /* ── Loading Screen ── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease;
+    }
+    #loading-ring {
+      width: 80px;
+      height: 80px;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px rgba(150,120,255,0.4);
+    }
+    #loading-name {
+      font-family: Helvetica, sans-serif;
+      font-size: 1.4em;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.9);
+      text-transform: uppercase;
+    }
+    #loading-sub {
+      font-family: Helvetica, sans-serif;
+      font-size: 0.75em;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.35);
+      margin-top: 8px;
+      text-transform: uppercase;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── HUD Overlay ── */
+    #hud {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: auto;
+      animation: hudFadeIn 1.2s ease forwards;
+    }
+    @keyframes hudFadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    #hud-name {
+      font-family: Helvetica, sans-serif;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #fff;
+      letter-spacing: 0.06em;
+    }
+    #hud-role {
+      font-family: Helvetica, sans-serif;
+      font-size: 0.72em;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.08em;
+    }
+    #hud-skills {
+      font-family: Helvetica, sans-serif;
+      font-size: 0.65em;
+      color: rgba(180,160,255,0.7);
+      letter-spacing: 0.1em;
+      margin-top: 2px;
+    }
+    #hud-links {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    #hud-links a {
+      font-family: Helvetica, sans-serif;
+      font-size: 0.68em;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #hud-links a:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
+
+    /* ── Auto Tour Button ── */
+    #auto-tour-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 100;
+      display: none;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.7);
+      font-family: Helvetica, sans-serif;
+      font-size: 0.7em;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      border-radius: 2px;
+    }
+    #auto-tour-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    #auto-tour-btn.touring { border-color: rgba(150,120,255,0.6); color: rgba(150,120,255,0.9); }
+
+    /* ── Chatbot ── */
+    #chatbot-toggle {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      z-index: 100;
+      display: none;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.6);
+      font-family: Helvetica, sans-serif;
+      font-size: 0.7em;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    #chatbot-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    #chatbot-panel {
+      position: fixed;
+      top: 0;
+      right: -380px;
+      width: 360px;
+      height: 100%;
+      background: rgba(5,5,15,0.92);
+      border-left: 1px solid rgba(255,255,255,0.1);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+      backdrop-filter: blur(10px);
+    }
+    #chatbot-panel.open { right: 0; }
+    #chat-header {
+      font-family: Helvetica, sans-serif;
+      font-size: 0.75em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      padding: 22px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #chat-close {
+      cursor: pointer;
+      color: rgba(255,255,255,0.3);
+      font-size: 1.2em;
+      transition: color 0.2s;
+    }
+    #chat-close:hover { color: #fff; }
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #chat-messages::-webkit-scrollbar { width: 4px; }
+    #chat-messages::-webkit-scrollbar-track { background: transparent; }
+    #chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .chat-msg {
+      font-family: Helvetica, sans-serif;
+      font-size: 0.82em;
+      line-height: 1.55;
+      max-width: 90%;
+      padding: 10px 14px;
+      border-radius: 4px;
+    }
+    .chat-msg.user {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.85);
+      align-self: flex-end;
+    }
+    .chat-msg.bot {
+      background: rgba(150,120,255,0.1);
+      color: rgba(220,210,255,0.85);
+      border-left: 2px solid rgba(150,120,255,0.4);
+      align-self: flex-start;
+    }
+    #chat-input-row {
+      display: flex;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 12px 16px;
+      gap: 8px;
+    }
+    #chat-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+      font-family: Helvetica, sans-serif;
+      font-size: 0.78em;
+      padding: 8px 12px;
+      border-radius: 2px;
+      outline: none;
+    }
+    #chat-input::placeholder { color: rgba(255,255,255,0.25); }
+    #chat-input:focus { border-color: rgba(150,120,255,0.4); }
+    #chat-send {
+      background: rgba(150,120,255,0.2);
+      border: 1px solid rgba(150,120,255,0.3);
+      color: rgba(255,255,255,0.7);
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 1em;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    #chat-send:hover { background: rgba(150,120,255,0.4); color: #fff; }
+
+    /* ── Star labels (always-visible) ── */
+    .star-label {
+      position: fixed;
+      font-family: Helvetica, sans-serif;
+      font-size: 0.6em;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: color 0.3s;
     }
   </style>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
   <title>Samar's Portfolio</title>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div id="loading-ring"></div>
+      <div id="loading-name">Samar Sajnani</div>
+      <div id="loading-sub">Initialising universe&hellip;</div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div id="hud-name">Samar Sajnani</div>
+      <div id="hud-role">Software Engineer &middot; CS &amp; Biochem</div>
+      <div id="hud-skills">Cloud &nbsp;&bull;&nbsp; AI &nbsp;&bull;&nbsp; Full Stack &nbsp;&bull;&nbsp; WebGL</div>
+      <div id="hud-links">
+        <a href="https://github.com/ssajnani" target="_blank">GitHub</a>
+        <a href="https://linkedin.com/in/samarsajnani" target="_blank">LinkedIn</a>
+        <a href="mailto:samar.sajnani@live.com">Email</a>
+        <a href="./Samar_Resume.pdf" download>Resume ↓</a>
+      </div>
+    </div>
+
+    <!-- Auto-tour button -->
+    <button id="auto-tour-btn" title="Auto-guided tour of portfolio">&#9654; Show me</button>
+
+    <!-- AI Chatbot toggle -->
+    <div id="chatbot-toggle">&#10022; Ask me</div>
+
+    <!-- AI Chatbot panel -->
+    <div id="chatbot-panel">
+      <div id="chat-header">
+        <span>Ask me anything</span>
+        <span id="chat-close">&#x2715;</span>
+      </div>
+      <div id="chat-messages">
+        <div class="chat-msg bot">Hi! I'm Samar's portfolio AI. Ask me about his experience, education, skills, research, or projects.</div>
+      </div>
+      <div id="chat-input-row">
+        <input id="chat-input" type="text" placeholder="e.g. What did you do at IBM?" autocomplete="off"/>
+        <button id="chat-send">&#8594;</button>
+      </div>
+    </div>
+
     <div id='holder' style='background-color:#000; width:100%; height:100%; position:absolute; display:none;'>
       <div id='effect' style='position:absolute; width:100%; height:100%'></div>
     </div>
@@ -60,7 +340,7 @@
       </p>
     </h1>
     </div>
-    
+
     <div id="container"></div>
 </body>
 <script defer src="three.js"></script>

@@ -424,6 +424,7 @@ var sceneTextName = new THREE.Scene();
 var sceneOrbits = new THREE.Scene();
 var scenePlanets = new THREE.Scene();
 var sceneDescriptions = new THREE.Scene();
+var sceneSkills = new THREE.Scene();
 
 // create a camera, which defines where we're looking at.
 var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
@@ -465,6 +466,23 @@ createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], 
 createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
 createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.1);
+
+// Constellation draw-in: start lines invisible, fade them in after a brief delay
+if (s1 && s1.material && s1.material.uniforms && s1.material.uniforms.opacity) {
+    s1.material.uniforms.opacity.value = 0;
+    s2.material.uniforms.opacity.value = 0;
+    setTimeout(function() {
+        var op = { v: 0 };
+        new TWEEN.Tween(op).to({ v: 1 }, 2200).easing(TWEEN.Easing.Cubic.InOut)
+            .onUpdate(function() {
+                if (s1.material.uniforms.opacity) s1.material.uniforms.opacity.value = op.v;
+                if (s2.material.uniforms.opacity) s2.material.uniforms.opacity.value = op.v;
+            }).start();
+    }, 800);
+}
+
+hideLoadingScreen();
+buildTourPositions();
 var loader = new THREE.FontLoader();
 loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
   secondText = createText(sceneText, textFPos, -100, hobbyTitles, font);
@@ -490,10 +508,68 @@ for (var i = 0; i < starCount; i++) {
 }
 var starsGeometry = new THREE.BufferGeometry();
 starsGeometry.addAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-var starsMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+var starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.8 });
 var starField = new THREE.Points(starsGeometry, starsMaterial);
 sceneStars.add(starField);
 
+// Nebula colour clouds — layered coloured point clusters for atmosphere
+(function() {
+    var nebulaClusters = [
+        { color: 0x3322bb, count: 2500, spread: 1200, cx: -200, cy: 100 },
+        { color: 0x8811aa, count: 2000, spread: 900,  cx: 150,  cy: -80 },
+        { color: 0xcc2244, count: 1500, spread: 700,  cx: -50,  cy: 60  },
+        { color: 0x114488, count: 1800, spread: 1000, cx: 200,  cy: 200 },
+        { color: 0x441166, count: 1200, spread: 600,  cx: -150, cy: -150 }
+    ];
+    nebulaClusters.forEach(function(nc) {
+        var pos = new Float32Array(nc.count * 3);
+        for (var i = 0; i < nc.count; i++) {
+            pos[i*3]   = THREE.Math.randFloatSpread(nc.spread) + nc.cx;
+            pos[i*3+1] = THREE.Math.randFloatSpread(nc.spread) + nc.cy;
+            pos[i*3+2] = THREE.Math.randFloat(-390, -450);
+        }
+        var geo = new THREE.BufferGeometry();
+        geo.addAttribute('position', new THREE.BufferAttribute(pos, 3));
+        var mat = new THREE.PointsMaterial({ color: nc.color, size: 1.4, opacity: 0.35, transparent: true });
+        sceneStars.add(new THREE.Points(geo, mat));
+    });
+})();
+
+
+// Skills constellation — faint background S made of coloured skill dots
+(function() {
+    var skills = [
+        { name: 'Kubernetes',    color: 0x326ce5, proficiency: 0.85 },
+        { name: 'Docker',        color: 0x2496ed, proficiency: 0.90 },
+        { name: 'JavaScript',    color: 0xf7df1e, proficiency: 0.92 },
+        { name: 'Python',        color: 0x3776ab, proficiency: 0.88 },
+        { name: 'React Native',  color: 0x61dafb, proficiency: 0.80 },
+        { name: 'WebGL/Three.js',color: 0x00ff99, proficiency: 0.78 },
+        { name: 'Linux',         color: 0xfcc624, proficiency: 0.88 },
+        { name: 'Ansible',       color: 0xee0000, proficiency: 0.75 },
+        { name: 'Java',          color: 0xf89820, proficiency: 0.82 },
+        { name: 'CI/CD',         color: 0x9b59b6, proficiency: 0.85 }
+    ];
+
+    // Shape the skills along a scaled-down S path centred at (0,0,-130)
+    var skillCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3( 5, 6, -130),
+        new THREE.Vector3( 3, 1.5, -130),
+        new THREE.Vector3( 0, 4.5, -130),
+        new THREE.Vector3(-3, 7.5, -130),
+        new THREE.Vector3(-5, 3, -130)
+    ], false, "centripetal");
+    var pts = skillCurve.getPoints(skills.length - 1);
+
+    skills.forEach(function(sk, idx) {
+        var r = 0.08 + sk.proficiency * 0.10;
+        var geo = new THREE.SphereGeometry(r, 8, 8);
+        var mat = new THREE.MeshBasicMaterial({ color: sk.color, transparent: true, opacity: 0.55 });
+        var mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(pts[idx]);
+        sceneSkills.add(mesh);
+    });
+})();
 
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -616,8 +692,12 @@ function preRender(){
 
 
     composer.setSize( window.innerWidth , window.innerHeight);
+    var renderPassSkills = new THREE.RenderPass(sceneSkills, camera);
+    renderPassSkills.clear = false;
+
     composer.addPass(renderPass);
     composer.addPass(renderPass2);
+    composer.addPass(renderPassSkills);
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
@@ -656,7 +736,14 @@ function animate(time) {
         requestAnimationFrame(animate);
         delta += clock.getDelta();
         if (delta  > interval) {
-          // The draw or time dependent code are here
+          // Slowly rotate orbit rings to make the solar system feel alive
+          sceneOrbits.children.forEach(function(obj) {
+            if (obj.isLine) {
+              obj.rotation.z += 0.0008;
+              obj.rotation.x += 0.0004;
+            }
+          });
+
           composer.reset();
           composer.render();
 
@@ -666,6 +753,179 @@ function animate(time) {
         }
 }
 
+
+// ── Shooting Stars ──────────────────────────────────────────────────
+function spawnShootingStar() {
+    var sx = THREE.Math.randFloatSpread(300) - 50;
+    var sy = THREE.Math.randFloat(10, 40);
+    var sz = -200;
+    var dx = sx + THREE.Math.randFloat(40, 100);
+    var dy = sy - THREE.Math.randFloat(25, 60);
+    var geo = new THREE.BufferGeometry();
+    var pos = new Float32Array([sx, sy, sz, sx, sy, sz]);
+    geo.addAttribute('position', new THREE.BufferAttribute(pos, 3));
+    var mat = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 1, transparent: true });
+    var line = new THREE.Line(geo, mat);
+    sceneStars.add(line);
+    var prog = { t: 0 };
+    new TWEEN.Tween(prog).to({ t: 1 }, THREE.Math.randFloat(600, 1000))
+        .onUpdate(function() {
+            var t = prog.t;
+            var hx = sx + (dx - sx) * t, hy = sy + (dy - sy) * t;
+            var tx = sx + (dx - sx) * Math.max(0, t - 0.28);
+            var ty = sy + (dy - sy) * Math.max(0, t - 0.28);
+            var a = geo.attributes.position.array;
+            a[0]=tx; a[1]=ty; a[2]=sz; a[3]=hx; a[4]=hy; a[5]=sz;
+            geo.attributes.position.needsUpdate = true;
+            mat.opacity = t < 0.75 ? 1 : 1 - (t - 0.75) / 0.25;
+        })
+        .onComplete(function() { sceneStars.remove(line); })
+        .start();
+}
+function scheduleShootingStar() {
+    setTimeout(function() { spawnShootingStar(); scheduleShootingStar(); },
+               THREE.Math.randFloat(3000, 9000));
+}
+scheduleShootingStar();
+
+// ── Auto Tour ────────────────────────────────────────────────────────
+var tourActive = false;
+var tourIndex = 0;
+var allTitles = ['Projects','Education','Research','Youtube','Work','Twitter','Photography','Dance','Music','Blog'];
+var tourPositions = [];
+
+function buildTourPositions() {
+    for (var i = 0; i < 5; i++) {
+        tourPositions.push({ x: secondSPos[i][1], y: secondSPos[i][0], z: -100, label: workTitles[i] });
+    }
+    for (var i = 0; i < 5; i++) {
+        tourPositions.push({ x: firstSPos[i][1], y: firstSPos[i][0], z: -100, label: hobbyTitles[i] });
+    }
+}
+
+function startAutoTour() {
+    if (tourPositions.length === 0) buildTourPositions();
+    tourActive = true;
+    tourIndex = 0;
+    document.getElementById('auto-tour-btn').classList.add('touring');
+    document.getElementById('auto-tour-btn').textContent = '◼ Stop tour';
+    tourNextStar();
+}
+
+function stopAutoTour() {
+    tourActive = false;
+    document.getElementById('auto-tour-btn').classList.remove('touring');
+    document.getElementById('auto-tour-btn').textContent = '▶ Show me';
+    new TWEEN.Tween(camera.position).to({ x:0, y:0, z:0 }, 1200)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onUpdate(function() { camera.lookAt(new THREE.Vector3(0,0,-100)); })
+        .start();
+}
+
+function tourNextStar() {
+    if (!tourActive) return;
+    if (tourIndex >= tourPositions.length) { stopAutoTour(); return; }
+    var tp = tourPositions[tourIndex];
+    var lookTarget = new THREE.Vector3(tp.x, tp.y, tp.z);
+    var startPos = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+    new TWEEN.Tween(startPos).to({ x: tp.x * 0.4, y: tp.y * 0.4, z: -70 }, 1800)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onUpdate(function() {
+            camera.position.set(startPos.x, startPos.y, startPos.z);
+            camera.lookAt(lookTarget);
+        })
+        .onComplete(function() {
+            document.getElementById('topHeader').textContent = tp.label;
+            document.getElementById('topHeader').style.display = 'block';
+            setTimeout(function() {
+                if (!tourActive) return;
+                document.getElementById('topHeader').style.display = 'none';
+                var retPos = { x: startPos.x, y: startPos.y, z: startPos.z };
+                new TWEEN.Tween(retPos).to({ x:0, y:0, z:0 }, 1000)
+                    .easing(TWEEN.Easing.Cubic.InOut)
+                    .onUpdate(function() {
+                        camera.position.set(retPos.x, retPos.y, retPos.z);
+                        camera.lookAt(new THREE.Vector3(0,0,-100));
+                    })
+                    .onComplete(function() {
+                        tourIndex++;
+                        tourNextStar();
+                    })
+                    .start();
+            }, 2000);
+        })
+        .start();
+}
+
+document.getElementById('auto-tour-btn').addEventListener('click', function() {
+    if (tourActive) { stopAutoTour(); } else { startAutoTour(); }
+});
+
+// ── Chatbot Q&A ──────────────────────────────────────────────────────
+function getChatResponse(q) {
+    q = q.toLowerCase().trim();
+    if (!q) return "Ask me anything — experience, education, skills, research, or projects!";
+    if (/hello|hi\b|hey|who are you|about you/.test(q))
+        return "Hi! I'm a portfolio AI for Samar Sajnani — a software engineer and dual-degree grad (CS + Biochemistry) from Western University. What would you like to know?";
+    if (/ibm|intern|work experience|job/.test(q))
+        return "<b>IBM Watson Data Platform — Private Cloud Intern</b> (May 2017 – Aug 2018)<br>• 1,300+ commits on IBM's enterprise GitHub<br>• Lead dev on ICP4D installer — product made <b>$12M in 6 months</b><br>• Won DSX poster award &amp; CrushIT award<br>• Reduced CI/CD time by <b>50%+</b><br>• Built JDBC/HDFS dataframe functions for Python, R &amp; Scala";
+    if (/teach|ta\b|assistant/.test(q))
+        return "<b>CS Teaching Assistant</b> — Web Development, Western University (Jan–Apr 2019)<br>• Mentored 50+ first-year students<br>• Graded assignments and provided detailed feedback";
+    if (/experience|work|career|job|employ/.test(q))
+        return "Samar's key experience: IBM Watson intern (lead developer, $12M product), CS Teaching Assistant at Western University, and Twitter health-data mining research. Use the <b>Work</b> star in the constellation for full details.";
+    if (/education|school|degree|university|gpa|grade/.test(q))
+        return "<b>Western University</b><br>• BSc Honours Computer Science — GPA <b>3.95/4</b><br>• BSc Honours Biochemistry — GPA 3.6/4<br>Notable courses: AI II, Internet Algorithmics, Computer Graphics, Advanced Networks";
+    if (/skill|technolog|language|framework|stack|code|program/.test(q))
+        return "Technical skills include:<br>Cloud (Kubernetes, Docker, Ansible, GlusterFS) · JavaScript / React Native / Electron · Python · WebGL / Three.js · Linux · CI/CD · Java";
+    if (/research|paper|publish|kubernetes|cloud|biosensor|cancer/.test(q))
+        return "<b>Research:</b><br>1. <i>Kubernetes policy-based reconfiguration for the cloud</i> — built a POJO model of clusters using the Kubernetes Java API<br>2. <i>Fluorescence-Based Cancer Biosensor</i> — protein extraction, cloning, fluorescence microscopy (Biochemistry honours thesis)";
+    if (/project|build|app|fastack|life vector/.test(q))
+        return "<b>Projects:</b><br>• <b>FaStack</b> — cross-platform productivity app (React Native + Electron)<br>• <b>Life Vector</b> — location-based time-management app<br>• <b>This website</b> — custom WebGL engine with constellation UI, shaders &amp; API integrations<br>Click the <b>Projects</b> star to explore more!";
+    if (/contact|email|reach|hire|linkedin|github/.test(q))
+        return "📧 samar.sajnani@live.com<br>🔗 linkedin.com/in/samarsajnani<br>💻 github.com/ssajnani<br>Or download the resume from the bottom-left corner ↙";
+    if (/resume|cv|download/.test(q))
+        return "You can download Samar's resume using the <b>Resume ↓</b> link in the bottom-left corner of the screen!";
+    if (/award|achiev|win|crush/.test(q))
+        return "Awards include: IBM CrushIT Award, IBM DSX Poster Presentation Award, and presenting at Harvard University (3D Hologram Snake project).";
+    return "I can answer questions about Samar's <b>experience</b>, <b>education</b>, <b>skills</b>, <b>research</b>, <b>projects</b>, or <b>contact info</b>. What would you like to know?";
+}
+
+function addChatMessage(text, role) {
+    var div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.innerHTML = text;
+    document.getElementById('chat-messages').appendChild(div);
+    document.getElementById('chat-messages').scrollTop = 9999;
+}
+
+document.getElementById('chatbot-toggle').addEventListener('click', function() {
+    document.getElementById('chatbot-panel').classList.toggle('open');
+});
+document.getElementById('chat-close').addEventListener('click', function() {
+    document.getElementById('chatbot-panel').classList.remove('open');
+});
+function submitChat() {
+    var input = document.getElementById('chat-input');
+    var q = input.value.trim();
+    if (!q) return;
+    addChatMessage(q, 'user');
+    input.value = '';
+    setTimeout(function() { addChatMessage(getChatResponse(q), 'bot'); }, 280);
+}
+document.getElementById('chat-send').addEventListener('click', submitChat);
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitChat();
+});
+
+// ── Loading Screen ────────────────────────────────────────────────────
+function hideLoadingScreen() {
+    var ls = document.getElementById('loading-screen');
+    ls.style.opacity = '0';
+    setTimeout(function() { ls.style.display = 'none'; }, 850);
+    document.getElementById('hud').style.display = 'flex';
+    document.getElementById('auto-tour-btn').style.display = 'block';
+    document.getElementById('chatbot-toggle').style.display = 'block';
+}
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -892,6 +1152,10 @@ function onDocumentMouseMove( event ) {
     }
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    // Parallax: gently shift the star field against mouse movement
+    starField.position.x = -mouse.x * 8;
+    starField.position.y = -mouse.y * 8;
 
     // update the picking ray with the camera and mouse position
     raycaster.setFromCamera( mouse, camera );
