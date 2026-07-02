@@ -105,7 +105,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   sphereGeo.vertices.shift();
   sphereGeo.rotateZ(THREE.Math.randFloatSpread(-Math.PI/1.3));
   sphereGeo.rotateX(THREE.Math.randFloatSpread(-Math.PI/1.3));
-  sphereGeo.rotateY(THREE.Math.randFloatSpread(-0.2));
+  sphereGeo.rotateY(THREE.Math.randFloatSpread(-Math.PI/1.3));
   var mesh = new THREE.Line( sphereGeo, sphereMat );
   mesh.position.z = meshZ;
   mesh.position.y = meshY;
