@@ -258,13 +258,18 @@ function createOrbitsProjects(scene, planets, desc, positions, zDistance, projec
   var pLength = projects.length;
   var radius = 0.6;
   if (pLength > 5){
+    // Always pin the first project (System Design) — randomise the rest.
+    var pinned = projects[0];
+    var rest = getRandom(projects.slice(1), 4);
+    projects = [pinned].concat(rest);
     pLength = 5;
-    projects = getRandom(projects, 5);
   }
   for (var i = 0; i < pLength; i++){
-    var imageurl = "https://raw.githubusercontent.com/ssajnani/" + projects[i].name + "/master/images/va%402x.png"
+    // Use a solid-white placeholder texture for now — the old github-repo-image URLs
+    // often 404 and just make requests fail noisily in devtools.
+    var imageurl = './va@2x.png';
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
-    objectDict[result[0].uuid] = projects[i].name + '///' + projects[i].description.replace('((Project))','') + '///' + projects[i].html_url;
+    objectDict[result[0].uuid] = projects[i].name + '///' + (projects[i].description || '').replace('((Project))','') + '///' + projects[i].html_url;
     orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
@@ -344,6 +349,47 @@ function createOrbitsWork(scene, planets, desc, positions, zDistance, work, colo
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///https://www.linkedin.com/in/samarsajnani/';
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
+    radius += 0.6;
+  }
+}
+
+function createOrbitsTalks(scene, planets, desc, positions, zDistance, talks, color=0x000000, opacity=1) {
+  var pLength = talks.length;
+  var radius = 0.6;
+  if (pLength > 5) { pLength = 5; talks = getRandom(talks, 5); }
+  for (var i = 0; i < pLength; i++){
+    var result = generateOrbit(scene, planets, '', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    objectDict[result[0].uuid] = talks[i].title + '///' + (talks[i].venue || '') + (talks[i].date ? ' • ' + talks[i].date : '') + '///' + (talks[i].url || 'https://linkedin.com/in/samarsajnani');
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
+    radius += 0.6;
+  }
+}
+
+// Generic orbit creator for Impact / Leadership / Writing / Now — content items with {title, desc, url}.
+function createOrbitsGeneric(scene, planets, desc, positions, zDistance, items, color=0x000000, opacity=1) {
+  var pLength = items.length;
+  var radius = 0.6;
+  if (pLength > 5) { pLength = 5; items = getRandom(items, 5); }
+  for (var i = 0; i < pLength; i++){
+    var it = items[i];
+    var result = generateOrbit(scene, planets, '', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    objectDict[result[0].uuid] = it.title + '///' + (it.desc || '') + '///' + (it.url || '#');
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
+    radius += 0.6;
+  }
+}
+
+// Decisions: click opens the decision modal instead of a new tab.
+function createOrbitsDecisions(scene, planets, desc, positions, zDistance, decisions, color=0x000000, opacity=1) {
+  var pLength = decisions.length;
+  var radius = 0.6;
+  if (pLength > 5) { pLength = 5; decisions = getRandom(decisions, 5); }
+  for (var i = 0; i < pLength; i++){
+    var d = decisions[i];
+    var result = generateOrbit(scene, planets, '', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    // URL uses a sentinel scheme the click handler intercepts.
+    objectDict[result[0].uuid] = d.title + '///' + d.label + '///decision://' + d.id;
     orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
@@ -451,43 +497,49 @@ webGLRenderer.toneMappingExposure = Math.pow(exposure, 4.0 );
 
 var firstSPos = [[20, 17], [10, 5], [0,15], [-10,25], [-20,10], [-20, 0], [15,22], [-8, 7], [-6, 7], [-4, 8], [-20, 23.5], [-19.75, 24.5]];
 var textFPos = [[20, 17], [10,5], [0,15], [-10,25], [-20,10]];
-var workTitles = ['Projects', 'Education', 'Research', 'Youtube', 'Work'];
+var workTitles = ['Projects', 'Education', 'Research', 'Talks', 'Work'];
 var secondSPos = [[20,-45], [10, -60], [0,-50], [-10,-40], [-20,-55], [-20, -65], [15,-40], [-8, -62], [-6, -62], [-4, -60], [-20, -41.5], [-19.75, -40.5]];
 var textSPos = [[20,-40], [10, -58], [0,-53], [-10,-40], [-20,-55]];
-var hobbyTitles = ['Twitter', 'Photography', 'Dance', 'Music', 'Blog'];
+var hobbyTitles = ['Impact', 'Leadership', 'Decisions', 'Writing', 'Now'];
 var firstText, secondText, sajnani, samar, s1, s2;
-getInfo(function(){
-  $.getJSON('https://server.samar.pw:3000/gatheredFacts', function(data){
-
- 
+(function initScene(){
+  var data = window.PORTFOLIO || {};
 
 createS(sceneConstellations, firstSPos, [0.3, 0.2], -100, 0xffffff);
 s1 = writeS(sceneS, firstSPos, [0.3, 0.2], -99.5, 0xffffff);
-createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, data.projects, 0xffffff);
-createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, data.education, 0xffffff);
-createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, data.research, data.research_description, 0xffffff);
-createOrbitsYoutube(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, data.itVideos, 0xffffff);
-createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, data.resume, 0xffffff);
+createOrbitsProjects(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[0], -100, data.projects || [], 0xffffff);
+createOrbitsEducation(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[1], -100, data.education || [], 0xffffff);
+createOrbitsResearch(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[2], -100, (data.research || []).map(function(r){return {name:r.name, html_url:r.html_url};}), data.research || [], 0xffffff);
+createOrbitsTalks(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[3], -100, data.talks || [], 0xffffff);
+createOrbitsWork(sceneOrbits, scenePlanets, sceneDescriptions, secondSPos[4], -100, { Experience: (data.work || []).map(function(w){return {position:w.position, bullets:w.bullets + ' • ' + w.dates};}) }, 0xffffff);
 createS(sceneSolarOutline, firstSPos, [6, 6], -100, 0x000000, 0.1);
 createS(sceneConstellations, secondSPos, [0.3, 0.2], -100, 0xffffff);
 s2 = writeS(sceneS, secondSPos, [0.3, 0.2], -99.5, 0xffffff);
-createOrbitsTwitter(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, tweets, 0xffffff);
-createOrbitsInsta(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.instagram_pics, 0xffffff);
-createOrbitsSpotify(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.spotify_playlists, 0xffffff);
+createOrbitsGeneric(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[0], -100, data.impact || [], 0xffffff);
+createOrbitsGeneric(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[1], -100, data.leadership || [], 0xffffff);
+createOrbitsDecisions(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[2], -100, data.decisions || [], 0xffffff);
+createOrbitsGeneric(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[3], -100, data.writing || [], 0xffffff);
+createOrbitsGeneric(sceneOrbits, scenePlanets, sceneDescriptions, firstSPos[4], -100, (data.now && data.now.focus || []).map(function(text, i){return {title:'Now ' + (i+1), desc:text, url:'#now-panel'};}), 0xffffff);
 createS(sceneSolarOutline, secondSPos, [6, 6], -100, 0x000000, 0.1);
 
-// Constellation draw-in: start lines invisible, fade them in after a brief delay
-if (s1 && s1.material && s1.material.uniforms && s1.material.uniforms.opacity) {
-    s1.material.uniforms.opacity.value = 0;
-    s2.material.uniforms.opacity.value = 0;
+// Constellation draw-in: MeshLine has a "visibility" uniform (0..1) that draws the
+// stroke progressively — so the constellation *materialises* line-by-line rather
+// than a naive opacity fade. Falls back to opacity if the uniform isn't present.
+if (s1 && s1.material && s1.material.uniforms) {
+    var u1 = s1.material.uniforms, u2 = s2.material.uniforms;
+    var startVal = 'visibility' in u1 ? 0 : 0;
+    if ('visibility' in u1) { u1.visibility.value = 0; u2.visibility.value = 0; }
+    if ('opacity' in u1)    { u1.opacity.value = 0;    u2.opacity.value = 0;    }
     setTimeout(function() {
         var op = { v: 0 };
-        new TWEEN.Tween(op).to({ v: 1 }, 2200).easing(TWEEN.Easing.Cubic.InOut)
+        new TWEEN.Tween(op).to({ v: 1 }, 2600).easing(TWEEN.Easing.Cubic.InOut)
             .onUpdate(function() {
-                if (s1.material.uniforms.opacity) s1.material.uniforms.opacity.value = op.v;
-                if (s2.material.uniforms.opacity) s2.material.uniforms.opacity.value = op.v;
+                if (u1.visibility) u1.visibility.value = op.v;
+                if (u2.visibility) u2.visibility.value = op.v;
+                if (u1.opacity)    u1.opacity.value = op.v;
+                if (u2.opacity)    u2.opacity.value = op.v;
             }).start();
-    }, 800);
+    }, 1200);
 }
 
 hideLoadingScreen();
@@ -501,7 +553,6 @@ loader.load( './fonts/sigreg.json', function ( font ) {
   sajnani = generateEndOfNames(sceneTextName, 5, -100, textFPos[4][0], textFPos[4][1]+15, 0xA9A9A9, 1, 'aj', font);
   console.log(sajnani);
   samar = generateEndOfNames(sceneTextName, 5, -100, textSPos[4][0], textSPos[4][1]+15, 0xA9A9A9, 1, 'am', font);
-});
 });
 
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
@@ -658,8 +709,40 @@ function preRender(){
     var copyShader = new THREE.ShaderPass(THREE.CopyShader);
     copyShader.renderToScreen = true;
 
+    // Film-grain + subtle vignette pass — cinematic finish over the bloom.
+    var grainPass = new THREE.ShaderPass({
+        uniforms: {
+            tDiffuse: { value: null },
+            time: { value: 0.0 },
+            intensity: { value: 0.055 },
+            vignette: { value: 0.85 }
+        },
+        vertexShader: [
+            'varying vec2 vUv;',
+            'void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }'
+        ].join('\n'),
+        fragmentShader: [
+            'uniform sampler2D tDiffuse;',
+            'uniform float time;',
+            'uniform float intensity;',
+            'uniform float vignette;',
+            'varying vec2 vUv;',
+            'float rand(vec2 co){ return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453); }',
+            'void main(){',
+            '  vec4 c = texture2D(tDiffuse, vUv);',
+            '  float g = rand(vUv + time) - 0.5;',
+            '  c.rgb += g * intensity;',
+            '  vec2 uv = vUv - 0.5;',
+            '  float vig = 1.0 - dot(uv, uv) * vignette;',
+            '  c.rgb *= clamp(vig, 0.0, 1.0);',
+            '  gl_FragColor = c;',
+            '}'
+        ].join('\n')
+    });
+    window._grainPass = grainPass;
 
     var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth , window.innerHeight), 			bloomStrength, bloomRadius, bloomThreshold);
+    window._bloomPass = bloomPass;
 
     composer.renderTarget1.stencilBuffer = true;
     composer.renderTarget2.stencilBuffer = true;
@@ -677,6 +760,7 @@ function preRender(){
     composer.addPass(bloomPass);
     composer.addPass(renderPass7);
     composer.addPass(renderPass8);
+    composer.addPass(grainPass);
     // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
     
@@ -697,6 +781,17 @@ function animate(time) {
         var smLength = sphereMats.length;
         for (var num=0; num < smLength; num ++){
           sphereMats[num].uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+        }
+        if (window._grainPass) {
+          window._grainPass.uniforms.time.value = (Date.now() - start) * 0.001;
+        }
+        // Audio-reactive: modulate bloom strength if the mic is live.
+        if (window._audioAnalyser && window._bloomPass) {
+          var buf = window._audioBuffer;
+          window._audioAnalyser.getByteFrequencyData(buf);
+          var sum = 0; for (var b = 0; b < buf.length; b++) sum += buf[b];
+          var avg = sum / buf.length / 255; // 0..1
+          window._bloomPass.strength = bloomStrength + avg * 2.4;
         }
 
 
@@ -767,33 +862,92 @@ function scheduleShootingStar() {
 }
 scheduleShootingStar();
 
-// ── Chatbot Q&A ──────────────────────────────────────────────────────
-function getChatResponse(q) {
-    q = q.toLowerCase().trim();
-    if (!q) return "Ask me anything — experience, education, skills, research, or projects!";
-    if (/hello|hi\b|hey|who are you|about you/.test(q))
-        return "Hi! I'm a portfolio AI for Samar Sajnani — a software engineer and dual-degree grad (CS + Biochemistry) from Western University. What would you like to know?";
-    if (/ibm|intern|work experience|job/.test(q))
-        return "<b>IBM Watson Data Platform — Private Cloud Intern</b> (May 2017 – Aug 2018)<br>• 1,300+ commits on IBM's enterprise GitHub<br>• Lead dev on ICP4D installer — product made <b>$12M in 6 months</b><br>• Won DSX poster award &amp; CrushIT award<br>• Reduced CI/CD time by <b>50%+</b><br>• Built JDBC/HDFS dataframe functions for Python, R &amp; Scala";
-    if (/teach|ta\b|assistant/.test(q))
-        return "<b>CS Teaching Assistant</b> — Web Development, Western University (Jan–Apr 2019)<br>• Mentored 50+ first-year students<br>• Graded assignments and provided detailed feedback";
-    if (/experience|work|career|job|employ/.test(q))
-        return "Samar's key experience: IBM Watson intern (lead developer, $12M product), CS Teaching Assistant at Western University, and Twitter health-data mining research. Use the <b>Work</b> star in the constellation for full details.";
-    if (/education|school|degree|university|gpa|grade/.test(q))
-        return "<b>Western University</b><br>• BSc Honours Computer Science — GPA <b>3.95/4</b><br>• BSc Honours Biochemistry — GPA 3.6/4<br>Notable courses: AI II, Internet Algorithmics, Computer Graphics, Advanced Networks";
-    if (/skill|technolog|language|framework|stack|code|program/.test(q))
-        return "Technical skills include:<br>Cloud (Kubernetes, Docker, Ansible, GlusterFS) · JavaScript / React Native / Electron · Python · WebGL / Three.js · Linux · CI/CD · Java";
-    if (/research|paper|publish|kubernetes|cloud|biosensor|cancer/.test(q))
-        return "<b>Research:</b><br>1. <i>Kubernetes policy-based reconfiguration for the cloud</i> — built a POJO model of clusters using the Kubernetes Java API<br>2. <i>Fluorescence-Based Cancer Biosensor</i> — protein extraction, cloning, fluorescence microscopy (Biochemistry honours thesis)";
-    if (/project|build|app|fastack|life vector/.test(q))
-        return "<b>Projects:</b><br>• <b>FaStack</b> — cross-platform productivity app (React Native + Electron)<br>• <b>Life Vector</b> — location-based time-management app<br>• <b>This website</b> — custom WebGL engine with constellation UI, shaders &amp; API integrations<br>Click the <b>Projects</b> star to explore more!";
-    if (/contact|email|reach|hire|linkedin|github/.test(q))
-        return "📧 samar.sajnani@live.com<br>🔗 linkedin.com/in/samarsajnani<br>💻 github.com/ssajnani<br>Or download the resume from the bottom-left corner ↙";
-    if (/resume|cv|download/.test(q))
-        return "You can download Samar's resume using the <b>Resume ↓</b> link in the bottom-left corner of the screen!";
-    if (/award|achiev|win|crush/.test(q))
-        return "Awards include: IBM CrushIT Award, IBM DSX Poster Presentation Award, and presenting at Harvard University (3D Hologram Snake project).";
-    return "I can answer questions about Samar's <b>experience</b>, <b>education</b>, <b>skills</b>, <b>research</b>, <b>projects</b>, or <b>contact info</b>. What would you like to know?";
+// ── Chatbot: Ollama /api/chat ────────────────────────────────────────
+// Swap CHAT_ENDPOINT for your Ollama base URL. Assumes /api/chat on the same host.
+var CHAT_ENDPOINT = '<YOUR_URL_HERE>';   // e.g. 'https://server.samar.pw' or 'http://localhost:11434'
+var CHAT_MODEL    = 'llama3.1:8b';       // whichever model you have `ollama pull`ed
+var CHAT_HISTORY  = [];                  // rolling turn buffer
+
+function buildSystemPrompt() {
+    var p = window.PORTFOLIO || {};
+    var lines = [
+        "You are the portfolio AI for Samar Sajnani, an Engineering Manager and former Team Lead.",
+        "Answer in a warm, direct, terse voice — like Samar would. Prefer concrete numbers over adjectives.",
+        "If asked about something you don't have context for, say so and suggest a related section of the site.",
+        "Never invent employers, dates, or metrics. Anything you don't know is a {{TODO}}.",
+        "",
+        "=== WORK ==="
+    ];
+    (p.work || []).forEach(function(w){ lines.push('- ' + w.position + ' (' + w.dates + '): ' + w.bullets); });
+    lines.push('', '=== IMPACT ===');
+    (p.impact || []).forEach(function(i){ lines.push('- ' + i.title + ': ' + i.desc); });
+    lines.push('', '=== LEADERSHIP PRINCIPLES ===');
+    (p.leadership || []).forEach(function(i){ lines.push('- ' + i.title + ': ' + i.desc); });
+    lines.push('', '=== KEY DECISIONS (Context/Options/Chose/Result) ===');
+    (p.decisions || []).forEach(function(d){
+        lines.push('* ' + d.title);
+        lines.push('  Context: ' + d.context);
+        lines.push('  Chose: ' + d.chose);
+        lines.push('  Result: ' + d.result);
+        lines.push('  Lesson: ' + d.lesson);
+    });
+    lines.push('', '=== EDUCATION ===');
+    (p.education || []).forEach(function(e){ lines.push('- ' + e.name + ' @ ' + e.school + ' (' + e.grade + ')'); });
+    lines.push('', '=== RESEARCH ===');
+    (p.research || []).forEach(function(r){ lines.push('- ' + r.title + ' (' + r.school + '): ' + r.description); });
+    lines.push('', '=== PROJECTS ===');
+    (p.projects || []).forEach(function(pr){ lines.push('- ' + pr.name + ': ' + pr.description); });
+    lines.push('', 'Contact: samar.sajnani@live.com · linkedin.com/in/samarsajnani · github.com/ssajnani');
+    return lines.join('\n');
+}
+
+// Fallback if the Ollama endpoint is unreachable (config’d wrong, offline demo, etc.).
+function fallbackChat(q) {
+    q = (q || '').toLowerCase();
+    var p = window.PORTFOLIO || {};
+    if (/lead|manage|team|em\b|report/.test(q))
+        return 'I run on a local Llama on Samar’s server — but the endpoint isn’t reachable right now. Try the <b>Leadership</b> or <b>Decisions</b> stars on the right constellation for his philosophy and real decision writeups.';
+    if (/impact|number|metric|result/.test(q))
+        return 'Endpoint is offline — open the <b>Impact</b> star (right constellation) for the concrete metrics.';
+    if (/contact|email|hire|reach/.test(q))
+        return 'samar.sajnani@live.com · linkedin.com/in/samarsajnani';
+    return 'The local Llama server isn’t responding. Explore the constellation directly — <b>Impact</b>, <b>Leadership</b>, <b>Decisions</b>, and <b>Work</b> have everything I would’ve told you.';
+}
+
+async function askLlama(userMsg) {
+    if (!CHAT_ENDPOINT || CHAT_ENDPOINT.indexOf('<YOUR_URL_HERE>') !== -1) {
+        return fallbackChat(userMsg);
+    }
+    var systemPrompt = buildSystemPrompt();
+    CHAT_HISTORY.push({ role: 'user', content: userMsg });
+    // Keep last 8 turns of history.
+    if (CHAT_HISTORY.length > 8) CHAT_HISTORY = CHAT_HISTORY.slice(-8);
+    var body = {
+        model: CHAT_MODEL,
+        stream: false,
+        messages: [{ role: 'system', content: systemPrompt }].concat(CHAT_HISTORY),
+        options: { temperature: 0.4, num_predict: 400 }
+    };
+    try {
+        var res = await fetch(CHAT_ENDPOINT.replace(/\/$/, '') + '/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error('Ollama returned ' + res.status);
+        var data = await res.json();
+        var reply = (data && data.message && data.message.content) || fallbackChat(userMsg);
+        CHAT_HISTORY.push({ role: 'assistant', content: reply });
+        // Minimal markdown → HTML (bold, italic, line breaks).
+        return reply
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+            .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+            .replace(/\n/g, '<br>');
+    } catch (err) {
+        console.warn('Ollama call failed:', err);
+        return fallbackChat(userMsg);
+    }
 }
 
 function addChatMessage(text, role) {
@@ -802,35 +956,130 @@ function addChatMessage(text, role) {
     div.innerHTML = text;
     document.getElementById('chat-messages').appendChild(div);
     document.getElementById('chat-messages').scrollTop = 9999;
+    return div;
 }
 
 document.getElementById('chatbot-toggle').addEventListener('click', function() {
     document.getElementById('chatbot-panel').classList.toggle('open');
 });
+
+// ── Audio-reactive toggle ────────────────────────────────────────────
+document.getElementById('audio-toggle').addEventListener('click', async function() {
+    var btn = this;
+    if (window._audioAnalyser) {
+        // Turn it off.
+        if (window._audioStream) window._audioStream.getTracks().forEach(function(t){ t.stop(); });
+        window._audioAnalyser = null;
+        window._audioBuffer = null;
+        window._audioStream = null;
+        btn.classList.remove('on');
+        if (window._bloomPass) window._bloomPass.strength = bloomStrength;
+        return;
+    }
+    try {
+        var stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var src = ctx.createMediaStreamSource(stream);
+        var analyser = ctx.createAnalyser();
+        analyser.fftSize = 128;
+        src.connect(analyser);
+        window._audioAnalyser = analyser;
+        window._audioBuffer = new Uint8Array(analyser.frequencyBinCount);
+        window._audioStream = stream;
+        btn.classList.add('on');
+    } catch(err) {
+        console.warn('Mic denied:', err);
+        addChatMessage('Mic permission was denied — audio-reactive mode needs mic access.', 'bot');
+        document.getElementById('chatbot-panel').classList.add('open');
+    }
+});
 document.getElementById('chat-close').addEventListener('click', function() {
     document.getElementById('chatbot-panel').classList.remove('open');
 });
-function submitChat() {
+async function submitChat() {
     var input = document.getElementById('chat-input');
     var q = input.value.trim();
     if (!q) return;
     addChatMessage(q, 'user');
     input.value = '';
-    setTimeout(function() { addChatMessage(getChatResponse(q), 'bot'); }, 280);
+    var thinking = addChatMessage('<i>thinking&hellip;</i>', 'bot');
+    var reply = await askLlama(q);
+    thinking.innerHTML = reply;
+    document.getElementById('chat-messages').scrollTop = 9999;
 }
 document.getElementById('chat-send').addEventListener('click', submitChat);
 document.getElementById('chat-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') submitChat();
 });
 
-// ── Loading Screen ────────────────────────────────────────────────────
+// ── Loading Screen + Cinematic Intro ─────────────────────────────────
+var introSkipped = false;
+function playIntroFlythrough() {
+    if (introSkipped) return;
+    var isMobileView = ( window.innerWidth <= window.innerHeight || ( window.innerWidth < 700 || window.innerHeight < 500));
+    if (isMobileView) return; // mobile view is already pushed back — flythrough looks off
+
+    // Start far back in the nebula, then fly forward to the constellation view.
+    var startZ = 420;
+    var endZ = camera.position.z; // whatever dynamicallyResize picked
+    camera.position.z = startZ;
+
+    // Big field-of-view at the start → normalise on arrival (dolly-in feel).
+    var startFov = 65;
+    var endFov = angle;
+    camera.fov = startFov;
+    camera.updateProjectionMatrix();
+
+    var s = { p: 0 };
+    var tween = new TWEEN.Tween(s).to({ p: 1 }, 3500)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onUpdate(function() {
+            if (introSkipped) return;
+            camera.position.z = startZ + (endZ - startZ) * s.p;
+            camera.fov = startFov + (endFov - startFov) * s.p;
+            camera.updateProjectionMatrix();
+        })
+        .onComplete(function() {
+            camera.position.z = endZ;
+            camera.fov = endFov;
+            camera.updateProjectionMatrix();
+        })
+        .start();
+    window._introTween = tween;
+}
+
+function skipIntro() {
+    introSkipped = true;
+    if (window._introTween) window._introTween.stop();
+    // Snap camera back to intended resting position.
+    var isMobileView = ( window.innerWidth <= window.innerHeight || ( window.innerWidth < 700 || window.innerHeight < 500));
+    if (!isMobileView) {
+        camera.position.set(0, 0, 0);
+        camera.lookAt(new THREE.Vector3(0, 0, -100));
+    }
+    camera.fov = angle;
+    camera.updateProjectionMatrix();
+    var s = document.getElementById('skip-intro');
+    if (s) s.style.display = 'none';
+}
+
 function hideLoadingScreen() {
     var ls = document.getElementById('loading-screen');
     ls.style.opacity = '0';
     setTimeout(function() { ls.style.display = 'none'; }, 850);
-    document.getElementById('hud').style.display = 'flex';
-    document.getElementById('chatbot-toggle').style.display = 'block';
+    // HUD + top-right controls fade in near the end of the flythrough.
+    setTimeout(function(){
+        document.getElementById('hud').style.display = 'flex';
+        document.getElementById('top-right-controls').style.display = 'flex';
+    }, 2400);
+    playIntroFlythrough();
 }
+
+// Skip button binding.
+document.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('skip-intro');
+    if (btn) btn.addEventListener('click', function(e){ e.stopPropagation(); skipIntro(); });
+});
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -853,8 +1102,23 @@ document.addEventListener("keyup", function(event) {
 var UUID = "";
 var otherID = "";
 
+// Warp between constellations — re-uses the existing #holder warp overlay
+// (no ship element). Fades in, mutates the scene mid-warp, fades out.
+function warpBetweenConstellations(mutator) {
+  $('#holder').css('visibility','visible').css('opacity', 1).fadeIn(400);
+  mouseActive = true;
+  setTimeout(function(){
+    mutator();
+    setTimeout(function(){
+      $('#holder').fadeTo(700, 0);
+      setTimeout(function(){ mouseActive = false; }, 500);
+    }, 300);
+  }, 550);
+}
+
 $('#nextS').click(function(){
   $('#nextS').hide();
+  warpBetweenConstellations(function(){
   var constChildren = sceneConstellations.children;
   var planetChildren = scenePlanets.children;
   var const2 = sceneSolarOutline.children;
@@ -908,6 +1172,7 @@ $('#nextS').click(function(){
   $('#back').click(function(){
     $('#back').hide();
     $('#nextS').show();
+    warpBetweenConstellations(function(){
     var constChildren = sceneConstellations.children;
     var planetChildren = scenePlanets.children;
     var const2 = sceneSolarOutline.children;
@@ -957,7 +1222,9 @@ $('#nextS').click(function(){
             }
         }
     }
+    }); // close warpBetweenConstellations for #back
   })
+  }); // close warpBetweenConstellations for #nextS
 })
 
 function dynamicallyResize(){
@@ -1045,9 +1312,101 @@ function dynamicallyResize(){
 
 
 
+// Route planet clicks. External URL → new tab. Sentinel scheme → modal.
+function openPlanetTarget(textVals) {
+    var url = textVals[2] || '';
+    if (url.indexOf('decision://') === 0) {
+        openDecisionModal(url.replace('decision://', ''));
+        return;
+    }
+    if (url.indexOf('arch://') === 0) {
+        openArchModal(url.replace('arch://', ''));
+        return;
+    }
+    if (url === '#now-panel') {
+        toggleNowPanel(true);
+        return;
+    }
+    if (url === '#') {
+        // No target — flash the description overlay instead of opening a blank tab.
+        $('#text').css('visibility','visible').hide().fadeIn('slow');
+        $('#header1').html(textVals[0] || '');
+        $('#para').html(textVals[1] || '');
+        return;
+    }
+    window.open(url, '_blank', 'noopener');
+}
+
+function openDecisionModal(id) {
+    var p = (window.PORTFOLIO && window.PORTFOLIO.decisions) || [];
+    var d = p.filter(function(x){ return x.id === id; })[0];
+    if (!d) return;
+    document.getElementById('decision-title').textContent = d.title;
+    var body = document.getElementById('decision-body');
+    var opts = (d.options || []).map(function(o){ return '<li>' + o + '</li>'; }).join('');
+    body.innerHTML =
+        '<h3>Context</h3><p>' + d.context + '</p>' +
+        '<h3>Options considered</h3><ul>' + opts + '</ul>' +
+        '<h3>What I chose</h3><p>' + d.chose + '</p>' +
+        '<h3>Result</h3><p>' + d.result + '</p>' +
+        '<h3>Lesson</h3><p><i>' + d.lesson + '</i></p>';
+    document.getElementById('decision-modal').style.display = 'flex';
+}
+
+function openArchModal(key) {
+    var a = window.PORTFOLIO && window.PORTFOLIO.architectures && window.PORTFOLIO.architectures[key];
+    if (!a) return;
+    document.getElementById('arch-title').textContent = a.title;
+    var el = document.getElementById('arch-diagram');
+    el.removeAttribute('data-processed');
+    el.textContent = a.mermaid;
+    document.getElementById('arch-notes').innerHTML = a.notes || '';
+    document.getElementById('arch-modal').style.display = 'flex';
+    if (window.mermaid) {
+        try { window.mermaid.run({ nodes: [el] }); } catch(e) { console.warn(e); }
+    }
+}
+
+function toggleNowPanel(force) {
+    var el = document.getElementById('now-panel');
+    var open = force === undefined ? el.style.display !== 'flex' : force;
+    if (open) {
+        var n = (window.PORTFOLIO && window.PORTFOLIO.now) || { updated: '', focus: [] };
+        var items = (n.focus || []).map(function(x){ return '<li>' + x + '</li>'; }).join('');
+        document.getElementById('now-body').innerHTML =
+            '<div style="opacity:0.55;font-size:0.85em;margin-bottom:8px;">Updated ' + (n.updated || '{{TODO}}') + '</div>' +
+            '<ul>' + items + '</ul>';
+        el.style.display = 'flex';
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+// Modal close bindings (any element with data-close attribute).
+document.addEventListener('click', function(e) {
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute('data-close')) {
+        var id = t.getAttribute('data-close');
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    }
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        ['decision-modal','arch-modal','now-panel'].forEach(function(id){
+            var el = document.getElementById(id); if (el) el.style.display = 'none';
+        });
+    }
+});
+
+// HUD "Now" link.
+var nowLink = document.getElementById('hud-now-link');
+if (nowLink) nowLink.addEventListener('click', function(e){ e.preventDefault(); toggleNowPanel(); });
+
 function onDocumentMouseMove( event ) {
-         
+
     event.preventDefault();
+    if (mouseActive) return; // warp in progress — don't fight the tween
     if (!( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
 
     if (Date.now() - lastMove < 120) { // 32 frames a secon
@@ -1061,6 +1420,13 @@ function onDocumentMouseMove( event ) {
     // Parallax: gently shift the star field against mouse movement
     starField.position.x = -mouse.x * 8;
     starField.position.y = -mouse.y * 8;
+    // Cursor gravity: slight camera tilt toward the cursor for depth cue.
+    // Kept small so it doesn't fight the raycaster.
+    if (typeof introSkipped !== 'undefined' && introSkipped) {
+        // no-op during-intro-skip protection
+    }
+    sceneStars.rotation.z = mouse.x * 0.02;
+    sceneStars.rotation.x = -mouse.y * 0.02;
 
     // update the picking ray with the camera and mouse position
     raycaster.setFromCamera( mouse, camera );
@@ -1260,7 +1626,7 @@ function onDocumentMouseClick( event ) {
             var textVals = objectDict[planetChildren[j].uuid].split('///');
             if (( window.innerWidth  <= window.innerHeight || ( window.innerWidth  < 700 || window.innerHeight < 500))){
               if (planetID == planetChildren[j].uuid){
-                window.open(textVals[2], '_blank');    
+                openPlanetTarget(textVals);
               } else {
                 var radius = planetChildren[j].geometry.parameters.radius;
                 var scale = radius * 100;
@@ -1287,6 +1653,11 @@ function onDocumentMouseClick( event ) {
   
 }
 
+// mouseActive gates the mouse-move raycaster during the warp so the picker
+// doesn't fight the camera tween. Restored per user request — the split
+// with deactivateWarp is intentional, not a leftover.
+var mouseActive = false;
+
 function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
   sleep(1500, position).then((j)=> {
     var prePosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
@@ -1299,14 +1670,24 @@ function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
     });
     var newPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
     newPos.z = newPos.z - 100;
-    preTween.stop().to(newPos, 1000).start();
+    preTween
+      .stop() // just in case it's still animating
+      .to(newPos, 1000) // set destination and duration
+      .start(); // start the tween
+
     sleep(500, position).then((j) => {
       $('#holder').css('visibility','visible').css('opacity', 1).fadeIn("slow");
       textFilter[0].visible = false;
-      sleep(2000).then(function() {
-        zoomToStar(constChildren, position, textFilter);
-      });
+      mouseActive = true;
+      deactivateWarp(constChildren, position, textFilter);
     });
+  });
+}
+
+function deactivateWarp(constChildren, position, textFilter){
+  sleep(2000).then((j) => {
+    mouseActive = false;
+    zoomToStar(constChildren, position, textFilter);
   });
 }
 
@@ -1434,4 +1815,4 @@ function onWindowResize(){
 
 }
 
-});
+})();

@@ -1,6 +1,19 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="Samar Sajnani — Engineering Manager & Team Lead. Portfolio built as a WebGL constellation: impact, leadership philosophy, decisions, and writing."/>
+  <meta name="theme-color" content="#0a0a1a"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Samar Sajnani — Engineering Manager"/>
+  <meta property="og:description" content="Team lead → EM. Ship platform teams, cut deploy times, grow senior engineers. Explore the constellation."/>
+  <meta property="og:image" content="https://ssajnani.github.io/website3.png"/>
+  <meta property="og:url" content="https://ssajnani.github.io"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Samar Sajnani — Engineering Manager"/>
+  <meta name="twitter:description" content="Team lead → EM. A WebGL portfolio."/>
+  <meta name="twitter:image" content="https://ssajnani.github.io/website3.png"/>
   <style>
     body{
       margin: 0px;
@@ -130,25 +143,6 @@
     #hud-links a:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
 
     /* ── Chatbot ── */
-    #chatbot-toggle {
-      position: fixed;
-      top: 28px;
-      right: 28px;
-      z-index: 100;
-      display: none;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.18);
-      color: rgba(255,255,255,0.6);
-      font-family: Helvetica, sans-serif;
-      font-size: 0.7em;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 8px 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-radius: 2px;
-    }
-    #chatbot-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
     #chatbot-panel {
       position: fixed;
       top: 0;
@@ -244,6 +238,158 @@
     }
     #chat-send:hover { background: rgba(150,120,255,0.4); color: #fff; }
 
+    /* ── Skip intro ── */
+    #skip-intro {
+      position: absolute;
+      bottom: 32px;
+      right: 32px;
+      font-family: Helvetica, sans-serif;
+      font-size: 0.7em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 2px;
+    }
+    #skip-intro:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+
+    /* ── Top-right controls ── */
+    #top-right-controls {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      z-index: 100;
+      display: none;
+      gap: 8px;
+    }
+    #top-right-controls button {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.6);
+      font-family: Helvetica, sans-serif;
+      font-size: 0.7em;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    #top-right-controls button:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    #top-right-controls button.on {
+      background: rgba(150,120,255,0.25);
+      border-color: rgba(150,120,255,0.55);
+      color: #fff;
+    }
+
+    /* ── Panels & modals ── */
+    #now-panel {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 300px;
+      max-height: 380px;
+      background: rgba(5,5,15,0.9);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      z-index: 150;
+      display: none;
+      flex-direction: column;
+      border-radius: 3px;
+    }
+    #decision-modal, #arch-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+    }
+    .modal-inner {
+      background: rgba(8,8,20,0.96);
+      border: 1px solid rgba(150,120,255,0.25);
+      border-radius: 4px;
+      width: min(720px, 92vw);
+      max-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(150,120,255,0.12);
+    }
+    .arch-inner { width: min(900px, 94vw); }
+    .panel-header {
+      font-family: Helvetica, sans-serif;
+      font-size: 0.72em;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      padding: 20px 22px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .panel-close {
+      cursor: pointer;
+      color: rgba(255,255,255,0.35);
+      font-size: 1.15em;
+      transition: color 0.2s;
+    }
+    .panel-close:hover { color: #fff; }
+    .panel-body {
+      padding: 16px 22px 22px;
+      overflow-y: auto;
+      color: rgba(230,225,245,0.88);
+      font-family: Helvetica, sans-serif;
+      font-size: 0.85em;
+      line-height: 1.6;
+    }
+    .panel-body::-webkit-scrollbar { width: 4px; }
+    .panel-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+    .panel-body h3 {
+      font-size: 0.95em;
+      color: rgba(200,185,255,0.9);
+      margin: 14px 0 6px;
+      letter-spacing: 0.05em;
+    }
+    .panel-body h3:first-child { margin-top: 0; }
+    .panel-body .kv {
+      margin: 4px 0;
+    }
+    .panel-body .kv strong {
+      color: rgba(180,160,255,0.85);
+      font-weight: normal;
+      display: inline-block;
+      min-width: 78px;
+    }
+    .panel-body ul { padding-left: 18px; margin: 4px 0 8px; }
+    .panel-body li { margin: 3px 0; }
+    .arch-body pre.mermaid {
+      background: rgba(255,255,255,0.02);
+      padding: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.05);
+      font-family: 'Menlo', monospace;
+      font-size: 0.85em;
+      color: rgba(200,200,220,0.85);
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+    #arch-notes {
+      margin-top: 12px;
+      font-size: 0.9em;
+      color: rgba(210,205,230,0.75);
+    }
+    /* Prefer-reduced-motion respect */
+    @media (prefers-reduced-motion: reduce) {
+      #loading-ring { animation: none; }
+    }
+
     /* ── Star labels (always-visible) ── */
     .star-label {
       position: fixed;
@@ -258,31 +404,70 @@
 
   </style>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-  <title>Samar's Portfolio</title>
+  <title>Samar Sajnani — Engineering Manager & Team Lead</title>
 </head>
 <body>
     <!-- Loading Screen -->
     <div id="loading-screen">
       <div id="loading-ring"></div>
       <div id="loading-name">Samar Sajnani</div>
-      <div id="loading-sub">Initialising universe&hellip;</div>
+      <div id="loading-sub">Charting the constellation&hellip;</div>
+      <div id="skip-intro" title="Skip intro">Skip &raquo;</div>
     </div>
 
     <!-- HUD -->
     <div id="hud">
       <div id="hud-name">Samar Sajnani</div>
-      <div id="hud-role">Software Engineer &middot; CS &amp; Biochem</div>
-      <div id="hud-skills">Cloud &nbsp;&bull;&nbsp; AI &nbsp;&bull;&nbsp; Full Stack &nbsp;&bull;&nbsp; WebGL</div>
+      <div id="hud-role">Engineering Manager &middot; Team Lead</div>
+      <div id="hud-skills">Platform &nbsp;&bull;&nbsp; Distributed Systems &nbsp;&bull;&nbsp; Team Growth &nbsp;&bull;&nbsp; Delivery</div>
       <div id="hud-links">
-        <a href="https://github.com/ssajnani" target="_blank">GitHub</a>
-        <a href="https://linkedin.com/in/samarsajnani" target="_blank">LinkedIn</a>
+        <a href="https://github.com/ssajnani" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/samarsajnani" target="_blank" rel="noopener">LinkedIn</a>
         <a href="mailto:samar.sajnani@live.com">Email</a>
-        <a href="./Samar_Resume.pdf" download>Resume ↓</a>
+        <a href="./Samar_Resume.pdf" download>Resume &darr;</a>
+        <a href="#" id="hud-now-link">Now</a>
       </div>
     </div>
 
-    <!-- AI Chatbot toggle -->
-    <div id="chatbot-toggle">&#10022; Ask me</div>
+    <!-- Top-right controls -->
+    <div id="top-right-controls">
+      <button id="audio-toggle" title="Toggle audio-reactive mode">&#9836; Audio</button>
+      <button id="chatbot-toggle">&#10022; Ask AI</button>
+    </div>
+
+    <!-- Now panel -->
+    <div id="now-panel">
+      <div class="panel-header">
+        <span>Now &middot; What I&rsquo;m up to</span>
+        <span class="panel-close" data-close="now-panel">&#x2715;</span>
+      </div>
+      <div class="panel-body" id="now-body"></div>
+    </div>
+
+    <!-- Decisions modal -->
+    <div id="decision-modal">
+      <div class="modal-inner">
+        <div class="panel-header">
+          <span id="decision-title">Decision</span>
+          <span class="panel-close" data-close="decision-modal">&#x2715;</span>
+        </div>
+        <div class="panel-body" id="decision-body"></div>
+      </div>
+    </div>
+
+    <!-- Architecture modal -->
+    <div id="arch-modal">
+      <div class="modal-inner arch-inner">
+        <div class="panel-header">
+          <span id="arch-title">System Architecture</span>
+          <span class="panel-close" data-close="arch-modal">&#x2715;</span>
+        </div>
+        <div class="panel-body arch-body">
+          <pre class="mermaid" id="arch-diagram"></pre>
+          <div id="arch-notes"></div>
+        </div>
+      </div>
+    </div>
 
     <!-- AI Chatbot panel -->
     <div id="chatbot-panel">
@@ -291,7 +476,7 @@
         <span id="chat-close">&#x2715;</span>
       </div>
       <div id="chat-messages">
-        <div class="chat-msg bot">Hi! I'm Samar's portfolio AI. Ask me about his experience, education, skills, research, or projects.</div>
+        <div class="chat-msg bot">Hi &mdash; I&rsquo;m a local Llama running on Samar&rsquo;s server. Ask me about his leadership philosophy, decisions he&rsquo;s made as a team lead, engineering impact, or how he approaches building teams.</div>
       </div>
       <div id="chat-input-row">
         <input id="chat-input" type="text" placeholder="e.g. What did you do at IBM?" autocomplete="off"/>
@@ -585,7 +770,14 @@
 </script>
 <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script defer src="warpdrive.js"></script>
-<script defer src="twitterFetcher_min.js"></script>
-<script defer src="gather_facts.js"></script>
+<script defer src="content.js"></script>
 <script defer src="main.js"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  window.mermaid = mermaid;
+  mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose', themeVariables: {
+    background: '#0a0a1a', primaryColor: '#2a1e55', primaryTextColor: '#e8e2ff',
+    primaryBorderColor: '#9678ff', lineColor: '#9678ff', tertiaryColor: '#1a1030'
+  }});
+</script>
 </html>
