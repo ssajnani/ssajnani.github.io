@@ -22,6 +22,7 @@ var angle = 45,
     far = 3000;
 
 var objectDict = {};
+var orbitPlanetPairs = [];
 
 
 
@@ -110,14 +111,15 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
   mesh.position.y = meshY;
   mesh.position.x = meshX;
   mesh.updateMatrixWorld();
-  var positions = mesh.localToWorld(mesh.geometry.vertices[calculateRandomInt(129, 0)].clone());
+  var vertexIndex = calculateRandomInt(129, 0);
+  var positions = mesh.localToWorld(mesh.geometry.vertices[vertexIndex].clone());
   var testmesh = new THREE.Mesh( geometry, material );
   testmesh.position.x = positions.x;
   testmesh.position.y = positions.y;
   testmesh.position.z = positions.z;
   scene.add(mesh);
   planets.add( testmesh );
-  return [testmesh, mesh];
+  return [testmesh, mesh, vertexIndex];
   //               planetMaterial.shininess = 150;
 
   //
@@ -263,6 +265,7 @@ function createOrbitsProjects(scene, planets, desc, positions, zDistance, projec
     var imageurl = "https://raw.githubusercontent.com/ssajnani/" + projects[i].name + "/master/images/va%402x.png"
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = projects[i].name + '///' + projects[i].description.replace('((Project))','') + '///' + projects[i].html_url;
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
 }
@@ -281,6 +284,7 @@ function createOrbitsEducation(scene, planets, desc, positions, zDistance, educa
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = education[i].name + '///University: '+ education[i].school+' <br> Grade: ' + education[i].grade + '///' + education[i].url;
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
 }
@@ -303,6 +307,7 @@ function createOrbitsResearch(scene, planets, desc, positions, zDistance, resear
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = description.title + '///Description: ' + description.description +' <br> Supervisor: ' + description.supervisor + ' <br> University: '+ description.school+ '///' + research[i].html_url;
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
 }
@@ -316,6 +321,7 @@ function createOrbitsYoutube(scene, planets, desc, positions, zDistance, youtube
   for (var i = 0; i < pLength; i++){
     var result = generateOrbit(scene, planets, "https://cors-anywhere.herokuapp.com/http://img.youtube.com/vi/"+youtube[i].id.videoId + '/0.jpg', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = youtube[i].snippet.title + '///Description: ' + youtube[i].snippet.description + '///https://www.youtube.com/watch?v=' + youtube[i].id.videoId;
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
 }
@@ -338,6 +344,7 @@ function createOrbitsWork(scene, planets, desc, positions, zDistance, work, colo
     }
     var result = generateOrbit(scene, planets, imageurl, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = work[i].position + '///'+work[i].bullets.replace(/\u2022/g, '<br>\u2022') + '///https://www.linkedin.com/in/samarsajnani/';
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
 }
@@ -359,6 +366,7 @@ function createOrbitsTwitter(scene, planets, desc, positions, zDistance, tweets,
     console.log();
     var result = generateOrbit(scene, planets, '', 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = tweeter + '///'+ tweet + '///' + tweetURL;
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
 }
@@ -373,6 +381,7 @@ function createOrbitsInsta(scene, planets, desc, positions, zDistance, instagram
   for (var i = 0; i < pLength; i++){
     var result = generateOrbit(scene, planets, instagram[i].url, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
     objectDict[result[0].uuid] = instagram[i].desc + '/// ///https://www.instagram.com/p/' + instagram[i].code;
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     radius += 0.6;
   }
 }
@@ -387,6 +396,7 @@ function createOrbitsSpotify(scene, planets, desc, positions, zDistance, spotify
   for (var i = 0; i < pLength; i++){
     console.log(spotify[i].track_info);
     var result = generateOrbit(scene, planets, spotify[i].images[0].url, 5, radius, 40, 400, zDistance, positions[0], positions[1], color, opacity);
+    orbitPlanetPairs.push({ planet: result[0], orbit: result[1], vertexIndex: result[2] });
     var tracks = spotify[i].track_info.items;
     var tLength = tracks.length;
     if (tLength > 5){
@@ -424,7 +434,6 @@ var sceneTextName = new THREE.Scene();
 var sceneOrbits = new THREE.Scene();
 var scenePlanets = new THREE.Scene();
 var sceneDescriptions = new THREE.Scene();
-var sceneSkills = new THREE.Scene();
 
 // create a camera, which defines where we're looking at.
 var camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
@@ -536,40 +545,6 @@ sceneStars.add(starField);
 })();
 
 
-// Skills constellation — faint background S made of coloured skill dots
-(function() {
-    var skills = [
-        { name: 'Kubernetes',    color: 0x326ce5, proficiency: 0.85 },
-        { name: 'Docker',        color: 0x2496ed, proficiency: 0.90 },
-        { name: 'JavaScript',    color: 0xf7df1e, proficiency: 0.92 },
-        { name: 'Python',        color: 0x3776ab, proficiency: 0.88 },
-        { name: 'React Native',  color: 0x61dafb, proficiency: 0.80 },
-        { name: 'WebGL/Three.js',color: 0x00ff99, proficiency: 0.78 },
-        { name: 'Linux',         color: 0xfcc624, proficiency: 0.88 },
-        { name: 'Ansible',       color: 0xee0000, proficiency: 0.75 },
-        { name: 'Java',          color: 0xf89820, proficiency: 0.82 },
-        { name: 'CI/CD',         color: 0x9b59b6, proficiency: 0.85 }
-    ];
-
-    // Shape the skills along a scaled-down S path centred at (0,0,-130)
-    var skillCurve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3( 5, 6, -130),
-        new THREE.Vector3( 3, 1.5, -130),
-        new THREE.Vector3( 0, 4.5, -130),
-        new THREE.Vector3(-3, 7.5, -130),
-        new THREE.Vector3(-5, 3, -130)
-    ], false, "centripetal");
-    var pts = skillCurve.getPoints(skills.length - 1);
-
-    skills.forEach(function(sk, idx) {
-        var r = 0.08 + sk.proficiency * 0.10;
-        var geo = new THREE.SphereGeometry(r, 8, 8);
-        var mat = new THREE.MeshBasicMaterial({ color: sk.color, transparent: true, opacity: 0.55 });
-        var mesh = new THREE.Mesh(geo, mat);
-        mesh.position.copy(pts[idx]);
-        sceneSkills.add(mesh);
-    });
-})();
 
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -692,12 +667,9 @@ function preRender(){
 
 
     composer.setSize( window.innerWidth , window.innerHeight);
-    var renderPassSkills = new THREE.RenderPass(sceneSkills, camera);
-    renderPassSkills.clear = false;
 
     composer.addPass(renderPass);
     composer.addPass(renderPass2);
-    composer.addPass(renderPassSkills);
     composer.addPass(renderPass3);
     composer.addPass(renderPass4);
     composer.addPass(renderPass5);
@@ -743,6 +715,14 @@ function animate(time) {
               obj.rotation.x += 0.0004;
             }
           });
+
+          // Move each planet to its current position on its orbit ring
+          for (var pi = 0; pi < orbitPlanetPairs.length; pi++) {
+            var pair = orbitPlanetPairs[pi];
+            pair.orbit.updateMatrixWorld();
+            var lp = pair.orbit.geometry.vertices[pair.vertexIndex].clone();
+            pair.planet.position.copy(pair.orbit.localToWorld(lp));
+          }
 
           composer.reset();
           composer.render();
@@ -816,6 +796,8 @@ function stopAutoTour() {
     tourActive = false;
     document.getElementById('auto-tour-btn').classList.remove('touring');
     document.getElementById('auto-tour-btn').textContent = '▶ Show me';
+    sceneS.traverse(function(obj) { obj.visible = true; });
+    sceneOrbits.traverse(function(obj) { obj.visible = false; });
     new TWEEN.Tween(camera.position).to({ x:0, y:0, z:0 }, 1200)
         .easing(TWEEN.Easing.Cubic.InOut)
         .onUpdate(function() { camera.lookAt(new THREE.Vector3(0,0,-100)); })
@@ -828,18 +810,32 @@ function tourNextStar() {
     var tp = tourPositions[tourIndex];
     var lookTarget = new THREE.Vector3(tp.x, tp.y, tp.z);
     var startPos = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-    new TWEEN.Tween(startPos).to({ x: tp.x * 0.4, y: tp.y * 0.4, z: -70 }, 1800)
+    new TWEEN.Tween(startPos).to({ x: tp.x * 0.4, y: tp.y * 0.4, z: -78 }, 1800)
         .easing(TWEEN.Easing.Cubic.InOut)
         .onUpdate(function() {
             camera.position.set(startPos.x, startPos.y, startPos.z);
             camera.lookAt(lookTarget);
         })
         .onComplete(function() {
+            // Hide S constellation lines so the star is unobstructed
+            sceneS.traverse(function(obj) { obj.visible = false; });
+            // Show the orbit rings (planets) belonging to this star
+            sceneOrbits.visible = true;
+            sceneOrbits.traverse(function(obj) {
+                if (Math.abs(obj.position.x - tp.x) < 0.5 &&
+                    Math.abs(obj.position.y - tp.y) < 0.5 &&
+                    Math.abs(obj.position.z - tp.z) < 0.5) {
+                    obj.visible = true;
+                }
+            });
             document.getElementById('topHeader').textContent = tp.label;
             document.getElementById('topHeader').style.display = 'block';
             setTimeout(function() {
                 if (!tourActive) return;
                 document.getElementById('topHeader').style.display = 'none';
+                // Restore S lines, hide orbits before panning to next star
+                sceneS.traverse(function(obj) { obj.visible = true; });
+                sceneOrbits.traverse(function(obj) { obj.visible = false; });
                 var retPos = { x: startPos.x, y: startPos.y, z: startPos.z };
                 new TWEEN.Tween(retPos).to({ x:0, y:0, z:0 }, 1000)
                     .easing(TWEEN.Easing.Cubic.InOut)
@@ -1382,6 +1378,33 @@ function onDocumentMouseClick( event ) {
   
 }
 
+function showSpaceship() {
+  var container = document.getElementById('spaceship-container');
+  var inner = document.getElementById('spaceship-inner');
+  container.style.display = 'flex';
+  inner.style.transition = 'none';
+  inner.style.opacity = '0';
+  inner.style.transform = 'scale(0.2) translateY(180px)';
+  void inner.offsetHeight;
+  inner.style.transition = 'transform 0.9s cubic-bezier(0.34,1.56,0.64,1), opacity 0.5s ease-out';
+  inner.style.transform = 'scale(1) translateY(0)';
+  inner.style.opacity = '1';
+}
+
+function flyAwaySpaceship() {
+  var container = document.getElementById('spaceship-container');
+  var inner = document.getElementById('spaceship-inner');
+  inner.style.transition = 'transform 0.75s ease-in, opacity 0.5s ease-in 0.1s';
+  inner.style.transform = 'scale(0.03) translateY(-420px)';
+  inner.style.opacity = '0';
+  setTimeout(function() {
+    container.style.display = 'none';
+    inner.style.transition = 'none';
+    inner.style.transform = '';
+    inner.style.opacity = '';
+  }, 900);
+}
+
 function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
   sleep(1500, position).then((j)=> {
     // keep this outside of the event-handler
@@ -1408,6 +1431,7 @@ function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
         $('#holder').css('visibility','visible').css('opacity', 1).fadeIn("slow");
         textFilter[0].visible = false;
         mouseActive = true;
+        showSpaceship();
         deactivateWarp(constChildren, position, textFilter);
       })
     
@@ -1417,6 +1441,7 @@ function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
 function deactivateWarp(constChildren,position,textFilter){
   sleep(2000).then((j) => {
     mouseActive = false;
+    flyAwaySpaceship();
     zoomToStar(constChildren, position, textFilter);
   });
 }
