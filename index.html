@@ -129,28 +129,6 @@
     }
     #hud-links a:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
 
-    /* ── Auto Tour Button ── */
-    #auto-tour-btn {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 100;
-      display: none;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.18);
-      color: rgba(255,255,255,0.7);
-      font-family: Helvetica, sans-serif;
-      font-size: 0.7em;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 8px 16px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      border-radius: 2px;
-    }
-    #auto-tour-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
-    #auto-tour-btn.touring { border-color: rgba(150,120,255,0.6); color: rgba(150,120,255,0.9); }
-
     /* ── Chatbot ── */
     #chatbot-toggle {
       position: fixed;
@@ -278,34 +256,6 @@
       transition: color 0.3s;
     }
 
-    /* ── Spaceship overlay ── */
-    #spaceship-container {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 160;
-      pointer-events: none;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 7%;
-    }
-    #spaceship-svg {
-      filter: drop-shadow(0 0 16px rgba(255,140,0,0.75)) drop-shadow(0 0 8px rgba(120,190,255,0.5));
-      animation: shipHover 2.6s ease-in-out infinite;
-    }
-    @keyframes shipHover {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-13px) rotate(0.4deg); }
-    }
-    .engine-glow {
-      transform-origin: top center;
-      animation: enginePulse 0.38s ease-in-out infinite alternate;
-    }
-    @keyframes enginePulse {
-      from { opacity: 0.4; transform: scaleY(0.8); }
-      to   { opacity: 1.0; transform: scaleY(1.2); }
-    }
   </style>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
   <title>Samar's Portfolio</title>
@@ -330,9 +280,6 @@
         <a href="./Samar_Resume.pdf" download>Resume ↓</a>
       </div>
     </div>
-
-    <!-- Auto-tour button -->
-    <button id="auto-tour-btn" title="Auto-guided tour of portfolio">&#9654; Show me</button>
 
     <!-- AI Chatbot toggle -->
     <div id="chatbot-toggle">&#10022; Ask me</div>
@@ -368,79 +315,6 @@
       <p id="para" style='font-family: "Times New Roman, Times", serif; color:white; font-size: 1.5em'>
       </p>
     </h1>
-    </div>
-
-    <!-- Spaceship overlay — visible during warp drive sequence -->
-    <div id="spaceship-container">
-      <div id="spaceship-inner">
-        <svg id="spaceship-svg" viewBox="-68 -95 136 185" xmlns="http://www.w3.org/2000/svg" width="190" height="260">
-          <defs>
-            <radialGradient id="eng-grad" cx="50%" cy="0%" r="100%">
-              <stop offset="0%"   style="stop-color:#ffaa00;stop-opacity:1"/>
-              <stop offset="45%"  style="stop-color:#ff4400;stop-opacity:0.75"/>
-              <stop offset="100%" style="stop-color:#220000;stop-opacity:0"/>
-            </radialGradient>
-            <linearGradient id="body-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"   style="stop-color:#ccd4e4"/>
-              <stop offset="100%" style="stop-color:#58606e"/>
-            </linearGradient>
-            <radialGradient id="cockpit-grad" cx="38%" cy="22%" r="78%">
-              <stop offset="0%"   style="stop-color:#bbdeff;stop-opacity:0.95"/>
-              <stop offset="100%" style="stop-color:#004488;stop-opacity:0.3"/>
-            </radialGradient>
-            <radialGradient id="accent-grad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%"   style="stop-color:#ffffff;stop-opacity:0.5"/>
-              <stop offset="100%" style="stop-color:#8899cc;stop-opacity:0"/>
-            </radialGradient>
-          </defs>
-
-          <!-- Engine plume trails (behind wings) -->
-          <ellipse cx="0"   cy="80" rx="15" ry="36" fill="url(#eng-grad)" class="engine-glow"/>
-          <ellipse cx="-25" cy="68" rx="9"  ry="20" fill="url(#eng-grad)" class="engine-glow" style="animation-delay:-0.14s"/>
-          <ellipse cx="25"  cy="68" rx="9"  ry="20" fill="url(#eng-grad)" class="engine-glow" style="animation-delay:-0.27s"/>
-
-          <!-- Left wing -->
-          <path d="M-13,16 C-40,28 -60,46 -65,66 L-20,60 Z" fill="#697080"/>
-          <!-- Right wing -->
-          <path d="M13,16 C40,28 60,46 65,66 L20,60 Z" fill="#697080"/>
-
-          <!-- Wing leading-edge highlight -->
-          <path d="M-13,16 C-36,26 -55,44 -62,64" stroke="#8899aa" stroke-width="0.9" fill="none" opacity="0.5"/>
-          <path d="M13,16 C36,26 55,44 62,64"  stroke="#8899aa" stroke-width="0.9" fill="none" opacity="0.5"/>
-
-          <!-- Main fuselage -->
-          <path d="M0,-86 C10,-70 19,-10 16,50 L0,66 L-16,50 C-19,-10 -10,-70 0,-86 Z" fill="url(#body-grad)"/>
-
-          <!-- Fuselage panel lines -->
-          <path d="M-9,-20 L-9,34"  stroke="#8fa0b4" stroke-width="0.7" opacity="0.5"/>
-          <path d="M9,-20  L9,34"   stroke="#8fa0b4" stroke-width="0.7" opacity="0.5"/>
-          <path d="M-14,4  L14,4"   stroke="#8fa0b4" stroke-width="0.7" opacity="0.4"/>
-          <path d="M-13,22 L13,22"  stroke="#8fa0b4" stroke-width="0.6" opacity="0.35"/>
-
-          <!-- Wing detail stripes -->
-          <path d="M-21,48 L-56,61" stroke="#505868" stroke-width="1"   opacity="0.6"/>
-          <path d="M21,48  L56,61"  stroke="#505868" stroke-width="1"   opacity="0.6"/>
-          <path d="M-18,38 L-48,50" stroke="#606878" stroke-width="0.7" opacity="0.4"/>
-          <path d="M18,38  L48,50"  stroke="#606878" stroke-width="0.7" opacity="0.4"/>
-
-          <!-- Cockpit canopy -->
-          <path d="M-12,-38 Q-13,-70 0,-82 Q13,-70 12,-38 Q11,-16 0,-16 Q-11,-16 -12,-38 Z" fill="url(#cockpit-grad)"/>
-          <!-- Canopy highlight -->
-          <path d="M-6,-64 Q0,-76 6,-64" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" fill="none"/>
-
-          <!-- Fuselage accent stripe -->
-          <path d="M-5,-50 L-5,40 Q0,46 5,40 L5,-50" stroke="rgba(150,200,255,0.2)" stroke-width="2" fill="none"/>
-
-          <!-- Engine nozzles -->
-          <ellipse cx="0"   cy="65" rx="11" ry="5"   fill="#1e252e"/>
-          <ellipse cx="-24" cy="60" rx="6.5" ry="3"  fill="#1e252e"/>
-          <ellipse cx="24"  cy="60" rx="6.5" ry="3"  fill="#1e252e"/>
-
-          <!-- Nav lights -->
-          <circle cx="-65" cy="66" r="2.2" fill="#ff3333" opacity="0.95"/>
-          <circle cx="65"  cy="66" r="2.2" fill="#33ff55" opacity="0.95"/>
-        </svg>
-      </div>
     </div>
 
     <div id="container"></div>
