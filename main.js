@@ -612,8 +612,8 @@ var buildUp = function () {
         scale : 2
     }, 125).easing(TWEEN.Easing.Elastic.Out)
       .onStart(function(){
-        current_size = getRandomInt(3);
-        children = getRandom(sceneConstellations.children, current_size);
+        current_size = Math.min(getRandomInt(3), sceneConstellations.children.length);
+        children = current_size > 0 ? getRandom(sceneConstellations.children, current_size) : [];
       })
       .onUpdate(function (test) {
         for (var i = 0; i < current_size; i ++){
