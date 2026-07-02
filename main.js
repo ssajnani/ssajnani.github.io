@@ -489,7 +489,7 @@ for (var i = 0; i < starCount; i++) {
     starPositions[i * 3 + 2] = THREE.Math.randFloat(-350, -450);
 }
 var starsGeometry = new THREE.BufferGeometry();
-starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+starsGeometry.addAttribute('position', new THREE.BufferAttribute(starPositions, 3));
 var starsMaterial = new THREE.PointsMaterial({ color: 0xffffff });
 var starField = new THREE.Points(starsGeometry, starsMaterial);
 sceneStars.add(starField);
