@@ -624,6 +624,7 @@ function preRender(){
     composer.addPass(renderPass9);
     composer.addPass(renderPass6);
     composer.addPass(bloomPass);
+    composer.addPass(renderPass7);
     composer.addPass(renderPass8);
     // composer.addPass(effectFXAA);
     composer.addPass(copyShader);
@@ -658,13 +659,6 @@ function animate(time) {
           // The draw or time dependent code are here
           composer.reset();
           composer.render();
-
-          var savedExposure = webGLRenderer.toneMappingExposure;
-          webGLRenderer.toneMappingExposure = 1.0;
-          webGLRenderer.autoClear = false;
-          webGLRenderer.render(scenePlanets, camera);
-          webGLRenderer.autoClear = true;
-          webGLRenderer.toneMappingExposure = savedExposure;
 
           TWEEN.update(time);
 
