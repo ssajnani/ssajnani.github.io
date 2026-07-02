@@ -491,7 +491,6 @@ if (s1 && s1.material && s1.material.uniforms && s1.material.uniforms.opacity) {
 }
 
 hideLoadingScreen();
-buildTourPositions();
 var loader = new THREE.FontLoader();
 loader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
   secondText = createText(sceneText, textFPos, -100, hobbyTitles, font);
@@ -768,95 +767,6 @@ function scheduleShootingStar() {
 }
 scheduleShootingStar();
 
-// ── Auto Tour ────────────────────────────────────────────────────────
-var tourActive = false;
-var tourIndex = 0;
-var allTitles = ['Projects','Education','Research','Youtube','Work','Twitter','Photography','Dance','Music','Blog'];
-var tourPositions = [];
-
-function buildTourPositions() {
-    for (var i = 0; i < 5; i++) {
-        tourPositions.push({ x: secondSPos[i][1], y: secondSPos[i][0], z: -100, label: workTitles[i] });
-    }
-    for (var i = 0; i < 5; i++) {
-        tourPositions.push({ x: firstSPos[i][1], y: firstSPos[i][0], z: -100, label: hobbyTitles[i] });
-    }
-}
-
-function startAutoTour() {
-    if (tourPositions.length === 0) buildTourPositions();
-    tourActive = true;
-    tourIndex = 0;
-    document.getElementById('auto-tour-btn').classList.add('touring');
-    document.getElementById('auto-tour-btn').textContent = '◼ Stop tour';
-    tourNextStar();
-}
-
-function stopAutoTour() {
-    tourActive = false;
-    document.getElementById('auto-tour-btn').classList.remove('touring');
-    document.getElementById('auto-tour-btn').textContent = '▶ Show me';
-    sceneS.traverse(function(obj) { obj.visible = true; });
-    sceneOrbits.traverse(function(obj) { obj.visible = false; });
-    new TWEEN.Tween(camera.position).to({ x:0, y:0, z:0 }, 1200)
-        .easing(TWEEN.Easing.Cubic.InOut)
-        .onUpdate(function() { camera.lookAt(new THREE.Vector3(0,0,-100)); })
-        .start();
-}
-
-function tourNextStar() {
-    if (!tourActive) return;
-    if (tourIndex >= tourPositions.length) { stopAutoTour(); return; }
-    var tp = tourPositions[tourIndex];
-    var lookTarget = new THREE.Vector3(tp.x, tp.y, tp.z);
-    var startPos = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-    new TWEEN.Tween(startPos).to({ x: tp.x * 0.4, y: tp.y * 0.4, z: -78 }, 1800)
-        .easing(TWEEN.Easing.Cubic.InOut)
-        .onUpdate(function() {
-            camera.position.set(startPos.x, startPos.y, startPos.z);
-            camera.lookAt(lookTarget);
-        })
-        .onComplete(function() {
-            // Hide S constellation lines so the star is unobstructed
-            sceneS.traverse(function(obj) { obj.visible = false; });
-            // Show the orbit rings (planets) belonging to this star
-            sceneOrbits.visible = true;
-            sceneOrbits.traverse(function(obj) {
-                if (Math.abs(obj.position.x - tp.x) < 0.5 &&
-                    Math.abs(obj.position.y - tp.y) < 0.5 &&
-                    Math.abs(obj.position.z - tp.z) < 0.5) {
-                    obj.visible = true;
-                }
-            });
-            document.getElementById('topHeader').textContent = tp.label;
-            document.getElementById('topHeader').style.display = 'block';
-            setTimeout(function() {
-                if (!tourActive) return;
-                document.getElementById('topHeader').style.display = 'none';
-                // Restore S lines, hide orbits before panning to next star
-                sceneS.traverse(function(obj) { obj.visible = true; });
-                sceneOrbits.traverse(function(obj) { obj.visible = false; });
-                var retPos = { x: startPos.x, y: startPos.y, z: startPos.z };
-                new TWEEN.Tween(retPos).to({ x:0, y:0, z:0 }, 1000)
-                    .easing(TWEEN.Easing.Cubic.InOut)
-                    .onUpdate(function() {
-                        camera.position.set(retPos.x, retPos.y, retPos.z);
-                        camera.lookAt(new THREE.Vector3(0,0,-100));
-                    })
-                    .onComplete(function() {
-                        tourIndex++;
-                        tourNextStar();
-                    })
-                    .start();
-            }, 2000);
-        })
-        .start();
-}
-
-document.getElementById('auto-tour-btn').addEventListener('click', function() {
-    if (tourActive) { stopAutoTour(); } else { startAutoTour(); }
-});
-
 // ── Chatbot Q&A ──────────────────────────────────────────────────────
 function getChatResponse(q) {
     q = q.toLowerCase().trim();
@@ -919,7 +829,6 @@ function hideLoadingScreen() {
     ls.style.opacity = '0';
     setTimeout(function() { ls.style.display = 'none'; }, 850);
     document.getElementById('hud').style.display = 'flex';
-    document.getElementById('auto-tour-btn').style.display = 'block';
     document.getElementById('chatbot-toggle').style.display = 'block';
 }
 
@@ -1378,33 +1287,6 @@ function onDocumentMouseClick( event ) {
   
 }
 
-function showSpaceship() {
-  var container = document.getElementById('spaceship-container');
-  var inner = document.getElementById('spaceship-inner');
-  container.style.display = 'flex';
-  inner.style.transition = 'none';
-  inner.style.opacity = '0';
-  inner.style.transform = 'scale(0.2) translateY(180px)';
-  void inner.offsetHeight;
-  inner.style.transition = 'transform 0.9s cubic-bezier(0.34,1.56,0.64,1), opacity 0.5s ease-out';
-  inner.style.transform = 'scale(1) translateY(0)';
-  inner.style.opacity = '1';
-}
-
-function flyAwaySpaceship() {
-  var container = document.getElementById('spaceship-container');
-  var inner = document.getElementById('spaceship-inner');
-  inner.style.transition = 'transform 0.75s ease-in, opacity 0.5s ease-in 0.1s';
-  inner.style.transform = 'scale(0.03) translateY(-420px)';
-  inner.style.opacity = '0';
-  setTimeout(function() {
-    container.style.display = 'none';
-    inner.style.transition = 'none';
-    inner.style.transform = '';
-    inner.style.opacity = '';
-  }, 900);
-}
-
 function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
   sleep(1500, position).then((j)=> {
     // keep this outside of the event-handler
@@ -1431,7 +1313,6 @@ function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
         $('#holder').css('visibility','visible').css('opacity', 1).fadeIn("slow");
         textFilter[0].visible = false;
         mouseActive = true;
-        showSpaceship();
         deactivateWarp(constChildren, position, textFilter);
       })
     
@@ -1441,7 +1322,6 @@ function adjustCameraAndInitiateWarp(constChildren, position, textFilter){
 function deactivateWarp(constChildren,position,textFilter){
   sleep(2000).then((j) => {
     mouseActive = false;
-    flyAwaySpaceship();
     zoomToStar(constChildren, position, textFilter);
   });
 }
