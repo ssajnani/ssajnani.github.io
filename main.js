@@ -164,7 +164,7 @@ function generateEndOfNames(scene, rotation, meshZ=-100, meshY, meshX, color, op
       font: font,
       style: 'normal',
       height: 0,
-      curveSegments: 30
+      curveSegments: 6
     };
 
     // the createMesh is the same function we saw earlier
@@ -190,7 +190,7 @@ function calculateRandomInt(max, min){
 }
 
 function createS (scene, positions, radius, zDistance, color=0x000000, opacity=1) {
-  var sphereGeo = new THREE.SphereGeometry(calculateStarRadius(radius[0], radius[1]), 40, 400);
+  var sphereGeo = new THREE.SphereGeometry(calculateStarRadius(radius[0], radius[1]), 8, 8);
   for (var i = 0; i < 5; i++){
     generateSphere(scene, 5, sphereGeo, zDistance, positions[i][0], positions[i][1], color, opacity);
   }
@@ -481,24 +481,18 @@ loader.load( './fonts/sigreg.json', function ( font ) {
 sceneOrbits.traverse( function ( object ) { object.visible = false; } );
 
 //This will add a starfield to the background of a scene
-var starsGeometry = new THREE.Geometry();
-
-for ( var i = 0; i < 100000; i ++ ) {
-
-    var star = new THREE.Vector3();
-    star.x = THREE.Math.randFloatSpread( 5000 );
-    star.y = THREE.Math.randFloatSpread( 5000 );
-    star.z = THREE.Math.randFloat(-350, -450 );
-    // starsGeometry.filter(.vertices[0].x);
-
-    starsGeometry.vertices.push( star );
-
+var starCount = 8000;
+var starPositions = new Float32Array(starCount * 3);
+for (var i = 0; i < starCount; i++) {
+    starPositions[i * 3]     = THREE.Math.randFloatSpread(5000);
+    starPositions[i * 3 + 1] = THREE.Math.randFloatSpread(5000);
+    starPositions[i * 3 + 2] = THREE.Math.randFloat(-350, -450);
 }
-var starsMaterial = new THREE.PointsMaterial( { color: 0xffffff } );
-
-var starField = new THREE.Points( starsGeometry, starsMaterial );
-
-sceneStars.add( starField );
+var starsGeometry = new THREE.BufferGeometry();
+starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+var starsMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+var starField = new THREE.Points(starsGeometry, starsMaterial);
+sceneStars.add(starField);
 
 
 camera.lookAt(new THREE.Vector3(0, 0, 0));
