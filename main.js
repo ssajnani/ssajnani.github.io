@@ -103,7 +103,7 @@ function generateOrbit(scene, planets,imageurl, rotation, radius, widthSegment=4
 
   sphereMat = new THREE.LineBasicMaterial( { color: 0xFFFFFF, width: 10} );
   sphereGeo.vertices.shift();
-  sphereGeo.rotateZ(THREE.Math.randFloatSpread(-Math.PI/1.3));
+  sphereGeo.rotateZ(THREE.Math.randFloatSpread(-1));
   sphereGeo.rotateX(THREE.Math.randFloatSpread(-Math.PI/1.3));
   sphereGeo.rotateY(THREE.Math.randFloatSpread(-Math.PI/1.3));
   var mesh = new THREE.Line( sphereGeo, sphereMat );
